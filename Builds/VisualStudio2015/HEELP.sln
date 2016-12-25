@@ -1,0 +1,19 @@
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2015
+Project("{A3130430-CF17-8F70-DAA2-38EB0E340E61}") = "HEELP", "HEELP.vcxproj", "{740F5CCE-043F-C922-BF4F-39E51C1A4D2B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{740F5CCE-043F-C922-BF4F-39E51C1A4D2B}.Debug|Win32.ActiveCfg = Debug|Win32
+		{740F5CCE-043F-C922-BF4F-39E51C1A4D2B}.Debug|Win32.Build.0 = Debug|Win32
+		{740F5CCE-043F-C922-BF4F-39E51C1A4D2B}.Release|Win32.ActiveCfg = Release|Win32
+		{740F5CCE-043F-C922-BF4F-39E51C1A4D2B}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
