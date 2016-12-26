@@ -19,6 +19,7 @@ namespace heelp
         int shmId_;
         int identifier_;
         char* sharedMemory_;
+        float* sharedAudioBuffer_;
     };
 }
 

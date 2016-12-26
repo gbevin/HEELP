@@ -14,7 +14,6 @@
 
 using namespace heelp;
 
-static const int NUM_CHILDREN = 3;
 static const char* audioCommandLineUID = "heelpUID";
 
 struct HeelpApplication::Pimpl
@@ -86,7 +85,7 @@ struct HeelpApplication::Pimpl
         logger_ = new HeelpLogger(0);
         Logger::setCurrentLogger(logger_);
         
-        shmId_ = shmget(IPC_PRIVATE, 1024*sizeof(float), IPC_CREAT|IPC_EXCL|0666);
+        shmId_ = shmget(IPC_PRIVATE, (NUM_CHILDREN+1) * 2 * MAX_BUFFER_SIZE * sizeof(float), IPC_CREAT|IPC_EXCL|0666);
         if (shmId_ < 0) {
             LOG("shmget error " << errno);
             exit(1);

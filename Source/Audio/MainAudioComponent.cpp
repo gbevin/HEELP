@@ -1,5 +1,6 @@
 #include "MainAudioComponent.h"
 
+#include "../HeelpApplication.h"
 #include "../Utils.h"
 
 #include  <sys/types.h>
@@ -16,6 +17,8 @@ MainAudioComponent::MainAudioComponent(int shmId) : shmId_(shmId)
         LOG("shmat error " << errno);
         exit(1);
     }
+
+    sharedAudioBuffer_ = (float*)sharedMemory_;
 }
 
 MainAudioComponent::~MainAudioComponent()
@@ -33,6 +36,53 @@ void MainAudioComponent::prepareToPlay(int samplesPerBlockExpected, double sampl
 
 void MainAudioComponent::getNextAudioBlock(const AudioSourceChannelInfo& bufferToFill)
 {
+    bool childrenDone;
+    
+    do
+    {
+        childrenDone = true;
+        
+        for (int child = 1; child <= NUM_CHILDREN; ++child)
+        {
+            if (sharedMemory_[child] == 0)
+            {
+                childrenDone = false;
+                break;
+            }
+        }
+        
+        if (childrenDone)
+        {
+            break;
+        }
+        
+        // TODO: might want to find something better than waiting for at least a millisecond to continue
+        Thread::sleep(1);
+    }
+    // TODO: this needs to be made resilient against child processes crashing
+    while (true);
+    
+    AudioSampleBuffer* outputBuffer = bufferToFill.buffer;
+    outputBuffer->clear();
+
+    int startSample = 0;
+    int numSamples = bufferToFill.numSamples;
+    while (--numSamples >= 0)
+    {
+        for (int chan = outputBuffer->getNumChannels(); --chan >= 0;)
+        {
+            for (int child = 1; child <= NUM_CHILDREN; ++child)
+            {
+                outputBuffer->addSample(chan, startSample, sharedAudioBuffer_[child * 2 * MAX_BUFFER_SIZE + chan * MAX_BUFFER_SIZE + startSample]);
+            }
+        }
+        ++startSample;
+    }
+    
+    for (int child = 1; child <= NUM_CHILDREN; ++child)
+    {
+        sharedMemory_[child] = 0;
+    }
 }
 
 void MainAudioComponent::releaseResources()
