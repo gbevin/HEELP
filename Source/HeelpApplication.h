@@ -23,7 +23,6 @@
 namespace heelp
 {
     static const int NUM_AUDIO_CHANNELS = 2;
-    static const int NUM_CHILDREN = 4;
     static const int MAX_BUFFER_SIZE = 1024;
  
     class HeelpApplication  : public JUCEApplication

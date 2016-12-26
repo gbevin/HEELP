@@ -25,8 +25,11 @@ namespace heelp
     class MainAudioComponent : public AudioAppComponent
     {
     public:
-        MainAudioComponent(const Array<int>& shmIds);
+        MainAudioComponent();
         ~MainAudioComponent();
+        
+        void registerChild(int childId, int shmId);
+        void unregisterChild(int childId);
         
         void prepareToPlay(int samplesPerBlockExpected, double sampleRate) override;
         void releaseResources() override;
