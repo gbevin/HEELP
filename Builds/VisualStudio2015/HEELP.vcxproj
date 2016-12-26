@@ -2268,6 +2268,7 @@
     <ClInclude Include="..\..\JuceLibraryCode\JuceHeader.h"/>
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\CONTRIBUTORS.md"/>
     <None Include="..\..\COPYING.md"/>
     <None Include="..\..\README.md"/>
     <None Include="..\..\JuceLibraryCode\modules\juce_audio_formats\codecs\flac\Flac Licence.txt"/>

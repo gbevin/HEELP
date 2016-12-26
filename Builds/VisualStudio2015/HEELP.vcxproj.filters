@@ -3830,6 +3830,9 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\CONTRIBUTORS.md">
+      <Filter>HEELP\Info</Filter>
+    </None>
     <None Include="..\..\COPYING.md">
       <Filter>HEELP\Info</Filter>
     </None>

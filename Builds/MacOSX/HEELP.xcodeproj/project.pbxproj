@@ -1177,6 +1177,7 @@
 		F68931B0773FA9565A07180D = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = "juce_ios_UIViewComponentPeer.mm"; path = "../../JuceLibraryCode/modules/juce_gui_basics/native/juce_ios_UIViewComponentPeer.mm"; sourceTree = "SOURCE_ROOT"; };
 		F71E791057326A686E1986A8 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "juce_BufferingAudioFormatReader.h"; path = "../../JuceLibraryCode/modules/juce_audio_formats/format/juce_BufferingAudioFormatReader.h"; sourceTree = "SOURCE_ROOT"; };
 		F7327F239559105C5EA44B65 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = jcapistd.c; path = "../../JuceLibraryCode/modules/juce_graphics/image_formats/jpglib/jcapistd.c"; sourceTree = "SOURCE_ROOT"; };
+		F732E27C89306E43013B2778 = {isa = PBXFileReference; lastKnownFileType = file.md; name = CONTRIBUTORS.md; path = ../../CONTRIBUTORS.md; sourceTree = "SOURCE_ROOT"; };
 		F778242C91D8CD1A124B3FA7 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "juce_ApplicationCommandManager.h"; path = "../../JuceLibraryCode/modules/juce_gui_basics/commands/juce_ApplicationCommandManager.h"; sourceTree = "SOURCE_ROOT"; };
 		F796EB7D6613EC2E61EA47EF = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "juce_MathsFunctions.h"; path = "../../JuceLibraryCode/modules/juce_core/maths/juce_MathsFunctions.h"; sourceTree = "SOURCE_ROOT"; };
 		F7ABE82EB71F859B52A294C7 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "juce_Base64.cpp"; path = "../../JuceLibraryCode/modules/juce_core/text/juce_Base64.cpp"; sourceTree = "SOURCE_ROOT"; };
@@ -1246,6 +1247,7 @@
 					0A753E95ABF3A8A2C3911D23,
 					92C09A8D87BDD91FA6158C5D, ); name = Source; sourceTree = "<group>"; };
 		0F1E11401A6E0100512A3303 = {isa = PBXGroup; children = (
+					F732E27C89306E43013B2778,
 					BE09B743FB94084AF1E9CECC,
 					943D3930D26E9AF2E848EC90, ); name = Info; sourceTree = "<group>"; };
 		E5DF230FA943CF4AA702B476 = {isa = PBXGroup; children = (
