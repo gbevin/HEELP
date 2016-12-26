@@ -16,6 +16,7 @@ It has two main goals:
 * Small enough to run on restricted devices like the BeagleBone Black
 * Channel-based mixer with fixed number of sends and busses for clarity
 * Channels and busses can host any number of instrument and effect plugins in series
+* Per-channel input selection with multiple possible sources (ie. each channel has its set of MIDI, controller and audio ports)
 * Plugins and channels can't be changed in real-time, you set up your environment and parametrize it
 * Channels and busses can have custom colors for the background and foreground for easy identification
 * Each channel runs as separate process and has the possibility to run on a different CPU core

@@ -26,7 +26,7 @@ AudioSlaveProcess::AudioSlaveProcess()
 {
 }
     
-void AudioSlaveProcess::handleMessageFromMaster (const MemoryBlock& mb)
+void AudioSlaveProcess::handleMessageFromMaster(const MemoryBlock& mb)
 {
     ValueTree incomingMessage(memoryBlockToValueTree(mb));
     

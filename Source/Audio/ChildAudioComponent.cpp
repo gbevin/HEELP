@@ -19,6 +19,7 @@
 
 #include "../HeelpApplication.h"
 #include "../Utils.h"
+#include "ChildAudioState.h"
 
 #include  <sys/types.h>
 #include  <sys/ipc.h>
@@ -26,82 +27,107 @@
 
 using namespace heelp;
 
-ChildAudioComponent::ChildAudioComponent(int shmId, int identifier) : shmId_(shmId), identifier_(identifier)
+struct ChildAudioComponent::Pimpl
 {
-    setAudioChannels(0, 2);
-    sharedMemory_ = (char*)shmat(shmId_, 0, SHM_RND);
-    if (sharedMemory_ < 0) {
-        LOG("shmat error " << errno);
-        exit(1);
-    }
-    sharedMemory_[identifier] = 0;
-    
-    sharedAudioBuffer_ = (float*)&sharedMemory_[identifier * 2 * MAX_BUFFER_SIZE * sizeof(float)];
-}
-
-ChildAudioComponent::~ChildAudioComponent()
-{
-    shutdownAudio();
-    shmdt(sharedMemory_);
-}
-
-void ChildAudioComponent::prepareToPlay(int samplesPerBlockExpected, double sampleRate)
-{
-    LOG("Preparing to play audio..." << newLine <<
-        " samplesPerBlockExpected = " << samplesPerBlockExpected << newLine <<
-        " sampleRate = " << sampleRate);
-}
-
-void ChildAudioComponent::getNextAudioBlock(const AudioSourceChannelInfo& bufferToFill)
-{
-    //    LOG("getNextAudioBlock " << String(Time::highResolutionTicksToSeconds(Time::getHighResolutionTicks()), 6));
-    if (sharedMemory_[identifier_] != 0)
+    Pimpl(ChildAudioComponent* parent, int childId, int shmId) : parent_(parent), childId_(childId), shmId_(shmId), sharedMemory_(nullptr), sharedAudioBuffer_(nullptr)
     {
-        return;
-    }
-    
-    AudioSampleBuffer* outputBuffer = bufferToFill.buffer;
-    outputBuffer->clear();
-    
-    static double currentAngle = 0.0;
-    static double level = 0.5;
-    
-    double cyclesPerSecond = MidiMessage::getMidiNoteInHertz(40 + identifier_ * 12);
-    
-    AudioDeviceManager::AudioDeviceSetup audioSetup;
-    deviceManager.getAudioDeviceSetup(audioSetup);
-    double cyclesPerSample = cyclesPerSecond / audioSetup.sampleRate;
-    double angleDelta = cyclesPerSample * 2.0 * double_Pi;
-    
-    if (angleDelta > 0.0)
-    {
-        int startSample = 0;
-        int numSamples = bufferToFill.numSamples;
-
-        while (--numSamples >= 0)
+        parent_->setAudioChannels(0, 2);
+        
+        sharedMemory_ = (char*)shmat(shmId_, 0, SHM_RND);
+        if (sharedMemory_ == nullptr)
         {
-            const float currentSample = (float) (std::sin (currentAngle) * level);
-            
-            for (int chan = outputBuffer->getNumChannels(); --chan >= 0;)
-            {
-                sharedAudioBuffer_[chan * MAX_BUFFER_SIZE + startSample] = currentSample;
-            }
-            
-            currentAngle += angleDelta;
-            ++startSample;
+            LOG("shmat error " << errno);
+            // TODO : clean up more gracefully
+            exit(1);
+        }
+        
+        state_ = (ChildAudioState*)sharedMemory_;
+        state_->phase_ = bufferEmpty;
+        
+        sharedAudioBuffer_ = (float*)&(sharedMemory_[sizeof(ChildAudioState)]);
+    }
+
+    ~Pimpl()
+    {
+        parent_->shutdownAudio();
+        if (sharedMemory_ != nullptr)
+        {
+            shmdt(sharedMemory_);
         }
     }
-    
-    sharedMemory_[identifier_] = 1;
-    
-    // artificial load generator
-//    static double dummyvar = 0;
-//    for (int i = 0; i < 300000; ++i) {
-//        dummyvar = double(arc4random() + i) / double(INT_MAX);
-//    }
-}
 
-void ChildAudioComponent::releaseResources()
-{
-    LOG("Releasing audio resources");
-}
+    void prepareToPlay(int samplesPerBlockExpected, double sampleRate)
+    {
+        LOG("Preparing to play audio..." << newLine <<
+            " samplesPerBlockExpected = " << samplesPerBlockExpected << newLine <<
+            " sampleRate = " << sampleRate);
+    }
+
+    void getNextAudioBlock(const AudioSourceChannelInfo& bufferToFill)
+    {
+        if (state_->phase_ != bufferEmpty)
+        {
+            return;
+        }
+        
+        AudioSampleBuffer* outputBuffer = bufferToFill.buffer;
+        outputBuffer->clear();
+        
+        static double currentAngle = 0.0;
+        static double level = 0.5;
+        
+        double cyclesPerSecond = MidiMessage::getMidiNoteInHertz(40 + childId_ * 12);
+        
+        AudioDeviceManager::AudioDeviceSetup audioSetup;
+        parent_->deviceManager.getAudioDeviceSetup(audioSetup);
+        double cyclesPerSample = cyclesPerSecond / audioSetup.sampleRate;
+        double angleDelta = cyclesPerSample * 2.0 * double_Pi;
+        
+        if (angleDelta > 0.0)
+        {
+            int startSample = 0;
+            int numSamples = bufferToFill.numSamples;
+
+            while (--numSamples >= 0)
+            {
+                const float currentSample = (float) (std::sin (currentAngle) * level);
+                
+                for (int chan = outputBuffer->getNumChannels(); --chan >= 0;)
+                {
+                    sharedAudioBuffer_[chan * MAX_BUFFER_SIZE + startSample] = currentSample;
+                }
+                
+                currentAngle += angleDelta;
+                ++startSample;
+            }
+        }
+        
+        state_->phase_ = bufferFilled;
+        
+        // artificial load generator
+//        static double dummyvar = 0;
+//        for (int i = 0; i < 300000; ++i) {
+//            dummyvar = double(arc4random() + i) / double(INT_MAX);
+//        }
+    }
+
+    void releaseResources()
+    {
+        LOG("Releasing audio resources");
+    }
+    
+    ChildAudioComponent* parent_;
+    
+    int childId_;
+    int shmId_;
+    char* sharedMemory_;
+    ChildAudioState* state_;
+    float* sharedAudioBuffer_;
+};
+    
+ChildAudioComponent::ChildAudioComponent(int childId, int shmId) : pimpl_(new Pimpl(this, childId, shmId))  {}
+ChildAudioComponent::~ChildAudioComponent()                                                                 { pimpl_ = nullptr; }
+
+void ChildAudioComponent::prepareToPlay(int samplesPerBlockExpected, double sampleRate) { pimpl_->prepareToPlay(samplesPerBlockExpected, sampleRate); }
+void ChildAudioComponent::releaseResources()                                            { pimpl_->releaseResources(); }
+void ChildAudioComponent::getNextAudioBlock(const AudioSourceChannelInfo& bufferToFill) { pimpl_->getNextAudioBlock(bufferToFill); }

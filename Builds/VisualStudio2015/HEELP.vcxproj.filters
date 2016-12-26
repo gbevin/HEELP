@@ -2046,6 +2046,9 @@
     <ClInclude Include="..\..\Source\Audio\ChildAudioComponent.h">
       <Filter>HEELP\Source\Audio</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\Audio\ChildAudioState.h">
+      <Filter>HEELP\Source\Audio</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\Audio\MainAudioComponent.h">
       <Filter>HEELP\Source\Audio</Filter>
     </ClInclude>

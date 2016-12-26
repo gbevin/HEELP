@@ -15,29 +15,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef CHILDAUDIOCOMPONENT_H_INCLUDED
-#define CHILDAUDIOCOMPONENT_H_INCLUDED
-
-#include "JuceHeader.h"
+#ifndef CHILDAUDIOSTATE_H_INCLUDED
+#define CHILDAUDIOSTATE_H_INCLUDED
 
 namespace heelp
 {
-    class ChildAudioComponent : public AudioAppComponent
+    enum ChildAudioPhase
     {
-    public:
-        ChildAudioComponent(int childId, int shmId);
-        ~ChildAudioComponent();
-        
-        void prepareToPlay(int samplesPerBlockExpected, double sampleRate) override;
-        void releaseResources() override;
-        void getNextAudioBlock(const AudioSourceChannelInfo& bufferToFill) override;
-        
-        class Pimpl;
-    private:
-        ScopedPointer<Pimpl> pimpl_;
-
-        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ChildAudioComponent)
+        bufferEmpty,
+        bufferFilled
+    };
+    
+    struct ChildAudioState
+    {
+        ChildAudioPhase phase_ { bufferEmpty };
     };
 }
 
-#endif  // CHILDAUDIOCOMPONENT_H_INCLUDED
+#endif  // CHILDAUDIOSTATE_H_INCLUDED

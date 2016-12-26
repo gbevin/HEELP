@@ -20,6 +20,7 @@
 #include "HeelpLogger.h"
 #include "Utils.h"
 #include "Audio/ChildAudioComponent.h"
+#include "Audio/ChildAudioState.h"
 #include "Audio/MainAudioComponent.h"
 #include "Process/AudioMasterProcess.h"
 #include "Process/AudioSlaveProcess.h"
@@ -33,111 +34,207 @@ using namespace heelp;
 
 static const char* audioCommandLineUID = "heelpUID";
 
-struct HeelpApplication::Pimpl
+namespace
 {
-    Pimpl(HeelpApplication* app) : app_(app)
+    struct AbstractHeelpApplication
     {
-    }
-    
-    void killChildProcess(int identifier)
-    {
-        if (identifier < masterProcesses_.size())
+        AbstractHeelpApplication(HeelpApplication* app) : app_(app), logger_(nullptr), audio_(nullptr)
         {
-            AudioMasterProcess* masterProcess = masterProcesses_[identifier];
-            masterProcesses_.set(identifier, nullptr);
-            if (masterProcess)
-            {
-                delete masterProcess;
-            }
-            LOG("Child process killed");
-        }
-    }
-    
-    void anotherInstanceStarted(const String& commandLine)
-    {
-        LOG("Started another instance.");
-    }
-    
-    void initialiseChildProcess(const String& commandLine)
-    {
-        Process::setDockIconVisible(false);
-        
-        int childId = -1;
-        StringArray params = JUCEApplication::getInstance()->getCommandLineParameterArray();
-        for (auto&& param : params)
-        {
-            if (param.startsWith("--child="))
-            {
-                childId = param.substring(8).getIntValue();
-            }
-            if (param.startsWith("--shmid="))
-            {
-                shmId_ = param.substring(8).getIntValue();
-            }
         }
         
-        if (shmId_ < 0)
+        virtual ~AbstractHeelpApplication()
         {
-            LOG("Couldn't determine shared memory ID to use with child process.");
         }
-        else if (childId < 0)
+        
+        virtual void killChildProcess(int identifier)
         {
-            LOG("Couldn't determine the child process ID.");
         }
-        else
+        
+        virtual void shutdown()
         {
-            logger_ = new HeelpLogger(childId);
+            LOG("Shutdown");
+            
+            audio_ = nullptr;
+            
+            Logger::setCurrentLogger(nullptr);
+            logger_ = nullptr;
+        }
+        
+        virtual void initialise(const String& commandLine) = 0;
+        
+        HeelpApplication* const app_;
+        
+        ScopedPointer<FileLogger> logger_;
+        ScopedPointer<AudioAppComponent> audio_;
+    };
+    
+    struct HeelpMainApplication : public AbstractHeelpApplication
+    {
+        HeelpMainApplication(HeelpApplication* app) : AbstractHeelpApplication(app)
+        {
+        }
+
+        void initialise(const String& commandLine)
+        {
+            masterProcesses_.resize(NUM_CHILDREN);
+            sharedMemoryIds_.resize(NUM_CHILDREN);
+            for (int i = 0; i < NUM_CHILDREN; ++i)
+            {
+                masterProcesses_.set(i, nullptr);
+                sharedMemoryIds_.set(i, -1);
+            }
+            
+            // setup logging system
+            logger_ = new HeelpLogger(0);
             Logger::setCurrentLogger(logger_);
             
-            LOG("Setting up child " << childId << " with shared memory ID " << shmId_);
-            audio_ = new ChildAudioComponent(shmId_, childId);
-        }
-    }
-    
-    void initialiseMainProcess(const String& commandLine)
-    {
-        masterProcesses_.resize(NUM_CHILDREN);
-        
-        // setup logging system
-        logger_ = new HeelpLogger(0);
-        Logger::setCurrentLogger(logger_);
-        
-        shmId_ = shmget(IPC_PRIVATE, (NUM_CHILDREN+1) * 2 * MAX_BUFFER_SIZE * sizeof(float), IPC_CREAT|IPC_EXCL|0666);
-        if (shmId_ < 0) {
-            LOG("shmget error " << errno);
-            exit(1);
-        }
-        
-        if (commandLine.contains("--console") ||
-            (SystemStats::getOperatingSystemType() == SystemStats::OperatingSystemType::Linux && SystemStats::getEnvironmentVariable("DISPLAY", "").isEmpty()))
-        {
-            // console startup logic
-            LOG("Running as a command-line application.");
-        }
-        else
-        {
-            // GUI startup logic
-            LOG("Running as a GUI application.");
-            mainWindow_ = new MainWindow(JUCEApplication::getInstance()->getApplicationName());
-        }
-        
-        audio_ = new MainAudioComponent(shmId_);
-        
-        for (int i = 1; i <= NUM_CHILDREN; ++i)
-        {
-            AudioMasterProcess* masterProcess = new AudioMasterProcess(app_, i);
-            
-            StringArray args;
-            args.add("--child="+String(i));
-            args.add("--shmid="+String(shmId_));
-            LOG("Launching child " << i << " with shared memory ID " << shmId_);
-            if (masterProcess->launchSlaveProcess(File::getSpecialLocation(File::currentExecutableFile), audioCommandLineUID, args))
+            for (int i = 0; i < NUM_CHILDREN; ++i)
             {
-                LOG("Child process started");
+                int shmId = shmget(IPC_PRIVATE, sizeof(ChildAudioState) + NUM_AUDIO_CHANNELS * MAX_BUFFER_SIZE * sizeof(float), IPC_CREAT|IPC_EXCL|0666);
+                if (shmId < 0) {
+                    LOG("shmget error " << errno);
+                    // TODO : clean up more cleanly
+                    exit(1);
+                }
+                sharedMemoryIds_.set(i, shmId);
+            }
+            
+            if (commandLine.contains("--console") ||
+                (SystemStats::getOperatingSystemType() == SystemStats::OperatingSystemType::Linux && SystemStats::getEnvironmentVariable("DISPLAY", "").isEmpty()))
+            {
+                // console startup logic
+                LOG("Running as a command-line application.");
+            }
+            else
+            {
+                // GUI startup logic
+                LOG("Running as a GUI application.");
+                mainWindow_ = new MainWindow(JUCEApplication::getInstance()->getApplicationName());
+            }
+            
+            audio_ = new MainAudioComponent(sharedMemoryIds_);
+            
+            for (int i = 1; i <= NUM_CHILDREN; ++i)
+            {
+                AudioMasterProcess* masterProcess = new AudioMasterProcess(app_, i);
+                
+                StringArray args;
+                args.add("--child="+String(i));
+                int shmId = sharedMemoryIds_[i-1];
+                args.add("--shmid="+String(shmId));
+                LOG("Launching child " << i << " with shared memory ID " << shmId);
+                if (masterProcess->launchSlaveProcess(File::getSpecialLocation(File::currentExecutableFile), audioCommandLineUID, args))
+                {
+                    LOG("Child process started");
+                }
+            }
+            
+            Process::makeForegroundProcess();
+        }
+        
+        void killChildProcess(int identifier)
+        {
+            if (identifier < masterProcesses_.size())
+            {
+                AudioMasterProcess* masterProcess = masterProcesses_[identifier];
+                masterProcesses_.set(identifier, nullptr);
+                if (masterProcess)
+                {
+                    delete masterProcess;
+                }
+                LOG("Child process killed");
             }
         }
         
-        Process::makeForegroundProcess();
+        void shutdown()
+        {
+            AbstractHeelpApplication::shutdown();
+            
+            mainWindow_ = nullptr;
+            for (int i = 0; i < masterProcesses_.size(); ++i)
+            {
+                AudioMasterProcess* masterProcess = masterProcesses_[i];
+                if (masterProcess)
+                {
+                    masterProcesses_.set(i, nullptr);
+                    delete masterProcess;
+                }
+            }
+            masterProcesses_.clear();
+            
+            for (int i = 0; i < sharedMemoryIds_.size(); ++i)
+            {
+                shmctl(sharedMemoryIds_[i], IPC_RMID, 0);
+            }
+        }
+        
+        ScopedPointer<MainWindow> mainWindow_;
+        
+        Array<AudioMasterProcess*> masterProcesses_;
+        Array<int> sharedMemoryIds_;
+    };
+
+    struct HeelpChildApplication : public AbstractHeelpApplication
+    {
+        HeelpChildApplication(HeelpApplication* app) : AbstractHeelpApplication(app), shmId_(-1)
+        {
+        }
+        
+        void initialise(const String& commandLine)
+        {
+            Process::setDockIconVisible(false);
+            
+            int childId = -1;
+            StringArray params = JUCEApplication::getInstance()->getCommandLineParameterArray();
+            for (auto&& param : params)
+            {
+                if (param.startsWith("--child="))
+                {
+                    childId = param.substring(8).getIntValue();
+                }
+                if (param.startsWith("--shmid="))
+                {
+                    shmId_ = param.substring(8).getIntValue();
+                }
+            }
+            
+            if (shmId_ < 0)
+            {
+                LOG("Couldn't determine shared memory ID to use with child process.");
+            }
+            else if (childId < 0)
+            {
+                LOG("Couldn't determine the child process ID.");
+            }
+            else
+            {
+                logger_ = new HeelpLogger(childId);
+                Logger::setCurrentLogger(logger_);
+                
+                LOG("Setting up child " << childId << " with shared memory ID " << shmId_);
+                audio_ = new ChildAudioComponent(childId, shmId_);
+            }
+        }
+        
+        void shutdown()
+        {
+            AbstractHeelpApplication::shutdown();
+
+            if (shmId_ >= 0)
+            {
+                shmctl(shmId_, IPC_RMID, 0);
+                shmId_ = -1;
+            }
+        }
+        
+        int shmId_;
+    };
+}
+
+struct HeelpApplication::Pimpl
+{
+    Pimpl(HeelpApplication* parent) : parent_(parent)
+    {
     }
     
     void initialise(const String& commandLine)
@@ -146,35 +243,31 @@ struct HeelpApplication::Pimpl
         if (slave->initialiseFromCommandLine(commandLine, audioCommandLineUID))
         {
             slave.release(); // allow the slave object to stay alive - it'll handle its own deletion.
-            initialiseChildProcess(commandLine);
+            
+            realApp_ = new HeelpChildApplication(parent_);
+            realApp_->initialise(commandLine);
         }
         else
         {
-            initialiseMainProcess(commandLine);
+            realApp_ = new HeelpMainApplication(parent_);
+            realApp_->initialise(commandLine);
         }
+    }
+    
+    void anotherInstanceStarted(const String& commandLine)
+    {
+        LOG("Started another instance.");
+    }
+    
+    void killChildProcess(int identifier)
+    {
+        realApp_->killChildProcess(identifier);
     }
     
     void shutdown()
     {
-        LOG("Shutdown");
-
-        audio_ = nullptr;
-        mainWindow_ = nullptr;
-        for (int i = 0; i < masterProcesses_.size(); ++i)
-        {
-            AudioMasterProcess* masterProcess = masterProcesses_[i];
-            if (masterProcess)
-            {
-                masterProcesses_.set(i, nullptr);
-                delete masterProcess;
-            }
-        }
-        masterProcesses_.clear();
-        
-        Logger::setCurrentLogger(nullptr);
-        logger_ = nullptr;
-        
-        shmctl(shmId_, IPC_RMID, 0);
+        realApp_->shutdown();
+        realApp_ = nullptr;
     }
     
     void systemRequestedQuit()
@@ -182,15 +275,8 @@ struct HeelpApplication::Pimpl
         quit();
     }
     
-    int shmId_ { -1 };
-
-    HeelpApplication* app_;
-    
-    ScopedPointer<FileLogger> logger_;
-    ScopedPointer<MainWindow> mainWindow_;
-    ScopedPointer<AudioAppComponent> audio_;
-    
-    Array<AudioMasterProcess*> masterProcesses_;
+    HeelpApplication* parent_;
+    ScopedPointer<AbstractHeelpApplication> realApp_;
 };
 
 HeelpApplication::HeelpApplication() : pimpl_(new Pimpl(this))  {}

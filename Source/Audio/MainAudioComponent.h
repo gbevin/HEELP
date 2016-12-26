@@ -25,18 +25,18 @@ namespace heelp
     class MainAudioComponent : public AudioAppComponent
     {
     public:
-        MainAudioComponent(int shmId);
+        MainAudioComponent(const Array<int>& shmIds);
         ~MainAudioComponent();
         
         void prepareToPlay(int samplesPerBlockExpected, double sampleRate) override;
         void releaseResources() override;
         void getNextAudioBlock(const AudioSourceChannelInfo& bufferToFill) override;
         
+        class Pimpl;
     private:
-        int shmId_;
-        int identifier_;
-        char* sharedMemory_;
-        float* sharedAudioBuffer_;
+        ScopedPointer<Pimpl> pimpl_;
+
+        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainAudioComponent)
     };
 }
 

@@ -1672,6 +1672,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Source\Audio\ChildAudioComponent.h"/>
+    <ClInclude Include="..\..\Source\Audio\ChildAudioState.h"/>
     <ClInclude Include="..\..\Source\Audio\MainAudioComponent.h"/>
     <ClInclude Include="..\..\Source\Process\AudioMasterProcess.h"/>
     <ClInclude Include="..\..\Source\Process\AudioProcessMessageUtils.h"/>
