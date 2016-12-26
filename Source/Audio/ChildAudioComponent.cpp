@@ -94,7 +94,7 @@ struct ChildAudioComponent::Pimpl
                 
                 for (int chan = outputBuffer->getNumChannels(); --chan >= 0;)
                 {
-                    sharedAudioBuffer_[chan * MAX_BUFFER_SIZE + startSample] = currentSample;
+                    sharedAudioBuffer_[chan * audioSetup.bufferSize + startSample] = currentSample;
                 }
                 
                 currentAngle += angleDelta;

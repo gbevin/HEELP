@@ -105,8 +105,11 @@ namespace
             {
                 return;
             }
+            
+            AudioDeviceManager::AudioDeviceSetup audioSetup;
+            audio_->deviceManager.getAudioDeviceSetup(audioSetup);
 
-            int shmId = shmget(IPC_PRIVATE, sizeof(ChildAudioState) + NUM_AUDIO_CHANNELS * MAX_BUFFER_SIZE * sizeof(float), IPC_CREAT|IPC_EXCL|0666);
+            int shmId = shmget(IPC_PRIVATE, sizeof(ChildAudioState) + NUM_AUDIO_CHANNELS * audioSetup.bufferSize * sizeof(float), IPC_CREAT|IPC_EXCL|0666);
             if (shmId < 0) {
                 LOG("shmget error " << errno);
                 // TODO : clean up more cleanly

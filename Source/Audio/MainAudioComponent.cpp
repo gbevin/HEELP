@@ -124,9 +124,11 @@ struct MainAudioComponent::Pimpl
             // TODO: might want to find something better than waiting for at least a millisecond to continue
             Thread::sleep(1);
         }
-        // TODO: this needs to be made resilient against child processes crashing
         while (true);
         
+        AudioDeviceManager::AudioDeviceSetup audioSetup;
+        parent_->deviceManager.getAudioDeviceSetup(audioSetup);
+
         AudioSampleBuffer* outputBuffer = bufferToFill.buffer;
         outputBuffer->clear();
 
@@ -140,7 +142,7 @@ struct MainAudioComponent::Pimpl
             {
                 for (auto it = childInfos_.begin(); it != childInfos_.end(); ++it)
                 {
-                    outputBuffer->addSample(chan, startSample, it->second.sharedAudioBuffer_[chan * MAX_BUFFER_SIZE + startSample]);
+                    outputBuffer->addSample(chan, startSample, it->second.sharedAudioBuffer_[chan * audioSetup.bufferSize + startSample]);
                 }
             }
             ++startSample;
