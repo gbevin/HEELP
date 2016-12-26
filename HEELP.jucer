@@ -47,6 +47,10 @@
       <FILE id="l1QNGH" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
       <FILE id="neMXbf" name="Utils.h" compile="0" resource="0" file="Source/Utils.h"/>
     </GROUP>
+    <GROUP id="{F01BAB08-389C-9DAD-4BCD-7CBBF93CF50F}" name="Info">
+      <FILE id="kqgL5K" name="COPYING.md" compile="0" resource="0" file="COPYING.md"/>
+      <FILE id="nuW5p0" name="README.md" compile="0" resource="0" file="README.md"/>
+    </GROUP>
   </MAINGROUP>
   <EXPORTFORMATS>
     <XCODE_MAC targetFolder="Builds/MacOSX">

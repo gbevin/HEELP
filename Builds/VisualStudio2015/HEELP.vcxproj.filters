@@ -17,6 +17,9 @@
     <Filter Include="HEELP\Source\UI">
       <UniqueIdentifier>{F6FEFF46-C484-E414-F2D6-6C9696230D7D}</UniqueIdentifier>
     </Filter>
+    <Filter Include="HEELP\Info">
+      <UniqueIdentifier>{A9BBBCA0-D276-A6E2-F6C9-9FAC20146EBB}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Juce Modules">
       <UniqueIdentifier>{422C46B7-0467-2DB0-BF3C-16DFCAFD69AC}</UniqueIdentifier>
     </Filter>
@@ -3827,6 +3830,12 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\COPYING.md">
+      <Filter>HEELP\Info</Filter>
+    </None>
+    <None Include="..\..\README.md">
+      <Filter>HEELP\Info</Filter>
+    </None>
     <None Include="..\..\JuceLibraryCode\modules\juce_audio_formats\codecs\flac\Flac Licence.txt">
       <Filter>Juce Modules\juce_audio_formats\codecs\flac</Filter>
     </None>
