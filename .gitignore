@@ -1,3 +1,4 @@
-Builds/MacOSX/build
+Builds/*/build
+Builds/*/*.log
 Builds/MacOSX/HEELP.xcodeproj/project.xcworkspace/xcuserdata
 Builds/MacOSX/HEELP.xcodeproj/xcuserdata

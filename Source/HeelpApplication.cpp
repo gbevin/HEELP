@@ -190,7 +190,9 @@ namespace
         
         void initialise(const String& commandLine) override
         {
+#ifdef JUCE_MAC
             Process::setDockIconVisible(false);
+#endif
             
             int childId = -1;
             StringArray params = JUCEApplication::getInstance()->getCommandLineParameterArray();
