@@ -15,25 +15,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "AudioMasterProcess.h"
+#ifndef AUDIOPROCESSMESSAGETYPES_H_INCLUDED
+#define AUDIOPROCESSMESSAGETYPES_H_INCLUDED
 
-#include "AudioProcessMessageUtils.h"
-#include "../Utils.h"
+#include "JuceHeader.h"
 
-using namespace heelp;
-
-AudioMasterProcess::AudioMasterProcess(HeelpMainApplication* app, int identifier) : app_(app), identifier_(identifier)
+namespace heelp
 {
-}
+    namespace AudioProcessMessageTypes
+    {
+        extern const char* AUDIODEVICEMANAGER_STATEXML;
+    };
+    namespace AudioProcessMessageProperties
+    {
+        extern const char* STATE;
+    };
+};
 
-void AudioMasterProcess::handleMessageFromSlave(const MemoryBlock& mb)
-{
-    ValueTree incomingMessage (memoryBlockToValueTree(mb));
-    LOG("Received: " + valueTreeToString(incomingMessage));
-}
-
-void AudioMasterProcess::handleConnectionLost()
-{
-    LOG("Connection lost to child process!");
-    app_->killChildProcess(identifier_);
-}
+#endif  // AUDIOPROCESSMESSAGETYPES_H_INCLUDED

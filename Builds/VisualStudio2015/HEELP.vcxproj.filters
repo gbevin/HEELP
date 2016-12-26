@@ -358,6 +358,9 @@
     <ClCompile Include="..\..\Source\Process\AudioMasterProcess.cpp">
       <Filter>HEELP\Source\Process</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Process\AudioProcessMessageTypes.cpp">
+      <Filter>HEELP\Source\Process</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Process\AudioProcessMessageUtils.cpp">
       <Filter>HEELP\Source\Process</Filter>
     </ClCompile>
@@ -371,6 +374,12 @@
       <Filter>HEELP\Source\UI</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\HeelpApplication.cpp">
+      <Filter>HEELP\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\HeelpChildApplication.cpp">
+      <Filter>HEELP\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\HeelpMainApplication.cpp">
       <Filter>HEELP\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\HeelpLogger.cpp">
@@ -2055,6 +2064,9 @@
     <ClInclude Include="..\..\Source\Process\AudioMasterProcess.h">
       <Filter>HEELP\Source\Process</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\Process\AudioProcessMessageTypes.h">
+      <Filter>HEELP\Source\Process</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\Process\AudioProcessMessageUtils.h">
       <Filter>HEELP\Source\Process</Filter>
     </ClInclude>
@@ -2067,7 +2079,16 @@
     <ClInclude Include="..\..\Source\UI\MainWindow.h">
       <Filter>HEELP\Source\UI</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\AbstractHelpApplication.h">
+      <Filter>HEELP\Source</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\HeelpApplication.h">
+      <Filter>HEELP\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\HeelpChildApplication.h">
+      <Filter>HEELP\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\HeelpMainApplication.h">
       <Filter>HEELP\Source</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\HeelpLogger.h">

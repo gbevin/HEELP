@@ -23,6 +23,10 @@
               file="Source/Process/AudioMasterProcess.cpp"/>
         <FILE id="VAETAp" name="AudioMasterProcess.h" compile="0" resource="0"
               file="Source/Process/AudioMasterProcess.h"/>
+        <FILE id="KlBKOM" name="AudioProcessMessageTypes.cpp" compile="1" resource="0"
+              file="Source/Process/AudioProcessMessageTypes.cpp"/>
+        <FILE id="tMnGlN" name="AudioProcessMessageTypes.h" compile="0" resource="0"
+              file="Source/Process/AudioProcessMessageTypes.h"/>
         <FILE id="K9Ff2J" name="AudioProcessMessageUtils.cpp" compile="1" resource="0"
               file="Source/Process/AudioProcessMessageUtils.cpp"/>
         <FILE id="bebPjO" name="AudioProcessMessageUtils.h" compile="0" resource="0"
@@ -40,10 +44,20 @@
         <FILE id="uNpVO4" name="MainWindow.cpp" compile="1" resource="0" file="Source/UI/MainWindow.cpp"/>
         <FILE id="Bfp72f" name="MainWindow.h" compile="0" resource="0" file="Source/UI/MainWindow.h"/>
       </GROUP>
+      <FILE id="jYK4Yx" name="AbstractHelpApplication.h" compile="0" resource="0"
+            file="Source/AbstractHelpApplication.h"/>
       <FILE id="UdB8np" name="HeelpApplication.cpp" compile="1" resource="0"
             file="Source/HeelpApplication.cpp"/>
       <FILE id="FngIPN" name="HeelpApplication.h" compile="0" resource="0"
             file="Source/HeelpApplication.h"/>
+      <FILE id="PJDihB" name="HeelpChildApplication.cpp" compile="1" resource="0"
+            file="Source/HeelpChildApplication.cpp"/>
+      <FILE id="H0WwF0" name="HeelpChildApplication.h" compile="0" resource="0"
+            file="Source/HeelpChildApplication.h"/>
+      <FILE id="LukV8d" name="HeelpMainApplication.cpp" compile="1" resource="0"
+            file="Source/HeelpMainApplication.cpp"/>
+      <FILE id="ZFb2yU" name="HeelpMainApplication.h" compile="0" resource="0"
+            file="Source/HeelpMainApplication.h"/>
       <FILE id="jeQeBS" name="HeelpLogger.cpp" compile="1" resource="0" file="Source/HeelpLogger.cpp"/>
       <FILE id="gdj2N1" name="HeelpLogger.h" compile="0" resource="0" file="Source/HeelpLogger.h"/>
       <FILE id="l1QNGH" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>

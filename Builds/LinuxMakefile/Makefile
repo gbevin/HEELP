@@ -60,11 +60,14 @@ OBJECTS := \
   $(JUCE_OBJDIR)/ChildAudioComponent_f05d428b.o \
   $(JUCE_OBJDIR)/MainAudioComponent_2d58d0e2.o \
   $(JUCE_OBJDIR)/AudioMasterProcess_baed3740.o \
+  $(JUCE_OBJDIR)/AudioProcessMessageTypes_7732add4.o \
   $(JUCE_OBJDIR)/AudioProcessMessageUtils_9db78a0c.o \
   $(JUCE_OBJDIR)/AudioSlaveProcess_3d06ee2f.o \
   $(JUCE_OBJDIR)/MainContentComponent_52535d99.o \
   $(JUCE_OBJDIR)/MainWindow_5f9c9b05.o \
   $(JUCE_OBJDIR)/HeelpApplication_d02c53ad.o \
+  $(JUCE_OBJDIR)/HeelpChildApplication_7df9aca1.o \
+  $(JUCE_OBJDIR)/HeelpMainApplication_f5aca8b4.o \
   $(JUCE_OBJDIR)/HeelpLogger_ce25639d.o \
   $(JUCE_OBJDIR)/Main_90ebc5c2.o \
   $(JUCE_OBJDIR)/juce_audio_basics_6b797ca1.o \
@@ -116,6 +119,11 @@ $(JUCE_OBJDIR)/AudioMasterProcess_baed3740.o: ../../Source/Process/AudioMasterPr
 	@echo "Compiling AudioMasterProcess.cpp"
 	@$(CXX) $(JUCE_CXXFLAGS) -o "$@" -c "$<"
 
+$(JUCE_OBJDIR)/AudioProcessMessageTypes_7732add4.o: ../../Source/Process/AudioProcessMessageTypes.cpp
+	-@mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling AudioProcessMessageTypes.cpp"
+	@$(CXX) $(JUCE_CXXFLAGS) -o "$@" -c "$<"
+
 $(JUCE_OBJDIR)/AudioProcessMessageUtils_9db78a0c.o: ../../Source/Process/AudioProcessMessageUtils.cpp
 	-@mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling AudioProcessMessageUtils.cpp"
@@ -139,6 +147,16 @@ $(JUCE_OBJDIR)/MainWindow_5f9c9b05.o: ../../Source/UI/MainWindow.cpp
 $(JUCE_OBJDIR)/HeelpApplication_d02c53ad.o: ../../Source/HeelpApplication.cpp
 	-@mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling HeelpApplication.cpp"
+	@$(CXX) $(JUCE_CXXFLAGS) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/HeelpChildApplication_7df9aca1.o: ../../Source/HeelpChildApplication.cpp
+	-@mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling HeelpChildApplication.cpp"
+	@$(CXX) $(JUCE_CXXFLAGS) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/HeelpMainApplication_f5aca8b4.o: ../../Source/HeelpMainApplication.cpp
+	-@mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling HeelpMainApplication.cpp"
 	@$(CXX) $(JUCE_CXXFLAGS) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/HeelpLogger_ce25639d.o: ../../Source/HeelpLogger.cpp

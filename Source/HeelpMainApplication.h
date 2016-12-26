@@ -15,38 +15,33 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef HEELPAPPLICATION_H_INCLUDED
-#define HEELPAPPLICATION_H_INCLUDED
+#ifndef HEELPMAINAPPLICATION_H_INCLUDED
+#define HEELPMAINAPPLICATION_H_INCLUDED
 
 #include "JuceHeader.h"
 
+#include "AbstractHelpApplication.h"
+
 namespace heelp
 {
-    static const int NUM_AUDIO_CHANNELS = 2;
-    static const char* audioCommandLineUID = "heelpUID";
-    
-
-    class HeelpApplication  : public JUCEApplication
+    class HeelpMainApplication : public AbstractHeelpApplication
     {
     public:
-        HeelpApplication();
-        virtual ~HeelpApplication();
+        HeelpMainApplication();
+        virtual ~HeelpMainApplication();
         
-        const String getApplicationName() override       { return ProjectInfo::projectName; }
-        const String getApplicationVersion() override    { return ProjectInfo::versionString; }
-        bool moreThanOneInstanceAllowed() override       { return true; }
-        
-        void anotherInstanceStarted(const String& commandLine) override;
         void initialise(const String& commandLine) override;
         void shutdown() override;
-        void systemRequestedQuit() override;
-
+ 
+        void launchChildProcess(int childId);
+        void killChildProcess(int childId);
+        
         class Pimpl;
     private:
         ScopedPointer<Pimpl> pimpl_;
-
-        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (HeelpApplication)
+        
+        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (HeelpMainApplication)
     };
 }
 
-#endif  // HEELPAPPLICATION_H_INCLUDED
+#endif  // HEELPMAINAPPLICATION_H_INCLUDED
