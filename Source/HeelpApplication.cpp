@@ -67,7 +67,7 @@ struct HeelpApplication::Pimpl
         }
     }
     
-    void anotherInstanceStarted(const String& commandLine)
+    void anotherInstanceStarted(const String&)
     {
         LOG("Started another instance.");
     }

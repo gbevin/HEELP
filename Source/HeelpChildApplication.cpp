@@ -30,14 +30,13 @@ struct HeelpChildApplication::Pimpl
     {
     }
     
-    bool initialise(const String& commandLine)
+    bool initialise(const String&)
     {
-        bool result = true;
-        
-#ifdef JUCE_MAC
+#if JUCE_MAC
         Process::setDockIconVisible(false);
 #endif
-        
+
+		int64_t shmId = 0;
         StringArray params = JUCEApplication::getInstance()->getCommandLineParameterArray();
         for (auto&& param : params)
         {
@@ -47,29 +46,35 @@ struct HeelpChildApplication::Pimpl
             }
             if (param.startsWith(CMD_ARG_SHMID))
             {
-                int64_t shmId = param.substring(String(CMD_ARG_SHMID).length()).getIntValue();
-                shm_ = SharedMemory::attachWithId(shmId);
+                shmId = param.substring(String(CMD_ARG_SHMID).length()).getIntValue();
             }
         }
-        
+
         if (childId_ < 0)
         {
-            LOG("Couldn't determine the child process ID.");
-            result = false;
+            DBG("Couldn't determine the child process ID");
+            return false;
         }
-        else if (shm_ == nullptr)
+
+		logger_ = new HeelpLogger(childId_);
+		Logger::setCurrentLogger(logger_);
+
+        if (shmId == 0)
         {
-            LOG("Couldn't determine shared memory ID to use with child process.");
-            result = false;
+            LOG("Couldn't determine shared memory ID to use for child ID" << childId_);
+            return false;
         }
-        else
-        {
-            logger_ = new HeelpLogger(childId_);
-            Logger::setCurrentLogger(logger_);
-            LOG("Initialised child " << childId_ << " with shared memory ID " << shm_->getShmId());
-        }
+
+		shm_ = SharedMemory::attachWithId(shmId);
+		if (shm_ == nullptr)
+		{
+			LOG("Couldn't attach shared memory ID " << shmId << " for child ID" << childId_);
+			return false;
+		}
+
+		LOG("Initialised child " << childId_ << " with shared memory ID " << shmId);
         
-        return result;
+        return true;
     }
     
     void startAudio(const XmlElement* const xml)

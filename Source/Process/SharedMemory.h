@@ -33,7 +33,7 @@ namespace heelp
         int64_t getShmId();
         char* getShmAddress();
         
-        class Pimpl;
+        struct Pimpl;
     private:
         SharedMemory();
 

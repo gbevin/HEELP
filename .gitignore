@@ -2,3 +2,7 @@ Builds/*/build
 Builds/*/*.log
 Builds/MacOSX/HEELP.xcodeproj/project.xcworkspace/xcuserdata
 Builds/MacOSX/HEELP.xcodeproj/xcuserdata
+/Builds/VisualStudio2015/Debug
+/Builds/VisualStudio2015/.vs/HEELP/v14
+/Builds/VisualStudio2015/HEELP.VC.db
+/Builds/VisualStudio2015/HEELP.VC.VC.opendb

@@ -37,7 +37,7 @@ namespace heelp
         void releaseResources() override;
         void getNextAudioBlock(const AudioSourceChannelInfo& bufferToFill) override;
         
-        class Pimpl;
+        struct Pimpl;
     private:
         ScopedPointer<Pimpl> pimpl_;
 

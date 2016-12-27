@@ -38,7 +38,7 @@ namespace heelp
         
         void startAudio(const XmlElement* const xml);
         
-        class Pimpl;
+        struct Pimpl;
     private:
         ScopedPointer<Pimpl> pimpl_;
         

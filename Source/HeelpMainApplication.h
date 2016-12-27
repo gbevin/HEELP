@@ -36,7 +36,7 @@ namespace heelp
         void launchChildProcess(int childId);
         void killChildProcess(int childId);
         
-        class Pimpl;
+        struct Pimpl;
     private:
         ScopedPointer<Pimpl> pimpl_;
         

@@ -41,7 +41,7 @@ namespace heelp
         void shutdown() override;
         void systemRequestedQuit() override;
 
-        class Pimpl;
+        struct Pimpl;
     private:
         ScopedPointer<Pimpl> pimpl_;
 

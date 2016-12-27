@@ -19,9 +19,17 @@
 
 #include "../Utils.h"
 
+#if JUCE_MAC || JUCE_LINUX
 #include <sys/types.h>
 #include <sys/ipc.h>
 #include <sys/shm.h>
+#elif JUCE_WINDOWS
+#include <windows.h>
+#include <stdio.h>
+#include <conio.h>
+#include <tchar.h>
+#pragma comment(lib, "user32.lib")
+#endif
 
 using namespace heelp;
 
@@ -38,13 +46,26 @@ struct SharedMemory::Pimpl
     
     void createWithSize(size_t size)
     {
-        int64_t shmId = shmget(IPC_PRIVATE, size, IPC_CREAT|IPC_EXCL|0666);
+#if JUCE_MAC || JUCE_LINUX
+		int64_t shmId = shmget(IPC_PRIVATE, size, IPC_CREAT|IPC_EXCL|0666);
         if (shmId < 0) {
             LOG("shmget error " << errno);
             // TODO : clean up more respectfully
             exit(1);
         }
-        
+#elif JUCE_WINDOWS
+		SECURITY_ATTRIBUTES sa;
+		sa.bInheritHandle = true;
+		HANDLE hMapFile = CreateFileMapping(INVALID_HANDLE_VALUE, &sa, PAGE_READWRITE, 0, size, nullptr);
+		if (hMapFile == nullptr)
+		{
+			LOG("Could not create file mapping object (" << (int)GetLastError() << ")");
+			// TODO : clean up more respectfully
+			exit(1);
+		}
+		int64_t shmId =	(int64_t)hMapFile;
+#endif
+
         created_ = true;
         shmId_ = shmId;
         
@@ -55,14 +76,25 @@ struct SharedMemory::Pimpl
     {
         if (shmAddress_ == nullptr)
         {
-            char* sharedMemory = (char*)shmat(shmId_, 0, SHM_RND);
+#if JUCE_MAC || JUCE_LINUX
+			char* sharedMemory = (char*)shmat(shmId_, 0, SHM_RND);
             if (sharedMemory == nullptr)
             {
                 LOG("shmat error " << errno);
                 // TODO : clean up more respectfully
                 exit(1);
             }
-            
+#elif JUCE_WINDOWS
+			LPCTSTR pBuf = (LPTSTR)MapViewOfFile((HANDLE)shmId_, FILE_MAP_ALL_ACCESS, 0, 0, 0);
+			if (pBuf == nullptr)
+			{
+				LOG("Could not map view of file (" << (int)GetLastError() << ")");
+				// TODO : clean up more respectfully
+				exit(1);
+			}
+			char* sharedMemory = (char*)pBuf;
+#endif
+
             shmAddress_ = sharedMemory;
         }
     }
@@ -73,16 +105,25 @@ struct SharedMemory::Pimpl
         
         if (created_)
         {
-            shmctl(shmId_, IPC_RMID, 0);
-        }
+#if JUCE_MAC || JUCE_LINUX
+			shmctl(shmId_, IPC_RMID, 0);
+#elif JUCE_WINDOWS
+			CloseHandle((HANDLE)shmId_);
+#endif
+			created_ = false;
+		}
     }
     
     void detach()
     {
         if (shmAddress_)
         {
-            shmdt(shmAddress_);
-            shmAddress_ = nullptr;
+#if JUCE_MAC || JUCE_LINUX
+			shmdt(shmAddress_);
+#elif JUCE_WINDOWS
+			UnmapViewOfFile(shmAddress_);
+#endif
+			shmAddress_ = nullptr;
         }
     }
     

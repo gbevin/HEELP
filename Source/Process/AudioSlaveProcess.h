@@ -34,7 +34,7 @@ namespace heelp
         void handleConnectionMade() override;
         void handleConnectionLost() override;
         
-        class Pimpl;
+        struct Pimpl;
     private:
         ScopedPointer<Pimpl> pimpl_;
         
