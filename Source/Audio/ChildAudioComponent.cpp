@@ -26,7 +26,7 @@ using namespace heelp;
 
 struct ChildAudioComponent::Pimpl : public AudioSource
 {
-    Pimpl(ChildAudioComponent* parent, int childId, SharedMemory* shm) : childId_(childId), shm_(shm), sharedAudioBuffer_(nullptr)
+    Pimpl(int childId, SharedMemory* shm) : childId_(childId), shm_(shm), sharedAudioBuffer_(nullptr)
     {
         state_ = (ChildAudioState*)shm_->getShmAddress();
         state_->phase_ = bufferEmpty;
@@ -79,11 +79,6 @@ struct ChildAudioComponent::Pimpl : public AudioSource
 
     void getNextAudioBlock(const AudioSourceChannelInfo& bufferToFill)
     {
-        if (state_->phase_ != bufferEmpty)
-        {
-            return;
-        }
-        
         AudioSampleBuffer* outputBuffer = bufferToFill.buffer;
         outputBuffer->clear();
         
@@ -104,11 +99,12 @@ struct ChildAudioComponent::Pimpl : public AudioSource
 
             while (--numSamples >= 0)
             {
-                const float currentSample = (float) (std::sin (currentAngle) * level);
+                const float currentSample = (float)(std::sin(currentAngle) * level);
                 
                 for (int chan = outputBuffer->getNumChannels(); --chan >= 0;)
                 {
                     sharedAudioBuffer_[chan * audioSetup.bufferSize + startSample] = currentSample;
+                    //outputBuffer->addSample(chan, startSample, currentSample);
                 }
                 
                 currentAngle += angleDelta;
@@ -139,8 +135,8 @@ struct ChildAudioComponent::Pimpl : public AudioSource
     AudioSourcePlayer audioSourcePlayer_;
 };
     
-ChildAudioComponent::ChildAudioComponent(int childId, SharedMemory* shm) : pimpl_(new Pimpl(this, childId, shm))    {}
-ChildAudioComponent::~ChildAudioComponent()                                                                         { pimpl_ = nullptr; }
+ChildAudioComponent::ChildAudioComponent(int childId, SharedMemory* shm) : pimpl_(new Pimpl(childId, shm))  {}
+ChildAudioComponent::~ChildAudioComponent()                                                                 { pimpl_ = nullptr; }
 
 void ChildAudioComponent::startAudio(ValueTree state)       { pimpl_->startAudio(state); }
 AudioDeviceManager& ChildAudioComponent::getDeviceManager() { return pimpl_->getDeviceManager(); }

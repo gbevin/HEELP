@@ -102,6 +102,8 @@ struct HeelpMainApplication::Pimpl : public ChangeListener
     
     void startChildren()
     {
+        audio_->pause();
+
         AudioDeviceManager& dm = audio_->getDeviceManager();
         if (dm.getCurrentDeviceTypeObject() && dm.getCurrentAudioDevice())
         {
@@ -111,6 +113,8 @@ struct HeelpMainApplication::Pimpl : public ChangeListener
                 launchChildProcess(childId);
             }
         }
+
+        audio_->resume();
     }
     
     void launchChildProcess(int childId)
@@ -164,11 +168,15 @@ struct HeelpMainApplication::Pimpl : public ChangeListener
     
     void killAllChildren()
     {
+        audio_->pause();
+
         std::map<int, MasterProcessInfo>::iterator it;
         while ((it = masterProcessInfos_.begin()) != masterProcessInfos_.end())
         {
             killChildProcess(it->first);
         }
+
+        audio_->resume();
     }
     
     void killChildProcess(int childId)
@@ -185,7 +193,7 @@ struct HeelpMainApplication::Pimpl : public ChangeListener
         }
     }
 
-    void changeListenerCallback(ChangeBroadcaster* source)
+    void changeListenerCallback(ChangeBroadcaster*)
     {
         killAllChildren();
         startChildren();

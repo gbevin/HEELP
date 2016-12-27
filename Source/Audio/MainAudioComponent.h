@@ -32,6 +32,9 @@ namespace heelp
         
         AudioDeviceManager& getDeviceManager();
 
+        void pause();
+        void resume();
+
         void registerChild(int childId, SharedMemory* shm);
         void unregisterChild(int childId);
         

@@ -37,7 +37,7 @@ namespace
 
 struct MainAudioComponent::Pimpl : public AudioAppComponent
 {
-    Pimpl(MainAudioComponent* parent) : parent_(parent)
+    Pimpl(MainAudioComponent* parent) : paused_(true), parent_(parent)
     {
         setAudioChannels(0, 2);
     }
@@ -53,6 +53,16 @@ struct MainAudioComponent::Pimpl : public AudioAppComponent
         return deviceManager;
     }
     
+    void pause()
+    {
+        paused_ = true;
+    }
+
+    void resume()
+    {
+        paused_ = false;
+    }
+
     void registerChild(int childId, SharedMemory* shm)
     {
         ChildInfo childInfo = {shm, (ChildAudioState*)shm->getShmAddress(), (float*)(shm->getShmAddress() + sizeof(ChildAudioState))};
@@ -79,8 +89,12 @@ struct MainAudioComponent::Pimpl : public AudioAppComponent
 
     void getNextAudioBlock(const AudioSourceChannelInfo& bufferToFill)
     {
+        if (paused_.get())
+        {
+            return;
+        }
+
         bool childrenDone;
-        
         do
         {
             childrenDone = true;
@@ -140,6 +154,7 @@ struct MainAudioComponent::Pimpl : public AudioAppComponent
     
     MainAudioComponent* parent_;
     
+    Atomic<int> paused_;
     ReadWriteLock childInfosLock_;
     std::map<int, ChildInfo> childInfos_;
 };
@@ -149,5 +164,7 @@ MainAudioComponent::~MainAudioComponent()                           { pimpl_ = n
 
 AudioDeviceManager& MainAudioComponent::getDeviceManager()              { return pimpl_->getDeviceManager(); }
 
+void MainAudioComponent::pause()                                        { pimpl_->pause(); }
+void MainAudioComponent::resume()                                       { pimpl_->resume(); }
 void MainAudioComponent::registerChild(int childId, SharedMemory* shm)  { pimpl_->registerChild(childId, shm); }
 void MainAudioComponent::unregisterChild(int childId)                   { pimpl_->unregisterChild(childId); }
