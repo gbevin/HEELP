@@ -60,7 +60,6 @@ OBJECTS := \
   $(JUCE_OBJDIR)/ChildAudioComponent_f05d428b.o \
   $(JUCE_OBJDIR)/MainAudioComponent_2d58d0e2.o \
   $(JUCE_OBJDIR)/AudioMasterProcess_baed3740.o \
-  $(JUCE_OBJDIR)/AudioProcessMessageTypes_7732add4.o \
   $(JUCE_OBJDIR)/AudioProcessMessageUtils_9db78a0c.o \
   $(JUCE_OBJDIR)/AudioSlaveProcess_3d06ee2f.o \
   $(JUCE_OBJDIR)/MainContentComponent_52535d99.o \
@@ -117,11 +116,6 @@ $(JUCE_OBJDIR)/MainAudioComponent_2d58d0e2.o: ../../Source/Audio/MainAudioCompon
 $(JUCE_OBJDIR)/AudioMasterProcess_baed3740.o: ../../Source/Process/AudioMasterProcess.cpp
 	-@mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling AudioMasterProcess.cpp"
-	@$(CXX) $(JUCE_CXXFLAGS) -o "$@" -c "$<"
-
-$(JUCE_OBJDIR)/AudioProcessMessageTypes_7732add4.o: ../../Source/Process/AudioProcessMessageTypes.cpp
-	-@mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling AudioProcessMessageTypes.cpp"
 	@$(CXX) $(JUCE_CXXFLAGS) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/AudioProcessMessageUtils_9db78a0c.o: ../../Source/Process/AudioProcessMessageUtils.cpp

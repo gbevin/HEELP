@@ -358,9 +358,6 @@
     <ClCompile Include="..\..\Source\Process\AudioMasterProcess.cpp">
       <Filter>HEELP\Source\Process</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Process\AudioProcessMessageTypes.cpp">
-      <Filter>HEELP\Source\Process</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Source\Process\AudioProcessMessageUtils.cpp">
       <Filter>HEELP\Source\Process</Filter>
     </ClCompile>

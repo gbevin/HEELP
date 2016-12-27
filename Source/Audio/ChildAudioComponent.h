@@ -25,7 +25,7 @@ namespace heelp
     class ChildAudioComponent : public AudioAppComponent
     {
     public:
-        ChildAudioComponent(int childId, int shmId);
+        ChildAudioComponent(int childId, int shmId, const XmlElement* const audioDeviceXml);
         ~ChildAudioComponent();
         
         void prepareToPlay(int samplesPerBlockExpected, double sampleRate) override;

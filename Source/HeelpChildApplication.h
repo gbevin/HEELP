@@ -27,11 +27,16 @@ namespace heelp
     class HeelpChildApplication : public AbstractHeelpApplication
     {
     public:
+        constexpr static const char* const CMD_ARG_CHILDID = "--childid=";
+        constexpr static const char* const CMD_ARG_SHMID = "--shmid=";
+        
         HeelpChildApplication();
         virtual ~HeelpChildApplication();
         
-        void initialise(const String& commandLine) override;
+        bool initialise(const String& commandLine) override;
         void shutdown() override;
+        
+        void startAudio(const XmlElement* const xml);
         
         class Pimpl;
     private:

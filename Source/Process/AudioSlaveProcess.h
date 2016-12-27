@@ -20,17 +20,24 @@
 
 #include "JuceHeader.h"
 
+#include "../HeelpChildApplication.h"
+
 namespace heelp
 {
     class AudioSlaveProcess : public ChildProcessSlave, private DeletedAtShutdown
     {
     public:
-        AudioSlaveProcess();
-        
+        AudioSlaveProcess(HeelpChildApplication* app);
+        virtual ~AudioSlaveProcess();
+
         void handleMessageFromMaster(const MemoryBlock& mb) override;
         void handleConnectionMade() override;
         void handleConnectionLost() override;
+        
+        class Pimpl;
     private:
+        ScopedPointer<Pimpl> pimpl_;
+        
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AudioSlaveProcess)
     };
 }

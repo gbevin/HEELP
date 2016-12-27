@@ -28,8 +28,8 @@ AudioMasterProcess::AudioMasterProcess(HeelpMainApplication* app, int identifier
 
 void AudioMasterProcess::handleMessageFromSlave(const MemoryBlock& mb)
 {
-    ValueTree incomingMessage (memoryBlockToValueTree(mb));
-    LOG("Received: " + valueTreeToString(incomingMessage));
+    ValueTree msg(memoryBlockToValueTree(mb));
+    LOG("Received: " + valueTreeToString(msg));
 }
 
 void AudioMasterProcess::handleConnectionLost()

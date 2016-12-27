@@ -29,46 +29,55 @@ using namespace heelp;
 
 struct HeelpChildApplication::Pimpl
 {
-    Pimpl() : logger_(nullptr), audio_(nullptr), shmId_(-1)
+    Pimpl() : logger_(nullptr), childId_(-1), shmId_(-1), audio_(nullptr)
     {
     }
     
-    void initialise(const String& commandLine)
+    bool initialise(const String& commandLine)
     {
+        bool result = true;
+        
 #ifdef JUCE_MAC
         Process::setDockIconVisible(false);
 #endif
         
-        int childId = -1;
         StringArray params = JUCEApplication::getInstance()->getCommandLineParameterArray();
         for (auto&& param : params)
         {
-            if (param.startsWith("--child="))
+            if (param.startsWith(CMD_ARG_CHILDID))
             {
-                childId = param.substring(8).getIntValue();
+                childId_ = param.substring(String(CMD_ARG_CHILDID).length()).getIntValue();
             }
-            if (param.startsWith("--shmid="))
+            if (param.startsWith(CMD_ARG_SHMID))
             {
-                shmId_ = param.substring(8).getIntValue();
+                shmId_ = param.substring(String(CMD_ARG_SHMID).length()).getIntValue();
             }
         }
         
-        if (shmId_ < 0)
-        {
-            LOG("Couldn't determine shared memory ID to use with child process.");
-        }
-        else if (childId < 0)
+        if (childId_ < 0)
         {
             LOG("Couldn't determine the child process ID.");
+            result = false;
+        }
+        else if (shmId_ < 0)
+        {
+            LOG("Couldn't determine shared memory ID to use with child process.");
+            result = false;
         }
         else
         {
-            logger_ = new HeelpLogger(childId);
+            logger_ = new HeelpLogger(childId_);
             Logger::setCurrentLogger(logger_);
-            
-            LOG("Setting up child " << childId << " with shared memory ID " << shmId_);
-            audio_ = new ChildAudioComponent(childId, shmId_);
+            LOG("Initialised child " << childId_ << " with shared memory ID " << shmId_);
         }
+        
+        return result;
+    }
+    
+    void startAudio(const XmlElement* const xml)
+    {
+        LOG("Setting up audio for child " << childId_ << " with shared memory ID " << shmId_);
+        audio_ = new ChildAudioComponent(childId_, shmId_, xml);
     }
     
     void shutdown()
@@ -89,13 +98,14 @@ struct HeelpChildApplication::Pimpl
     
     ScopedPointer<FileLogger> logger_;
     
-    ScopedPointer<ChildAudioComponent> audio_;
-    
+    int childId_;
     int shmId_;
+    ScopedPointer<ChildAudioComponent> audio_;
 };
 
 HeelpChildApplication::HeelpChildApplication() : pimpl_(new Pimpl())    {}
 HeelpChildApplication::~HeelpChildApplication()                         { pimpl_ = nullptr; }
 
-void HeelpChildApplication::initialise(const String& commandLine)   { pimpl_->initialise(commandLine); }
+bool HeelpChildApplication::initialise(const String& commandLine)   { return pimpl_->initialise(commandLine); }
 void HeelpChildApplication::shutdown()                              { pimpl_->shutdown(); }
+void HeelpChildApplication::startAudio(const XmlElement* const xml) { pimpl_->startAudio(xml); }

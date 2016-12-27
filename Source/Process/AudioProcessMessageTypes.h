@@ -24,11 +24,12 @@ namespace heelp
 {
     namespace AudioProcessMessageTypes
     {
-        extern const char* AUDIODEVICEMANAGER_STATEXML;
+        constexpr const char* const AUDIODEVICEMANAGER_STATEXML = "AudioDeviceManager::StateXml";
     };
+    
     namespace AudioProcessMessageProperties
     {
-        extern const char* STATE;
+        constexpr const char* const STATE = "State";
     };
 };
 

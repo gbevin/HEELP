@@ -32,13 +32,27 @@ struct HeelpApplication::Pimpl
     
     void initialise(const String& commandLine)
     {
-        ScopedPointer<AudioSlaveProcess> slave(new AudioSlaveProcess());
-        if (slave->initialiseFromCommandLine(commandLine, audioCommandLineUID))
+        if (commandLine.contains(HeelpChildApplication::CMD_ARG_CHILDID) &&
+            commandLine.contains(HeelpChildApplication::CMD_ARG_SHMID))
         {
-            slave.release(); // allow the slave object to stay alive - it'll handle its own deletion.
-            
-            realApp_ = new HeelpChildApplication();
-            realApp_->initialise(commandLine);
+            HeelpChildApplication* realApp = new HeelpChildApplication();
+            realApp_ = realApp;
+            if (realApp->initialise(commandLine))
+            {
+                ScopedPointer<AudioSlaveProcess> slave(new AudioSlaveProcess(realApp));
+                if (slave->initialiseFromCommandLine(commandLine, audioCommandLineUID))
+                {
+                    slave.release(); // allow the slave object to stay alive - it'll handle its own deletion.
+                }
+                else
+                {
+                    shutdown();
+                }
+            }
+            else
+            {
+                shutdown();
+            }
         }
         else
         {

@@ -132,7 +132,6 @@
     <ClCompile Include="..\..\Source\Audio\ChildAudioComponent.cpp"/>
     <ClCompile Include="..\..\Source\Audio\MainAudioComponent.cpp"/>
     <ClCompile Include="..\..\Source\Process\AudioMasterProcess.cpp"/>
-    <ClCompile Include="..\..\Source\Process\AudioProcessMessageTypes.cpp"/>
     <ClCompile Include="..\..\Source\Process\AudioProcessMessageUtils.cpp"/>
     <ClCompile Include="..\..\Source\Process\AudioSlaveProcess.cpp"/>
     <ClCompile Include="..\..\Source\UI\MainContentComponent.cpp"/>

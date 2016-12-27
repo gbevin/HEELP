@@ -18,6 +18,7 @@
 #include "HeelpMainApplication.h"
 
 #include "HeelpApplication.h"
+#include "HeelpChildApplication.h"
 #include "HeelpLogger.h"
 #include "Utils.h"
 #include "Audio/ChildAudioState.h"
@@ -49,7 +50,7 @@ struct HeelpMainApplication::Pimpl
     {
     }
     
-    void initialise(const String& commandLine)
+    bool initialise(const String& commandLine)
     {
         // setup logging system
         logger_ = new HeelpLogger(0);
@@ -71,6 +72,8 @@ struct HeelpMainApplication::Pimpl
         audio_ = new MainAudioComponent();
         
         Process::makeForegroundProcess();
+        
+        return true;
     }
     
     void launchChildProcess(int childId)
@@ -100,19 +103,16 @@ struct HeelpMainApplication::Pimpl
         }
         
         StringArray args;
-        args.add("--child="+String(childId));
-        args.add("--shmid="+String(shmId));
+        args.add(HeelpChildApplication::CMD_ARG_CHILDID+String(childId));
+        args.add(HeelpChildApplication::CMD_ARG_SHMID+String(shmId));
         LOG("Launching child " << childId << " with shared memory ID " << shmId);
         if (masterProcess->launchSlaveProcess(File::getSpecialLocation(File::currentExecutableFile), audioCommandLineUID, args))
         {
             LOG("Child process started");
+
             ValueTree message(AudioProcessMessageTypes::AUDIODEVICEMANAGER_STATEXML);
             XmlElement* state = audio_->deviceManager.createStateXml();
-            String stateString;
-            if (state)
-            {
-                stateString = state->createDocument("");
-            }
+            String stateString = (state ? stateString = state->createDocument("") : "");
             message.setProperty(AudioProcessMessageProperties::STATE, stateString, nullptr);
             masterProcess->sendMessageToSlave(valueTreeToMemoryBlock(message));
         }
@@ -177,7 +177,7 @@ struct HeelpMainApplication::Pimpl
 HeelpMainApplication::HeelpMainApplication() : pimpl_(new Pimpl(this))  {}
 HeelpMainApplication::~HeelpMainApplication()                           { pimpl_ = nullptr; }
 
-void HeelpMainApplication::initialise(const String& commandLine)    { pimpl_->initialise(commandLine); }
+bool HeelpMainApplication::initialise(const String& commandLine)    { return pimpl_->initialise(commandLine); }
 void HeelpMainApplication::launchChildProcess(int childId)          { pimpl_->launchChildProcess(childId); }
 void HeelpMainApplication::killChildProcess(int childId)            { pimpl_->killChildProcess(childId); }
 void HeelpMainApplication::shutdown()                               { pimpl_->shutdown(); }

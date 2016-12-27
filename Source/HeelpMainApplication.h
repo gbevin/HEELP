@@ -30,7 +30,7 @@ namespace heelp
         HeelpMainApplication();
         virtual ~HeelpMainApplication();
         
-        void initialise(const String& commandLine) override;
+        bool initialise(const String& commandLine) override;
         void shutdown() override;
  
         void launchChildProcess(int childId);

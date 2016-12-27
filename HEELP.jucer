@@ -23,8 +23,6 @@
               file="Source/Process/AudioMasterProcess.cpp"/>
         <FILE id="VAETAp" name="AudioMasterProcess.h" compile="0" resource="0"
               file="Source/Process/AudioMasterProcess.h"/>
-        <FILE id="KlBKOM" name="AudioProcessMessageTypes.cpp" compile="1" resource="0"
-              file="Source/Process/AudioProcessMessageTypes.cpp"/>
         <FILE id="tMnGlN" name="AudioProcessMessageTypes.h" compile="0" resource="0"
               file="Source/Process/AudioProcessMessageTypes.h"/>
         <FILE id="K9Ff2J" name="AudioProcessMessageUtils.cpp" compile="1" resource="0"

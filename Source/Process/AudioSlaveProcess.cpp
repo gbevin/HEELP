@@ -23,26 +23,45 @@
 
 using namespace heelp;
 
-AudioSlaveProcess::AudioSlaveProcess()
+struct AudioSlaveProcess::Pimpl
 {
-}
-    
-void AudioSlaveProcess::handleMessageFromMaster(const MemoryBlock& mb)
-{
-    ValueTree msg(memoryBlockToValueTree(mb));
-    String type = msg.getType().toString();
-    if (type == AudioProcessMessageTypes::AUDIODEVICEMANAGER_STATEXML)
+    Pimpl(HeelpChildApplication* app) : app_(app)
     {
-        String stateXml = msg.getProperty(AudioProcessMessageProperties::STATE).toString();
-        // TODO
     }
-}
 
-void AudioSlaveProcess::handleConnectionMade()
-{
-}
+    void handleMessageFromMaster(const MemoryBlock& mb)
+    {
+        ValueTree msg(memoryBlockToValueTree(mb));
+        String type = msg.getType().toString();
+        
+        if (type == AudioProcessMessageTypes::AUDIODEVICEMANAGER_STATEXML)
+        {
+            String stateXml = msg.getProperty(AudioProcessMessageProperties::STATE).toString();
+            XmlElement* xml = nullptr;
+            if (stateXml.isNotEmpty())
+            {
+                XmlDocument doc(stateXml);
+                xml = doc.getDocumentElement();
+            }
+            app_->startAudio(xml);
+        }
+    }
+    
+    void handleConnectionMade()
+    {
+    }
+    
+    void handleConnectionLost()
+    {
+        JUCEApplication::quit();
+    }
+    
+    HeelpChildApplication* app_;
+};
 
-void AudioSlaveProcess::handleConnectionLost()
-{
-    JUCEApplication::quit();
-}
+AudioSlaveProcess::AudioSlaveProcess(HeelpChildApplication* app)  : pimpl_(new Pimpl(app))  {}
+AudioSlaveProcess::~AudioSlaveProcess()                                                     { pimpl_ = nullptr; }
+
+void AudioSlaveProcess::handleMessageFromMaster(const MemoryBlock& mb)  { pimpl_->handleMessageFromMaster(mb); }
+void AudioSlaveProcess::handleConnectionMade()                          { pimpl_->handleConnectionMade(); }
+void AudioSlaveProcess::handleConnectionLost()                          { pimpl_->handleConnectionLost(); }

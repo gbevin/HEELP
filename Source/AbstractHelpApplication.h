@@ -26,7 +26,7 @@ namespace heelp
         AbstractHeelpApplication() {}
         virtual ~AbstractHeelpApplication() {}
         
-        virtual void initialise(const String& commandLine) = 0;
+        virtual bool initialise(const String& commandLine) = 0;
         virtual void shutdown() = 0;
     };
 }
