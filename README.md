@@ -3,11 +3,13 @@
 HEELP stands for:
 Hub for Expressive Electronic Live Performance
 
+## GOALS
+
 It has two main goals:
 * Provide a streamlined environment for live performance of computerized music
 * Provide a hub for model electronic instruments that need a translation layer
 
-# PLANS
+## PLANS
 
 * Support for Eigenharp, Soundplane, LinnStrument, Leap Motion, MPE, standard MIDI and standard audio input
 * Full 64-bit support
@@ -27,7 +29,7 @@ It has two main goals:
 * Multi-track recording of all input and output data of all channels and busses (no individual record enable)
 * Detection of audio activity for automatic splitting of recordings
 
-# TECHNICAL NOTES
+## TECHNICAL NOTES
 
 Having a rigid structure of a list of channels and busses with sends has a series of advantages:
 * It's very easy to understand what is going on during a performance or rehearsal
