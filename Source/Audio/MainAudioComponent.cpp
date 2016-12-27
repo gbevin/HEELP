@@ -37,7 +37,7 @@ namespace
 
 struct MainAudioComponent::Pimpl : public AudioAppComponent
 {
-    Pimpl(MainAudioComponent* parent) : paused_(true), parent_(parent)
+    Pimpl() : paused_(true)
     {
         setAudioChannels(0, 2);
     }
@@ -152,15 +152,13 @@ struct MainAudioComponent::Pimpl : public AudioAppComponent
         LOG("Releasing audio resources");
     }
     
-    MainAudioComponent* parent_;
-    
     Atomic<int> paused_;
     ReadWriteLock childInfosLock_;
     std::map<int, ChildInfo> childInfos_;
 };
 
-MainAudioComponent::MainAudioComponent() : pimpl_(new Pimpl(this))  {}
-MainAudioComponent::~MainAudioComponent()                           { pimpl_ = nullptr; }
+MainAudioComponent::MainAudioComponent() : pimpl_(new Pimpl())  {}
+MainAudioComponent::~MainAudioComponent()                       { pimpl_ = nullptr; }
 
 AudioDeviceManager& MainAudioComponent::getDeviceManager()              { return pimpl_->getDeviceManager(); }
 
