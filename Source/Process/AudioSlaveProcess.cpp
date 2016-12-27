@@ -27,7 +27,7 @@ namespace
 {
     enum AudioSlaveEventsMessageType
     {
-        initiaseAudio
+        initialiseAudio
     };
 
     struct AudioSlaveEventsMessage : Message
@@ -53,7 +53,7 @@ struct AudioSlaveProcess::Pimpl : MessageListener
         
         if (type == AudioProcessMessageTypes::AUDIODEVICEMANAGER_STATEXML)
         {
-            postMessage(new AudioSlaveEventsMessage(initiaseAudio, msg));
+            postMessage(new AudioSlaveEventsMessage(initialiseAudio, msg));
         }
     }
 
@@ -62,7 +62,7 @@ struct AudioSlaveProcess::Pimpl : MessageListener
         AudioSlaveEventsMessage* msg = (AudioSlaveEventsMessage*)&message;
         switch (msg->type_)
         {
-            case initiaseAudio:
+            case initialiseAudio:
             {
                 String stateXml = msg->payload_.getProperty(AudioProcessMessageProperties::STATE).toString();
                 XmlElement* xml = nullptr;
