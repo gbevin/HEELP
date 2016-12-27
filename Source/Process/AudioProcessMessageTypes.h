@@ -24,12 +24,15 @@ namespace heelp
 {
     namespace AudioProcessMessageTypes
     {
-        constexpr const char* const AUDIODEVICEMANAGER_STATEXML = "AudioDeviceManager::StateXml";
+        constexpr const char* const AUDIODEVICEMANAGER_STATE = "AudioDeviceManager::State";
     };
     
     namespace AudioProcessMessageProperties
     {
-        constexpr const char* const STATE = "State";
+        constexpr const char* const AUDIO_DEVICE_INPUTNAME = "AudioDevice::InputName";
+        constexpr const char* const AUDIO_DEVICE_OUTPUTNAME = "AudioDevice::OutputName";
+        constexpr const char* const AUDIO_DEVICE_SAMPLERATE = "AudioDevice::SampleRate";
+        constexpr const char* const AUDIO_DEVICE_BUFFERSIZE = "AudioDevice::BufferSize";
     };
 };
 

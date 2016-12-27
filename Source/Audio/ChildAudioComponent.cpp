@@ -19,16 +19,15 @@
 
 #include "../HeelpApplication.h"
 #include "../Utils.h"
+#include "../Process/AudioProcessMessageTypes.h"
 #include "ChildAudioState.h"
 
 using namespace heelp;
 
-struct ChildAudioComponent::Pimpl
+struct ChildAudioComponent::Pimpl : public AudioSource
 {
-    Pimpl(ChildAudioComponent* parent, int childId, SharedMemory* shm, const XmlElement* const audioDeviceXml) : parent_(parent), childId_(childId), shm_(shm), sharedAudioBuffer_(nullptr)
+    Pimpl(ChildAudioComponent* parent, int childId, SharedMemory* shm) : childId_(childId), shm_(shm), sharedAudioBuffer_(nullptr)
     {
-        parent_->setAudioChannels(0, 2, audioDeviceXml);
-        
         state_ = (ChildAudioState*)shm_->getShmAddress();
         state_->phase_ = bufferEmpty;
         
@@ -37,7 +36,38 @@ struct ChildAudioComponent::Pimpl
 
     ~Pimpl()
     {
-        parent_->shutdownAudio();
+        shutdownAudio();
+    }
+
+    void startAudio(ValueTree state)
+    {
+        AudioDeviceManager::AudioDeviceSetup setup;
+        deviceManager_.getAudioDeviceSetup(setup);
+        if (state.getNumProperties())
+        {
+            setup.inputDeviceName = state.getProperty(AudioProcessMessageProperties::AUDIO_DEVICE_INPUTNAME, "");
+            setup.outputDeviceName = state.getProperty(AudioProcessMessageProperties::AUDIO_DEVICE_OUTPUTNAME, "");
+            setup.sampleRate = state.getProperty(AudioProcessMessageProperties::AUDIO_DEVICE_SAMPLERATE, 44100);
+            setup.bufferSize = state.getProperty(AudioProcessMessageProperties::AUDIO_DEVICE_BUFFERSIZE, 512);
+        }
+        
+        String audioError = deviceManager_.initialise(0, 2, nullptr, true, "", &setup);
+        jassert(audioError.isEmpty());
+        
+        deviceManager_.addAudioCallback(&audioSourcePlayer_);
+        audioSourcePlayer_.setSource(this);
+    }
+    
+    void shutdownAudio()
+    {
+        audioSourcePlayer_.setSource(nullptr);
+        deviceManager_.removeAudioCallback(&audioSourcePlayer_);
+        deviceManager_.closeAudioDevice();
+    }
+    
+    AudioDeviceManager& getDeviceManager()
+    {
+        return deviceManager_;
     }
 
     void prepareToPlay(int samplesPerBlockExpected, double sampleRate)
@@ -63,7 +93,7 @@ struct ChildAudioComponent::Pimpl
         double cyclesPerSecond = MidiMessage::getMidiNoteInHertz(40 + childId_ * 12);
         
         AudioDeviceManager::AudioDeviceSetup audioSetup;
-        parent_->deviceManager.getAudioDeviceSetup(audioSetup);
+        deviceManager_.getAudioDeviceSetup(audioSetup);
         double cyclesPerSample = cyclesPerSecond / audioSetup.sampleRate;
         double angleDelta = cyclesPerSample * 2.0 * double_Pi;
         
@@ -100,17 +130,17 @@ struct ChildAudioComponent::Pimpl
         LOG("Releasing audio resources");
     }
     
-    ChildAudioComponent* parent_;
-    
     int childId_;
     SharedMemory* shm_;
     ChildAudioState* state_;
     float* sharedAudioBuffer_;
+    
+    AudioDeviceManager deviceManager_;
+    AudioSourcePlayer audioSourcePlayer_;
 };
     
-ChildAudioComponent::ChildAudioComponent(int childId, SharedMemory* shm, const XmlElement* const xml) : pimpl_(new Pimpl(this, childId, shm, xml))  {}
-ChildAudioComponent::~ChildAudioComponent()                                                                                                         { pimpl_ = nullptr; }
+ChildAudioComponent::ChildAudioComponent(int childId, SharedMemory* shm) : pimpl_(new Pimpl(this, childId, shm))    {}
+ChildAudioComponent::~ChildAudioComponent()                                                                         { pimpl_ = nullptr; }
 
-void ChildAudioComponent::prepareToPlay(int samplesPerBlockExpected, double sampleRate) { pimpl_->prepareToPlay(samplesPerBlockExpected, sampleRate); }
-void ChildAudioComponent::releaseResources()                                            { pimpl_->releaseResources(); }
-void ChildAudioComponent::getNextAudioBlock(const AudioSourceChannelInfo& bufferToFill) { pimpl_->getNextAudioBlock(bufferToFill); }
+void ChildAudioComponent::startAudio(ValueTree state)       { pimpl_->startAudio(state); }
+AudioDeviceManager& ChildAudioComponent::getDeviceManager() { return pimpl_->getDeviceManager(); }

@@ -15,8 +15,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef ABSTRACTHELPAPPLICATION_H_INCLUDED
-#define ABSTRACTHELPAPPLICATION_H_INCLUDED
+#ifndef ABSTRACTHEELPAPPLICATION_H_INCLUDED
+#define ABSTRACTHEELPAPPLICATION_H_INCLUDED
+
+#include "JuceHeader.h"
 
 namespace heelp
 {
@@ -28,7 +30,8 @@ namespace heelp
         
         virtual bool initialise(const String& commandLine) = 0;
         virtual void shutdown() = 0;
+        virtual AudioDeviceManager* getAudioDeviceManager() const = 0;
     };
 }
 
-#endif  // ABSTRACTHELPAPPLICATION_H_INCLUDED
+#endif  // ABSTRACTHEELPAPPLICATION_H_INCLUDED

@@ -24,16 +24,15 @@
 
 namespace heelp
 {
-    class ChildAudioComponent : public AudioAppComponent
+    class ChildAudioComponent
     {
     public:
-        ChildAudioComponent(int childId, SharedMemory* shm, const XmlElement* const audioDeviceXml);
+        ChildAudioComponent(int childId, SharedMemory* shm);
         ~ChildAudioComponent();
         
-        void prepareToPlay(int samplesPerBlockExpected, double sampleRate) override;
-        void releaseResources() override;
-        void getNextAudioBlock(const AudioSourceChannelInfo& bufferToFill) override;
-        
+        void startAudio(ValueTree state);
+        AudioDeviceManager& getDeviceManager();
+                
         struct Pimpl;
     private:
         ScopedPointer<Pimpl> pimpl_;

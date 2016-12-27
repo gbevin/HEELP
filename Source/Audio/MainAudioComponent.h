@@ -24,18 +24,16 @@
 
 namespace heelp
 {
-    class MainAudioComponent : public AudioAppComponent
+    class MainAudioComponent
     {
     public:
         MainAudioComponent();
         ~MainAudioComponent();
         
+        AudioDeviceManager& getDeviceManager();
+
         void registerChild(int childId, SharedMemory* shm);
         void unregisterChild(int childId);
-        
-        void prepareToPlay(int samplesPerBlockExpected, double sampleRate) override;
-        void releaseResources() override;
-        void getNextAudioBlock(const AudioSourceChannelInfo& bufferToFill) override;
         
         struct Pimpl;
     private:

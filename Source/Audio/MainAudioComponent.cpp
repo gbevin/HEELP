@@ -35,17 +35,22 @@ namespace
     };
 }
 
-struct MainAudioComponent::Pimpl
+struct MainAudioComponent::Pimpl : public AudioAppComponent
 {
     Pimpl(MainAudioComponent* parent) : parent_(parent)
     {
-        parent_->setAudioChannels(0, 2);
+        setAudioChannels(0, 2);
     }
 
     ~Pimpl()
     {
-        parent_->shutdownAudio();
+        shutdownAudio();
         childInfos_.clear();
+    }
+    
+    AudioDeviceManager& getDeviceManager()
+    {
+        return deviceManager;
     }
     
     void registerChild(int childId, SharedMemory* shm)
@@ -100,8 +105,8 @@ struct MainAudioComponent::Pimpl
         }
         while (true);
         
-        AudioDeviceManager::AudioDeviceSetup audioSetup;
-        parent_->deviceManager.getAudioDeviceSetup(audioSetup);
+        AudioDeviceManager::AudioDeviceSetup setup;
+        deviceManager.getAudioDeviceSetup(setup);
 
         AudioSampleBuffer* outputBuffer = bufferToFill.buffer;
         outputBuffer->clear();
@@ -116,7 +121,7 @@ struct MainAudioComponent::Pimpl
             {
                 for (auto it = childInfos_.begin(); it != childInfos_.end(); ++it)
                 {
-                    outputBuffer->addSample(chan, startSample, it->second.sharedAudioBuffer_[chan * audioSetup.bufferSize + startSample]);
+                    outputBuffer->addSample(chan, startSample, it->second.sharedAudioBuffer_[chan * setup.bufferSize + startSample]);
                 }
             }
             ++startSample;
@@ -142,9 +147,7 @@ struct MainAudioComponent::Pimpl
 MainAudioComponent::MainAudioComponent() : pimpl_(new Pimpl(this))  {}
 MainAudioComponent::~MainAudioComponent()                           { pimpl_ = nullptr; }
 
-void MainAudioComponent::registerChild(int childId, SharedMemory* shm)                  { pimpl_->registerChild(childId, shm); }
-void MainAudioComponent::unregisterChild(int childId)                                   { pimpl_->unregisterChild(childId); }
+AudioDeviceManager& MainAudioComponent::getDeviceManager()              { return pimpl_->getDeviceManager(); }
 
-void MainAudioComponent::prepareToPlay(int samplesPerBlockExpected, double sampleRate)  { pimpl_->prepareToPlay(samplesPerBlockExpected, sampleRate); }
-void MainAudioComponent::releaseResources()                                             { pimpl_->releaseResources(); }
-void MainAudioComponent::getNextAudioBlock(const AudioSourceChannelInfo& bufferToFill)  { pimpl_->getNextAudioBlock(bufferToFill); }
+void MainAudioComponent::registerChild(int childId, SharedMemory* shm)  { pimpl_->registerChild(childId, shm); }
+void MainAudioComponent::unregisterChild(int childId)                   { pimpl_->unregisterChild(childId); }

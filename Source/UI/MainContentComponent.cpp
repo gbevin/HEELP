@@ -17,10 +17,15 @@
  */
 #include "MainContentComponent.h"
 
+#include "../HeelpApplication.h"
+
 using namespace heelp;
 
 MainContentComponent::MainContentComponent()
 {
+    audioSetupComponent_ = new AudioDeviceSelectorComponent(*HeelpApplication::getHeelpInstance()->getAudioDeviceManager(), 0, 0, 0, 256, false, false, true, false);
+    addAndMakeVisible(audioSetupComponent_);
+
     setSize(600, 400);
 }
 
@@ -30,13 +35,10 @@ MainContentComponent::~MainContentComponent()
 
 void MainContentComponent::paint(Graphics& g)
 {
-    g.fillAll(Colour(0xff001F36));
-
-    g.setFont(Font(16.0f));
-    g.setColour(Colours::white);
-    g.drawText("Hub for Expressive Electronic Live Performance", getLocalBounds(), Justification::centred, true);
+    g.fillAll(Colour(0xfff7f7f7));
 }
 
 void MainContentComponent::resized()
 {
+    audioSetupComponent_->setBounds(0, 20, getWidth(), getHeight() - 20);
 }

@@ -20,7 +20,7 @@
 
 #include "JuceHeader.h"
 
-#include "AbstractHelpApplication.h"
+#include "AbstractHeelpApplication.h"
 
 namespace heelp
 {
@@ -32,7 +32,8 @@ namespace heelp
         
         bool initialise(const String& commandLine) override;
         void shutdown() override;
- 
+        AudioDeviceManager* getAudioDeviceManager() const override;
+        
         void launchChildProcess(int childId);
         void killChildProcess(int childId);
         

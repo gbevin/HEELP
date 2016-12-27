@@ -1684,7 +1684,7 @@
     <ClInclude Include="..\..\Source\Process\SharedMemory.h"/>
     <ClInclude Include="..\..\Source\UI\MainContentComponent.h"/>
     <ClInclude Include="..\..\Source\UI\MainWindow.h"/>
-    <ClInclude Include="..\..\Source\AbstractHelpApplication.h"/>
+    <ClInclude Include="..\..\Source\AbstractHeelpApplication.h"/>
     <ClInclude Include="..\..\Source\HeelpApplication.h"/>
     <ClInclude Include="..\..\Source\HeelpChildApplication.h"/>
     <ClInclude Include="..\..\Source\HeelpMainApplication.h"/>

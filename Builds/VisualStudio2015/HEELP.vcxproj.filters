@@ -2082,7 +2082,7 @@
     <ClInclude Include="..\..\Source\UI\MainWindow.h">
       <Filter>HEELP\Source\UI</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\AbstractHelpApplication.h">
+    <ClInclude Include="..\..\Source\AbstractHeelpApplication.h">
       <Filter>HEELP\Source</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\HeelpApplication.h">

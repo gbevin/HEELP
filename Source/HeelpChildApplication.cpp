@@ -72,15 +72,26 @@ struct HeelpChildApplication::Pimpl
             return false;
         }
 
+        audio_ = new ChildAudioComponent(childId_, shm_);
         LOG("Initialised child " << childId_ << " with shared memory ID " << shmId);
         
         return true;
     }
     
-    void startAudio(const XmlElement* const xml)
+    AudioDeviceManager* getAudioDeviceManager() const
+    {
+        if (audio_ == nullptr)
+        {
+            return nullptr;
+        }
+        
+        return &audio_->getDeviceManager();
+    }
+    
+    void startAudio(ValueTree state)
     {
         LOG("Setting up audio for child " << childId_ << " with shared memory ID " << shm_->getShmId());
-        audio_ = new ChildAudioComponent(childId_, shm_, xml);
+        audio_->startAudio(state);
     }
     
     void shutdown()
@@ -104,6 +115,7 @@ struct HeelpChildApplication::Pimpl
 HeelpChildApplication::HeelpChildApplication() : pimpl_(new Pimpl())    {}
 HeelpChildApplication::~HeelpChildApplication()                         { pimpl_ = nullptr; }
 
-bool HeelpChildApplication::initialise(const String& commandLine)   { return pimpl_->initialise(commandLine); }
-void HeelpChildApplication::shutdown()                              { pimpl_->shutdown(); }
-void HeelpChildApplication::startAudio(const XmlElement* const xml) { pimpl_->startAudio(xml); }
+bool HeelpChildApplication::initialise(const String& commandLine)           { return pimpl_->initialise(commandLine); }
+void HeelpChildApplication::shutdown()                                      { pimpl_->shutdown(); }
+AudioDeviceManager* HeelpChildApplication::getAudioDeviceManager() const    { return pimpl_->getAudioDeviceManager(); }
+void HeelpChildApplication::startAudio(ValueTree state)                     { pimpl_->startAudio(state); }

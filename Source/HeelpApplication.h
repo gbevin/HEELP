@@ -32,9 +32,13 @@ namespace heelp
         HeelpApplication();
         virtual ~HeelpApplication();
         
+        static HeelpApplication* getHeelpInstance() noexcept { return (HeelpApplication*)JUCEApplication::getInstance(); }
+        
         const String getApplicationName() override       { return ProjectInfo::projectName; }
         const String getApplicationVersion() override    { return ProjectInfo::versionString; }
         bool moreThanOneInstanceAllowed() override       { return true; }
+        
+        AudioDeviceManager* getAudioDeviceManager() const;
         
         void anotherInstanceStarted(const String& commandLine) override;
         void initialise(const String& commandLine) override;

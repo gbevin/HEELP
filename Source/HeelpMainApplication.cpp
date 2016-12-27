@@ -55,7 +55,7 @@ namespace
     };
 }
 
-struct HeelpMainApplication::Pimpl
+struct HeelpMainApplication::Pimpl : public ChangeListener
 {
     Pimpl(HeelpMainApplication* parent) : parent_(parent), logger_(nullptr), audio_(nullptr)
     {
@@ -66,6 +66,9 @@ struct HeelpMainApplication::Pimpl
         // setup logging system
         logger_ = new HeelpLogger(0);
         Logger::setCurrentLogger(logger_);
+        
+        audio_ = new MainAudioComponent();
+        audio_->getDeviceManager().addChangeListener(this);
         
         if (commandLine.contains("--console") ||
             (SystemStats::getOperatingSystemType() == SystemStats::OperatingSystemType::Linux && SystemStats::getEnvironmentVariable("DISPLAY", "").isEmpty()))
@@ -80,11 +83,34 @@ struct HeelpMainApplication::Pimpl
             mainWindow_ = new MainWindow(JUCEApplication::getInstance()->getApplicationName());
         }
         
-        audio_ = new MainAudioComponent();
+        startChildren();
         
         Process::makeForegroundProcess();
         
         return true;
+    }
+    
+    AudioDeviceManager* getAudioDeviceManager() const
+    {
+        if (audio_ == nullptr)
+        {
+            return nullptr;
+        }
+        
+        return &audio_->getDeviceManager();
+    }
+    
+    void startChildren()
+    {
+        AudioDeviceManager& dm = audio_->getDeviceManager();
+        if (dm.getCurrentDeviceTypeObject() && dm.getCurrentAudioDevice())
+        {
+            // TODO : these should become proper channels, just generating four to test with now
+            for (int childId = 1; childId <= 4; ++childId)
+            {
+                launchChildProcess(childId);
+            }
+        }
     }
     
     void launchChildProcess(int childId)
@@ -95,10 +121,11 @@ struct HeelpMainApplication::Pimpl
             return;
         }
         
-        AudioDeviceManager::AudioDeviceSetup audioSetup;
-        audio_->deviceManager.getAudioDeviceSetup(audioSetup);
+        AudioDeviceManager& dm = audio_->getDeviceManager();
+        AudioDeviceManager::AudioDeviceSetup setup;
+        dm.getAudioDeviceSetup(setup);
         
-        SharedMemory* shm = SharedMemory::createWithSize(sizeof(ChildAudioState) + NUM_AUDIO_CHANNELS * audioSetup.bufferSize * sizeof(float));
+        SharedMemory* shm = SharedMemory::createWithSize(sizeof(ChildAudioState) + NUM_AUDIO_CHANNELS * setup.bufferSize * sizeof(float));
         audio_->registerChild(childId, shm);
         
         AudioMasterProcess* masterProcess = new AudioMasterProcess(parent_, childId);
@@ -114,12 +141,33 @@ struct HeelpMainApplication::Pimpl
         if (masterProcess->launchSlaveProcess(File::getSpecialLocation(File::currentExecutableFile), audioCommandLineUID, args))
         {
             LOG("Child process started");
-
-            ValueTree message(AudioProcessMessageTypes::AUDIODEVICEMANAGER_STATEXML);
-            XmlElement* state = audio_->deviceManager.createStateXml();
-            String stateString = (state ? stateString = state->createDocument("") : "");
-            message.setProperty(AudioProcessMessageProperties::STATE, stateString, nullptr);
-            masterProcess->sendMessageToSlave(valueTreeToMemoryBlock(message));
+            sendAudioDeviceStateToChild(masterProcess);
+        }
+    }
+    
+    void sendAudioDeviceStateToChild(AudioMasterProcess* masterProcess)
+    {
+        ValueTree message(AudioProcessMessageTypes::AUDIODEVICEMANAGER_STATE);
+        AudioDeviceManager& dm = audio_->getDeviceManager();
+        if (dm.getCurrentAudioDevice())
+        {
+            AudioDeviceManager::AudioDeviceSetup setup;
+            dm.getAudioDeviceSetup(setup);
+  
+            message.setProperty(AudioProcessMessageProperties::AUDIO_DEVICE_INPUTNAME, setup.inputDeviceName, nullptr);
+            message.setProperty(AudioProcessMessageProperties::AUDIO_DEVICE_OUTPUTNAME, setup.outputDeviceName, nullptr);
+            message.setProperty(AudioProcessMessageProperties::AUDIO_DEVICE_SAMPLERATE, setup.sampleRate, nullptr);
+            message.setProperty(AudioProcessMessageProperties::AUDIO_DEVICE_BUFFERSIZE, setup.bufferSize, nullptr);
+        }
+        masterProcess->sendMessageToSlave(valueTreeToMemoryBlock(message));
+    }
+    
+    void killAllChildren()
+    {
+        std::map<int, MasterProcessInfo>::iterator it;
+        while ((it = masterProcessInfos_.begin()) != masterProcessInfos_.end())
+        {
+            killChildProcess(it->first);
         }
     }
     
@@ -136,7 +184,13 @@ struct HeelpMainApplication::Pimpl
             LOG("Child process killed");
         }
     }
-    
+
+    void changeListenerCallback(ChangeBroadcaster* source)
+    {
+        killAllChildren();
+        startChildren();
+    }
+
     void shutdown()
     {
         LOG("Shutdown");
@@ -149,6 +203,7 @@ struct HeelpMainApplication::Pimpl
         }
         masterProcessInfos_.clear();
 
+        audio_->getDeviceManager().removeChangeListener(this);
         audio_ = nullptr;
 
         mainWindow_ = nullptr;
@@ -171,7 +226,8 @@ struct HeelpMainApplication::Pimpl
 HeelpMainApplication::HeelpMainApplication() : pimpl_(new Pimpl(this))  {}
 HeelpMainApplication::~HeelpMainApplication()                           { pimpl_ = nullptr; }
 
-bool HeelpMainApplication::initialise(const String& commandLine)    { return pimpl_->initialise(commandLine); }
-void HeelpMainApplication::launchChildProcess(int childId)          { pimpl_->launchChildProcess(childId); }
-void HeelpMainApplication::killChildProcess(int childId)            { pimpl_->killChildProcess(childId); }
-void HeelpMainApplication::shutdown()                               { pimpl_->shutdown(); }
+bool HeelpMainApplication::initialise(const String& commandLine)        { return pimpl_->initialise(commandLine); }
+void HeelpMainApplication::shutdown()                                   { pimpl_->shutdown(); }
+AudioDeviceManager* HeelpMainApplication::getAudioDeviceManager() const { return pimpl_->getAudioDeviceManager(); }
+void HeelpMainApplication::launchChildProcess(int childId)              { pimpl_->launchChildProcess(childId); }
+void HeelpMainApplication::killChildProcess(int childId)                { pimpl_->killChildProcess(childId); }

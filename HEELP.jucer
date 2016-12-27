@@ -45,8 +45,8 @@
         <FILE id="uNpVO4" name="MainWindow.cpp" compile="1" resource="0" file="Source/UI/MainWindow.cpp"/>
         <FILE id="Bfp72f" name="MainWindow.h" compile="0" resource="0" file="Source/UI/MainWindow.h"/>
       </GROUP>
-      <FILE id="jYK4Yx" name="AbstractHelpApplication.h" compile="0" resource="0"
-            file="Source/AbstractHelpApplication.h"/>
+      <FILE id="jYK4Yx" name="AbstractHeelpApplication.h" compile="0" resource="0"
+            file="Source/AbstractHeelpApplication.h"/>
       <FILE id="UdB8np" name="HeelpApplication.cpp" compile="1" resource="0"
             file="Source/HeelpApplication.cpp"/>
       <FILE id="FngIPN" name="HeelpApplication.h" compile="0" resource="0"

@@ -32,6 +32,8 @@ namespace heelp
         void resized() override;
 
     private:
+        ScopedPointer<AudioDeviceSelectorComponent> audioSetupComponent_;
+        
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainContentComponent)
     };
 }

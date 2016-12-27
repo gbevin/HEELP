@@ -51,7 +51,7 @@ struct AudioSlaveProcess::Pimpl : MessageListener
         ValueTree msg(memoryBlockToValueTree(mb));
         String type = msg.getType().toString();
         
-        if (type == AudioProcessMessageTypes::AUDIODEVICEMANAGER_STATEXML)
+        if (type == AudioProcessMessageTypes::AUDIODEVICEMANAGER_STATE)
         {
             postMessage(new AudioSlaveEventsMessage(initialiseAudio, msg));
         }
@@ -64,14 +64,7 @@ struct AudioSlaveProcess::Pimpl : MessageListener
         {
             case initialiseAudio:
             {
-                String stateXml = msg->payload_.getProperty(AudioProcessMessageProperties::STATE).toString();
-                XmlElement* xml = nullptr;
-                if (stateXml.isNotEmpty())
-                {
-                    XmlDocument doc(stateXml);
-                    xml = doc.getDocumentElement();
-                }
-                app_->startAudio(xml);
+                app_->startAudio(msg->payload_);
                 break;
             }
             default:

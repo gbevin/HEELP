@@ -37,19 +37,18 @@ struct HeelpApplication::Pimpl
         {
             HeelpChildApplication* realApp = new HeelpChildApplication();
             realApp_ = realApp;
+            bool started = false;
             if (realApp->initialise(commandLine))
             {
                 ScopedPointer<AudioSlaveProcess> slave(new AudioSlaveProcess(realApp));
                 if (slave->initialiseFromCommandLine(commandLine, audioCommandLineUID))
                 {
                     slave.release(); // allow the slave object to stay alive - it'll handle its own deletion.
-                }
-                else
-                {
-                    shutdown();
+                    started = true;
                 }
             }
-            else
+            
+            if (!started)
             {
                 shutdown();
             }
@@ -59,14 +58,14 @@ struct HeelpApplication::Pimpl
             HeelpMainApplication* realApp = new HeelpMainApplication();
             realApp_ = realApp;
             realApp->initialise(commandLine);
-            
-            for (int childId = 1; childId <= 4; ++childId)
-            {
-                realApp->launchChildProcess(childId);
-            }
         }
     }
     
+    AudioDeviceManager* getAudioDeviceManager() const
+    {
+        return realApp_->getAudioDeviceManager();
+    }
+
     void anotherInstanceStarted(const String&)
     {
         LOG("Started another instance.");
@@ -89,6 +88,7 @@ struct HeelpApplication::Pimpl
 HeelpApplication::HeelpApplication() : pimpl_(new Pimpl())  {}
 HeelpApplication::~HeelpApplication()                       { pimpl_ = nullptr; }
 
+AudioDeviceManager* HeelpApplication::getAudioDeviceManager() const         { return pimpl_->getAudioDeviceManager(); }
 void HeelpApplication::anotherInstanceStarted(const String& commandLine)    { pimpl_->anotherInstanceStarted(commandLine); }
 void HeelpApplication::initialise(const String& commandLine)                { pimpl_->initialise(commandLine); }
 void HeelpApplication::shutdown()                                           { pimpl_->shutdown(); }
