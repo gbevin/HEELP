@@ -21,39 +21,23 @@
 #include "../Utils.h"
 #include "ChildAudioState.h"
 
-#include <sys/types.h>
-#include <sys/ipc.h>
-#include <sys/shm.h>
-
 using namespace heelp;
 
 struct ChildAudioComponent::Pimpl
 {
-    Pimpl(ChildAudioComponent* parent, int childId, int shmId, const XmlElement* const audioDeviceXml) : parent_(parent), childId_(childId), shmId_(shmId), sharedMemory_(nullptr), sharedAudioBuffer_(nullptr)
+    Pimpl(ChildAudioComponent* parent, int childId, SharedMemory* shm, const XmlElement* const audioDeviceXml) : parent_(parent), childId_(childId), shm_(shm), sharedAudioBuffer_(nullptr)
     {
         parent_->setAudioChannels(0, 2, audioDeviceXml);
         
-        sharedMemory_ = (char*)shmat(shmId_, 0, SHM_RND);
-        if (sharedMemory_ == nullptr)
-        {
-            LOG("shmat error " << errno);
-            // TODO : clean up more gracefully
-            exit(1);
-        }
-        
-        state_ = (ChildAudioState*)sharedMemory_;
+        state_ = (ChildAudioState*)shm_->getShmAddress();
         state_->phase_ = bufferEmpty;
         
-        sharedAudioBuffer_ = (float*)&(sharedMemory_[sizeof(ChildAudioState)]);
+        sharedAudioBuffer_ = (float*)&(shm_->getShmAddress()[sizeof(ChildAudioState)]);
     }
 
     ~Pimpl()
     {
         parent_->shutdownAudio();
-        if (sharedMemory_ != nullptr)
-        {
-            shmdt(sharedMemory_);
-        }
     }
 
     void prepareToPlay(int samplesPerBlockExpected, double sampleRate)
@@ -119,14 +103,13 @@ struct ChildAudioComponent::Pimpl
     ChildAudioComponent* parent_;
     
     int childId_;
-    int shmId_;
-    char* sharedMemory_;
+    SharedMemory* shm_;
     ChildAudioState* state_;
     float* sharedAudioBuffer_;
 };
     
-ChildAudioComponent::ChildAudioComponent(int childId, int shmId, const XmlElement* const xml) : pimpl_(new Pimpl(this, childId, shmId, xml))    {}
-ChildAudioComponent::~ChildAudioComponent()                                                                                                     { pimpl_ = nullptr; }
+ChildAudioComponent::ChildAudioComponent(int childId, SharedMemory* shm, const XmlElement* const xml) : pimpl_(new Pimpl(this, childId, shm, xml))  {}
+ChildAudioComponent::~ChildAudioComponent()                                                                                                         { pimpl_ = nullptr; }
 
 void ChildAudioComponent::prepareToPlay(int samplesPerBlockExpected, double sampleRate) { pimpl_->prepareToPlay(samplesPerBlockExpected, sampleRate); }
 void ChildAudioComponent::releaseResources()                                            { pimpl_->releaseResources(); }

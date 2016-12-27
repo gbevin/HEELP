@@ -33,6 +33,9 @@
               file="Source/Process/AudioSlaveProcess.cpp"/>
         <FILE id="rkxh2s" name="AudioSlaveProcess.h" compile="0" resource="0"
               file="Source/Process/AudioSlaveProcess.h"/>
+        <FILE id="NjHDr2" name="SharedMemory.cpp" compile="1" resource="0"
+              file="Source/Process/SharedMemory.cpp"/>
+        <FILE id="tUiYSf" name="SharedMemory.h" compile="0" resource="0" file="Source/Process/SharedMemory.h"/>
       </GROUP>
       <GROUP id="{70414DB5-F868-F70F-46B6-C1BEC6ED6A5D}" name="UI">
         <FILE id="f8qHmp" name="MainContentComponent.cpp" compile="1" resource="0"

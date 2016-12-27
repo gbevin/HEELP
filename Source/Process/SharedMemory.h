@@ -15,31 +15,32 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef CHILDAUDIOCOMPONENT_H_INCLUDED
-#define CHILDAUDIOCOMPONENT_H_INCLUDED
+#ifndef SHAREDMEMORY_H_INCLUDED
+#define SHAREDMEMORY_H_INCLUDED
 
 #include "JuceHeader.h"
 
-#include "../Process/SharedMemory.h"
-
 namespace heelp
 {
-    class ChildAudioComponent : public AudioAppComponent
+    class SharedMemory
     {
     public:
-        ChildAudioComponent(int childId, SharedMemory* shm, const XmlElement* const audioDeviceXml);
-        ~ChildAudioComponent();
+        static SharedMemory* createWithSize(size_t size);
+        static SharedMemory* attachWithId(int64_t shmId);
         
-        void prepareToPlay(int samplesPerBlockExpected, double sampleRate) override;
-        void releaseResources() override;
-        void getNextAudioBlock(const AudioSourceChannelInfo& bufferToFill) override;
+        virtual ~SharedMemory();
+        
+        int64_t getShmId();
+        char* getShmAddress();
         
         class Pimpl;
     private:
-        ScopedPointer<Pimpl> pimpl_;
+        SharedMemory();
 
-        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ChildAudioComponent)
+        ScopedPointer<Pimpl> pimpl_;
+        
+        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SharedMemory)
     };
 }
 
-#endif  // CHILDAUDIOCOMPONENT_H_INCLUDED
+#endif  // SHAREDMEMORY_H_INCLUDED

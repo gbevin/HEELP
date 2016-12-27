@@ -20,6 +20,8 @@
 
 #include "JuceHeader.h"
 
+#include "../Process/SharedMemory.h"
+
 namespace heelp
 {
     class MainAudioComponent : public AudioAppComponent
@@ -28,7 +30,7 @@ namespace heelp
         MainAudioComponent();
         ~MainAudioComponent();
         
-        void registerChild(int childId, int shmId);
+        void registerChild(int childId, SharedMemory* shm);
         void unregisterChild(int childId);
         
         void prepareToPlay(int samplesPerBlockExpected, double sampleRate) override;

@@ -20,16 +20,13 @@
 #include "HeelpLogger.h"
 #include "Utils.h"
 #include "Audio/ChildAudioComponent.h"
-
-#include <sys/types.h>
-#include <sys/ipc.h>
-#include <sys/shm.h>
+#include "Process/SharedMemory.h"
 
 using namespace heelp;
 
 struct HeelpChildApplication::Pimpl
 {
-    Pimpl() : logger_(nullptr), childId_(-1), shmId_(-1), audio_(nullptr)
+    Pimpl() : logger_(nullptr), childId_(-1), shm_(nullptr), audio_(nullptr)
     {
     }
     
@@ -50,7 +47,8 @@ struct HeelpChildApplication::Pimpl
             }
             if (param.startsWith(CMD_ARG_SHMID))
             {
-                shmId_ = param.substring(String(CMD_ARG_SHMID).length()).getIntValue();
+                int64_t shmId = param.substring(String(CMD_ARG_SHMID).length()).getIntValue();
+                shm_ = SharedMemory::attachWithId(shmId);
             }
         }
         
@@ -59,7 +57,7 @@ struct HeelpChildApplication::Pimpl
             LOG("Couldn't determine the child process ID.");
             result = false;
         }
-        else if (shmId_ < 0)
+        else if (shm_ == nullptr)
         {
             LOG("Couldn't determine shared memory ID to use with child process.");
             result = false;
@@ -68,7 +66,7 @@ struct HeelpChildApplication::Pimpl
         {
             logger_ = new HeelpLogger(childId_);
             Logger::setCurrentLogger(logger_);
-            LOG("Initialised child " << childId_ << " with shared memory ID " << shmId_);
+            LOG("Initialised child " << childId_ << " with shared memory ID " << shm_->getShmId());
         }
         
         return result;
@@ -76,8 +74,8 @@ struct HeelpChildApplication::Pimpl
     
     void startAudio(const XmlElement* const xml)
     {
-        LOG("Setting up audio for child " << childId_ << " with shared memory ID " << shmId_);
-        audio_ = new ChildAudioComponent(childId_, shmId_, xml);
+        LOG("Setting up audio for child " << childId_ << " with shared memory ID " << shm_->getShmId());
+        audio_ = new ChildAudioComponent(childId_, shm_, xml);
     }
     
     void shutdown()
@@ -88,18 +86,13 @@ struct HeelpChildApplication::Pimpl
         logger_ = nullptr;
         
         audio_ = nullptr;
-        
-        if (shmId_ >= 0)
-        {
-            shmctl(shmId_, IPC_RMID, 0);
-            shmId_ = -1;
-        }
+        shm_ = nullptr;
     }
     
     ScopedPointer<FileLogger> logger_;
     
     int childId_;
-    int shmId_;
+    ScopedPointer<SharedMemory> shm_;
     ScopedPointer<ChildAudioComponent> audio_;
 };
 

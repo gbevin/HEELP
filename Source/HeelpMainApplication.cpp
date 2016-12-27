@@ -26,12 +26,10 @@
 #include "Process/AudioMasterProcess.h"
 #include "Process/AudioProcessMessageTypes.h"
 #include "Process/AudioProcessMessageUtils.h"
+#include "Process/SharedMemory.h"
 #include "UI/MainWindow.h"
 
 #include <map>
-#include <sys/types.h>
-#include <sys/ipc.h>
-#include <sys/shm.h>
 
 using namespace heelp;
 
@@ -39,8 +37,21 @@ namespace
 {
     struct MasterProcessInfo
     {
+        void destruct()
+        {
+            if (process_)
+            {
+                delete process_;
+                process_ = nullptr;
+            }
+            if (shm_)
+            {
+                delete shm_;
+                shm_ = nullptr;
+            }
+        }
         AudioMasterProcess* process_;
-        int shmId_;
+        SharedMemory* shm_;
     };
 }
 
@@ -87,25 +98,19 @@ struct HeelpMainApplication::Pimpl
         AudioDeviceManager::AudioDeviceSetup audioSetup;
         audio_->deviceManager.getAudioDeviceSetup(audioSetup);
         
-        int shmId = shmget(IPC_PRIVATE, sizeof(ChildAudioState) + NUM_AUDIO_CHANNELS * audioSetup.bufferSize * sizeof(float), IPC_CREAT|IPC_EXCL|0666);
-        if (shmId < 0) {
-            LOG("shmget error " << errno);
-            // TODO : clean up more cleanly
-            exit(1);
-        }
-        
-        audio_->registerChild(childId, shmId);
+        SharedMemory* shm = SharedMemory::createWithSize(sizeof(ChildAudioState) + NUM_AUDIO_CHANNELS * audioSetup.bufferSize * sizeof(float));
+        audio_->registerChild(childId, shm);
         
         AudioMasterProcess* masterProcess = new AudioMasterProcess(parent_, childId);
         {
             ScopedWriteLock g(masterProcessInfosLock_);
-            masterProcessInfos_.insert(std::pair<int, MasterProcessInfo>{childId, {masterProcess, shmId}});
+            masterProcessInfos_.insert(std::pair<int, MasterProcessInfo>{childId, {masterProcess, shm}});
         }
         
         StringArray args;
         args.add(HeelpChildApplication::CMD_ARG_CHILDID+String(childId));
-        args.add(HeelpChildApplication::CMD_ARG_SHMID+String(shmId));
-        LOG("Launching child " << childId << " with shared memory ID " << shmId);
+        args.add(HeelpChildApplication::CMD_ARG_SHMID+String(shm->getShmId()));
+        LOG("Launching child " << childId << " with shared memory ID " << shm->getShmId());
         if (masterProcess->launchSlaveProcess(File::getSpecialLocation(File::currentExecutableFile), audioCommandLineUID, args))
         {
             LOG("Child process started");
@@ -126,14 +131,7 @@ struct HeelpMainApplication::Pimpl
         std::map<int, MasterProcessInfo>::iterator it = masterProcessInfos_.find(childId);
         if (it != masterProcessInfos_.end())
         {
-            AudioMasterProcess* masterProcess = it->second.process_;
-            if (masterProcess)
-            {
-                delete masterProcess;
-                
-                shmctl(it->second.shmId_, IPC_RMID, 0);
-            }
-            
+            it->second.destruct();
             masterProcessInfos_.erase(it);
             LOG("Child process killed");
         }
@@ -153,13 +151,7 @@ struct HeelpMainApplication::Pimpl
         ScopedWriteLock g(masterProcessInfosLock_);
         for (auto it = masterProcessInfos_.begin(); it != masterProcessInfos_.end(); ++it)
         {
-            AudioMasterProcess* masterProcess = it->second.process_;
-            if (masterProcess)
-            {
-                delete masterProcess;
-                
-                shmctl(it->second.shmId_, IPC_RMID, 0);
-            }
+            it->second.destruct();
         }
         masterProcessInfos_.clear();
     }

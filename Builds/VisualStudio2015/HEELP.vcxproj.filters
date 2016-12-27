@@ -364,6 +364,9 @@
     <ClCompile Include="..\..\Source\Process\AudioSlaveProcess.cpp">
       <Filter>HEELP\Source\Process</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Process\SharedMemory.cpp">
+      <Filter>HEELP\Source\Process</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\UI\MainContentComponent.cpp">
       <Filter>HEELP\Source\UI</Filter>
     </ClCompile>
@@ -2068,6 +2071,9 @@
       <Filter>HEELP\Source\Process</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Process\AudioSlaveProcess.h">
+      <Filter>HEELP\Source\Process</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Process\SharedMemory.h">
       <Filter>HEELP\Source\Process</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\MainContentComponent.h">

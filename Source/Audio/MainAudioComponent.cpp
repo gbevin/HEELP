@@ -22,9 +22,6 @@
 #include "ChildAudioState.h"
 
 #include <map>
-#include <sys/types.h>
-#include <sys/ipc.h>
-#include <sys/shm.h>
 
 using namespace heelp;
 
@@ -32,8 +29,7 @@ namespace
 {
     struct ChildInfo
     {
-        int const shmId_;
-        char* const sharedMemory_;
+        SharedMemory* const shm_;
         ChildAudioState* const state_;
         float* const sharedAudioBuffer_;
     };
@@ -49,30 +45,13 @@ struct MainAudioComponent::Pimpl
     ~Pimpl()
     {
         parent_->shutdownAudio();
-
-        ScopedWriteLock g(childInfosLock_);
-        for (auto it = childInfos_.begin(); it != childInfos_.end(); ++it)
-        {
-            char* sharedMemory = it->second.sharedMemory_;
-            if (sharedMemory)
-            {
-                shmdt(sharedMemory);
-            }
-        }
         childInfos_.clear();
     }
     
-    void registerChild(int childId, int shmId)
+    void registerChild(int childId, SharedMemory* shm)
     {
-        char* sharedMemory = (char*)shmat(shmId, 0, SHM_RND);
-        if (sharedMemory < 0) {
-            LOG("shmat error " << errno);
-            // TODO : clean up more gracefully
-            exit(1);
-        }
-        
+        ChildInfo childInfo = {shm, (ChildAudioState*)shm->getShmAddress(), (float*)(shm->getShmAddress() + sizeof(ChildAudioState))};
         ScopedWriteLock g(childInfosLock_);
-        ChildInfo childInfo = {shmId, sharedMemory, (ChildAudioState*)sharedMemory, (float*)(sharedMemory + sizeof(ChildAudioState))};
         childInfos_.insert(std::pair<int, ChildInfo>{childId, childInfo});
     }
     
@@ -82,11 +61,6 @@ struct MainAudioComponent::Pimpl
         std::map<int, ChildInfo>::iterator it = childInfos_.find(childId);
         if (it != childInfos_.end())
         {
-            char* sharedMemory = it->second.sharedMemory_;
-            if (sharedMemory)
-            {
-                shmdt(sharedMemory);
-            }
             childInfos_.erase(it);
         }
     }
@@ -168,7 +142,7 @@ struct MainAudioComponent::Pimpl
 MainAudioComponent::MainAudioComponent() : pimpl_(new Pimpl(this))  {}
 MainAudioComponent::~MainAudioComponent()                           { pimpl_ = nullptr; }
 
-void MainAudioComponent::registerChild(int childId, int shmId)                          { pimpl_->registerChild(childId, shmId); }
+void MainAudioComponent::registerChild(int childId, SharedMemory* shm)                  { pimpl_->registerChild(childId, shm); }
 void MainAudioComponent::unregisterChild(int childId)                                   { pimpl_->unregisterChild(childId); }
 
 void MainAudioComponent::prepareToPlay(int samplesPerBlockExpected, double sampleRate)  { pimpl_->prepareToPlay(samplesPerBlockExpected, sampleRate); }

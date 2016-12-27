@@ -62,6 +62,7 @@ OBJECTS := \
   $(JUCE_OBJDIR)/AudioMasterProcess_baed3740.o \
   $(JUCE_OBJDIR)/AudioProcessMessageUtils_9db78a0c.o \
   $(JUCE_OBJDIR)/AudioSlaveProcess_3d06ee2f.o \
+  $(JUCE_OBJDIR)/SharedMemory_b0aa330f.o \
   $(JUCE_OBJDIR)/MainContentComponent_52535d99.o \
   $(JUCE_OBJDIR)/MainWindow_5f9c9b05.o \
   $(JUCE_OBJDIR)/HeelpApplication_d02c53ad.o \
@@ -126,6 +127,11 @@ $(JUCE_OBJDIR)/AudioProcessMessageUtils_9db78a0c.o: ../../Source/Process/AudioPr
 $(JUCE_OBJDIR)/AudioSlaveProcess_3d06ee2f.o: ../../Source/Process/AudioSlaveProcess.cpp
 	-@mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling AudioSlaveProcess.cpp"
+	@$(CXX) $(JUCE_CXXFLAGS) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/SharedMemory_b0aa330f.o: ../../Source/Process/SharedMemory.cpp
+	-@mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling SharedMemory.cpp"
 	@$(CXX) $(JUCE_CXXFLAGS) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/MainContentComponent_52535d99.o: ../../Source/UI/MainContentComponent.cpp
