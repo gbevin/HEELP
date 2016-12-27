@@ -27,7 +27,7 @@ It has two main goals:
 * Program change support for scene and tempo switching
 * Automatic capturing of all plugin parameter and environment changes in a history with rollback support
 * Multi-track recording of all input and output data of all channels and busses (no individual record enable)
-* Detection of audio activity for automatic splitting of recordings
+* Detection of audio activity for automatic splitting of recordings, files can use the name of active scene for easy identification
 
 ## TECHNICAL NOTES
 
