@@ -36,7 +36,7 @@ struct HeelpChildApplication::Pimpl
         Process::setDockIconVisible(false);
 #endif
 
-		int64_t shmId = 0;
+        int64_t shmId = 0;
         StringArray params = JUCEApplication::getInstance()->getCommandLineParameterArray();
         for (auto&& param : params)
         {
@@ -56,8 +56,8 @@ struct HeelpChildApplication::Pimpl
             return false;
         }
 
-		logger_ = new HeelpLogger(childId_);
-		Logger::setCurrentLogger(logger_);
+        logger_ = new HeelpLogger(childId_);
+        Logger::setCurrentLogger(logger_);
 
         if (shmId == 0)
         {
@@ -65,14 +65,14 @@ struct HeelpChildApplication::Pimpl
             return false;
         }
 
-		shm_ = SharedMemory::attachWithId(shmId);
-		if (shm_ == nullptr)
-		{
-			LOG("Couldn't attach shared memory ID " << shmId << " for child ID" << childId_);
-			return false;
-		}
+        shm_ = SharedMemory::attachWithId(shmId);
+        if (shm_ == nullptr)
+        {
+            LOG("Couldn't attach shared memory ID " << shmId << " for child ID" << childId_);
+            return false;
+        }
 
-		LOG("Initialised child " << childId_ << " with shared memory ID " << shmId);
+        LOG("Initialised child " << childId_ << " with shared memory ID " << shmId);
         
         return true;
     }

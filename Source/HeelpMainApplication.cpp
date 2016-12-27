@@ -144,17 +144,17 @@ struct HeelpMainApplication::Pimpl
         ScopedWriteLock g(masterProcessInfosLock_);
         for (auto it = masterProcessInfos_.begin(); it != masterProcessInfos_.end(); ++it)
         {
-			audio_->unregisterChild(it->first);
+            audio_->unregisterChild(it->first);
             it->second.destruct();
         }
         masterProcessInfos_.clear();
 
-		audio_ = nullptr;
+        audio_ = nullptr;
 
-		mainWindow_ = nullptr;
+        mainWindow_ = nullptr;
 
-		Logger::setCurrentLogger(nullptr);
-		logger_ = nullptr;
+        Logger::setCurrentLogger(nullptr);
+        logger_ = nullptr;
 
     }
     
