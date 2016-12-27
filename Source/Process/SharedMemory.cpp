@@ -33,16 +33,7 @@ struct SharedMemory::Pimpl
     
     ~Pimpl()
     {
-        if (shmAddress_)
-        {
-            shmdt(shmAddress_);
-            shmAddress_ = nullptr;
-        }
-        
-        if (created_)
-        {
-            shmctl(shmId_, IPC_RMID, 0);
-        }
+        destruct();
     }
     
     void createWithSize(size_t size)
@@ -73,6 +64,25 @@ struct SharedMemory::Pimpl
             }
             
             shmAddress_ = sharedMemory;
+        }
+    }
+    
+    void destruct()
+    {
+        detach();
+        
+        if (created_)
+        {
+            shmctl(shmId_, IPC_RMID, 0);
+        }
+    }
+    
+    void detach()
+    {
+        if (shmAddress_)
+        {
+            shmdt(shmAddress_);
+            shmAddress_ = nullptr;
         }
     }
     

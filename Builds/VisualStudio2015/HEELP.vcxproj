@@ -2277,6 +2277,7 @@
     <ClInclude Include="..\..\JuceLibraryCode\JuceHeader.h"/>
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\BUILDNOTES.md"/>
     <None Include="..\..\CONTRIBUTORS.md"/>
     <None Include="..\..\COPYING.md"/>
     <None Include="..\..\README.md"/>
