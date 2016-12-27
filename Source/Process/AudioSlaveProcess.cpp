@@ -23,7 +23,24 @@
 
 using namespace heelp;
 
-struct AudioSlaveProcess::Pimpl
+namespace
+{
+    enum AudioSlaveEventsMessageType
+    {
+        initiaseAudio
+    };
+
+    struct AudioSlaveEventsMessage : Message
+    {
+        AudioSlaveEventsMessage(const AudioSlaveEventsMessageType type, const ValueTree payload) : type_(type), payload_(payload) {}
+        ~AudioSlaveEventsMessage() {}
+
+        const AudioSlaveEventsMessageType type_;
+        const ValueTree payload_;
+    };
+}
+
+struct AudioSlaveProcess::Pimpl : MessageListener
 {
     Pimpl(HeelpChildApplication* app) : app_(app)
     {
@@ -36,14 +53,29 @@ struct AudioSlaveProcess::Pimpl
         
         if (type == AudioProcessMessageTypes::AUDIODEVICEMANAGER_STATEXML)
         {
-            String stateXml = msg.getProperty(AudioProcessMessageProperties::STATE).toString();
-            XmlElement* xml = nullptr;
-            if (stateXml.isNotEmpty())
+            postMessage(new AudioSlaveEventsMessage(initiaseAudio, msg));
+        }
+    }
+
+    void handleMessage(const Message& message)
+    {
+        AudioSlaveEventsMessage* msg = (AudioSlaveEventsMessage*)&message;
+        switch (msg->type_)
+        {
+            case initiaseAudio:
             {
-                XmlDocument doc(stateXml);
-                xml = doc.getDocumentElement();
+                String stateXml = msg->payload_.getProperty(AudioProcessMessageProperties::STATE).toString();
+                XmlElement* xml = nullptr;
+                if (stateXml.isNotEmpty())
+                {
+                    XmlDocument doc(stateXml);
+                    xml = doc.getDocumentElement();
+                }
+                app_->startAudio(xml);
+                break;
             }
-            app_->startAudio(xml);
+            default:
+                break;
         }
     }
     
