@@ -20,15 +20,9 @@
 
 namespace heelp
 {
-    enum ChildAudioPhase
-    {
-        bufferEmpty,
-        bufferFilled
-    };
-    
     struct ChildAudioState
     {
-        ChildAudioPhase phase_ { bufferEmpty };
+        int activeBuffer_;
     };
 }
 

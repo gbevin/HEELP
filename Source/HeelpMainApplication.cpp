@@ -129,7 +129,7 @@ struct HeelpMainApplication::Pimpl : public ChangeListener
         AudioDeviceManager::AudioDeviceSetup setup;
         dm.getAudioDeviceSetup(setup);
         
-        SharedMemory* shm = SharedMemory::createWithSize(sizeof(ChildAudioState) + NUM_AUDIO_CHANNELS * setup.bufferSize * sizeof(float));
+        SharedMemory* shm = SharedMemory::createWithSize(sizeof(ChildAudioState) + NUM_BUFFERS * NUM_AUDIO_CHANNELS * setup.bufferSize * sizeof(float));
         audio_->registerChild(childId, shm);
         
         AudioMasterProcess* masterProcess = new AudioMasterProcess(parent_, childId);

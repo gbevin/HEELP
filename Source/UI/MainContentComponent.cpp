@@ -23,7 +23,7 @@ using namespace heelp;
 
 MainContentComponent::MainContentComponent()
 {
-    audioSetupComponent_ = new AudioDeviceSelectorComponent(*HeelpApplication::getHeelpInstance()->getAudioDeviceManager(), 0, 0, 0, 256, false, false, true, false);
+    audioSetupComponent_ = new AudioDeviceSelectorComponent(*HeelpApplication::getHeelpInstance()->getAudioDeviceManager(), 0, 0, 0, NUM_AUDIO_CHANNELS, false, false, true, false);
     addAndMakeVisible(audioSetupComponent_);
 
     setSize(600, 400);

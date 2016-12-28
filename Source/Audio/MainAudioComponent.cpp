@@ -37,9 +37,9 @@ namespace
 
 struct MainAudioComponent::Pimpl : public AudioAppComponent
 {
-    Pimpl() : paused_(true)
+    Pimpl() : paused_(true), activeChildBuffer_(0)
     {
-        setAudioChannels(0, 2);
+        setAudioChannels(0, NUM_AUDIO_CHANNELS);
     }
 
     ~Pimpl()
@@ -94,56 +94,37 @@ struct MainAudioComponent::Pimpl : public AudioAppComponent
             return;
         }
 
-        bool childrenDone;
-        do
-        {
-            childrenDone = true;
-            
-            ScopedReadLock g(childInfosLock_);
-            for (auto it = childInfos_.begin(); it != childInfos_.end(); ++it)
-            {
-                if (it->second.state_->phase_ == bufferEmpty)
-                {
-                    childrenDone = false;
-                    break;
-                }
-            }
-            
-            if (childrenDone)
-            {
-                break;
-            }
-            
-            // TODO: might want to find something better than waiting for at least a millisecond to continue
-            Thread::sleep(1);
-        }
-        while (true);
-        
         AudioDeviceManager::AudioDeviceSetup setup;
         deviceManager.getAudioDeviceSetup(setup);
-
+        
         AudioSampleBuffer* outputBuffer = bufferToFill.buffer;
         outputBuffer->clear();
 
-        ScopedReadLock g(childInfosLock_);
+        // set all the children to the new active buffer
+        {
+            ScopedWriteLock g(childInfosLock_);
+            for (auto it = childInfos_.begin(); it != childInfos_.end(); ++it)
+            {
+                it->second.state_->activeBuffer_ = activeChildBuffer_;
+            }
+        }
+        activeChildBuffer_ = 1 - activeChildBuffer_;
+        
+        int bufferOffset = activeChildBuffer_ * NUM_AUDIO_CHANNELS * setup.bufferSize;
         
         int startSample = 0;
         int numSamples = bufferToFill.numSamples;
+        ScopedReadLock g(childInfosLock_);
         while (--numSamples >= 0)
         {
             for (int chan = outputBuffer->getNumChannels(); --chan >= 0;)
             {
                 for (auto it = childInfos_.begin(); it != childInfos_.end(); ++it)
                 {
-                    outputBuffer->addSample(chan, startSample, it->second.sharedAudioBuffer_[chan * setup.bufferSize + startSample]);
+                    outputBuffer->addSample(chan, startSample, it->second.sharedAudioBuffer_[bufferOffset + chan * setup.bufferSize + startSample]);
                 }
             }
             ++startSample;
-        }
-        
-        for (auto it = childInfos_.begin(); it != childInfos_.end(); ++it)
-        {
-            it->second.state_->phase_ = bufferEmpty;
         }
     }
 
@@ -153,6 +134,7 @@ struct MainAudioComponent::Pimpl : public AudioAppComponent
     }
     
     Atomic<int> paused_;
+    int activeChildBuffer_;
     ReadWriteLock childInfosLock_;
     std::map<int, ChildInfo> childInfos_;
 };

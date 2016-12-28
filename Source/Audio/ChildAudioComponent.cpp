@@ -29,7 +29,7 @@ struct ChildAudioComponent::Pimpl : public AudioSource
     Pimpl(int childId, SharedMemory* shm) : childId_(childId), shm_(shm), sharedAudioBuffer_(nullptr)
     {
         state_ = (ChildAudioState*)shm_->getShmAddress();
-        state_->phase_ = bufferEmpty;
+        state_->activeBuffer_ = 0;
         
         sharedAudioBuffer_ = (float*)&(shm_->getShmAddress()[sizeof(ChildAudioState)]);
     }
@@ -51,7 +51,7 @@ struct ChildAudioComponent::Pimpl : public AudioSource
             setup.bufferSize = state.getProperty(AudioProcessMessageProperties::AUDIO_DEVICE_BUFFERSIZE, 512);
         }
         
-        String audioError = deviceManager_.initialise(0, 2, nullptr, true, "", &setup);
+        String audioError = deviceManager_.initialise(0, NUM_AUDIO_CHANNELS, nullptr, true, "", &setup);
         jassert(audioError.isEmpty());
         
         deviceManager_.addAudioCallback(&audioSourcePlayer_);
@@ -79,6 +79,8 @@ struct ChildAudioComponent::Pimpl : public AudioSource
 
     void getNextAudioBlock(const AudioSourceChannelInfo& bufferToFill)
     {
+        int activeBuffer = state_->activeBuffer_;
+        
         AudioSampleBuffer* outputBuffer = bufferToFill.buffer;
         outputBuffer->clear();
         
@@ -97,22 +99,21 @@ struct ChildAudioComponent::Pimpl : public AudioSource
             int startSample = 0;
             int numSamples = bufferToFill.numSamples;
 
+            int bufferOffset = activeBuffer * NUM_AUDIO_CHANNELS * audioSetup.bufferSize;
             while (--numSamples >= 0)
             {
                 const float currentSample = (float)(std::sin(currentAngle) * level);
                 
                 for (int chan = outputBuffer->getNumChannels(); --chan >= 0;)
                 {
-                    sharedAudioBuffer_[chan * audioSetup.bufferSize + startSample] = currentSample;
-                    //outputBuffer->addSample(chan, startSample, currentSample);
+                    sharedAudioBuffer_[bufferOffset + chan * audioSetup.bufferSize + startSample] = currentSample;
+//                    outputBuffer->addSample(chan, startSample, currentSample);
                 }
                 
                 currentAngle += angleDelta;
                 ++startSample;
             }
         }
-        
-        state_->phase_ = bufferFilled;
         
         // artificial load generator
 //        static double dummyvar = 0;
