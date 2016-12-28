@@ -63,7 +63,7 @@ struct SharedMemory::Pimpl
             // TODO : clean up more respectfully
             exit(1);
         }
-        int64_t shmId =    (int64_t)hMapFile;
+        int64_t shmId = (int64_t)hMapFile;
 #endif
 
         created_ = true;

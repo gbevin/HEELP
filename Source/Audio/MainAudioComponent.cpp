@@ -19,7 +19,6 @@
 
 #include "../HeelpApplication.h"
 #include "../Utils.h"
-#include "ChildAudioState.h"
 
 #include <map>
 
@@ -30,14 +29,13 @@ namespace
     struct ChildInfo
     {
         SharedMemory* const shm_;
-        ChildAudioState* const state_;
         float* const sharedAudioBuffer_;
     };
 }
 
 struct MainAudioComponent::Pimpl : public AudioAppComponent
 {
-    Pimpl() : paused_(true), activeChildBuffer_(0)
+    Pimpl() : paused_(true)
     {
         setAudioChannels(0, NUM_AUDIO_CHANNELS);
     }
@@ -65,7 +63,7 @@ struct MainAudioComponent::Pimpl : public AudioAppComponent
 
     void registerChild(int childId, SharedMemory* shm)
     {
-        ChildInfo childInfo = {shm, (ChildAudioState*)shm->getShmAddress(), (float*)(shm->getShmAddress() + sizeof(ChildAudioState))};
+        ChildInfo childInfo = {shm, (float*)shm->getShmAddress()};
         ScopedWriteLock g(childInfosLock_);
         childInfos_.insert(std::pair<int, ChildInfo>{childId, childInfo});
     }
@@ -99,18 +97,6 @@ struct MainAudioComponent::Pimpl : public AudioAppComponent
         
         AudioSampleBuffer* outputBuffer = bufferToFill.buffer;
         outputBuffer->clear();
-
-        // set all the children to the new active buffer
-        {
-            ScopedWriteLock g(childInfosLock_);
-            for (auto it = childInfos_.begin(); it != childInfos_.end(); ++it)
-            {
-                it->second.state_->activeBuffer_ = activeChildBuffer_;
-            }
-        }
-        activeChildBuffer_ = 1 - activeChildBuffer_;
-        
-        int bufferOffset = activeChildBuffer_ * NUM_AUDIO_CHANNELS * setup.bufferSize;
         
         int startSample = 0;
         int numSamples = bufferToFill.numSamples;
@@ -121,7 +107,7 @@ struct MainAudioComponent::Pimpl : public AudioAppComponent
             {
                 for (auto it = childInfos_.begin(); it != childInfos_.end(); ++it)
                 {
-                    outputBuffer->addSample(chan, startSample, it->second.sharedAudioBuffer_[bufferOffset + chan * setup.bufferSize + startSample]);
+                    outputBuffer->addSample(chan, startSample, it->second.sharedAudioBuffer_[chan * setup.bufferSize + startSample]);
                 }
             }
             ++startSample;
@@ -134,7 +120,6 @@ struct MainAudioComponent::Pimpl : public AudioAppComponent
     }
     
     Atomic<int> paused_;
-    int activeChildBuffer_;
     ReadWriteLock childInfosLock_;
     std::map<int, ChildInfo> childInfos_;
 };

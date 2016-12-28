@@ -20,7 +20,6 @@
 #include "../HeelpApplication.h"
 #include "../Utils.h"
 #include "../Process/AudioProcessMessageTypes.h"
-#include "ChildAudioState.h"
 
 using namespace heelp;
 
@@ -28,10 +27,7 @@ struct ChildAudioComponent::Pimpl : public AudioSource
 {
     Pimpl(int childId, SharedMemory* shm) : childId_(childId), shm_(shm), sharedAudioBuffer_(nullptr)
     {
-        state_ = (ChildAudioState*)shm_->getShmAddress();
-        state_->activeBuffer_ = 0;
-        
-        sharedAudioBuffer_ = (float*)&(shm_->getShmAddress()[sizeof(ChildAudioState)]);
+        sharedAudioBuffer_ = (float*)shm_->getShmAddress();
     }
 
     ~Pimpl()
@@ -79,8 +75,6 @@ struct ChildAudioComponent::Pimpl : public AudioSource
 
     void getNextAudioBlock(const AudioSourceChannelInfo& bufferToFill)
     {
-        int activeBuffer = state_->activeBuffer_;
-        
         AudioSampleBuffer* outputBuffer = bufferToFill.buffer;
         outputBuffer->clear();
         
@@ -99,20 +93,21 @@ struct ChildAudioComponent::Pimpl : public AudioSource
             int startSample = 0;
             int numSamples = bufferToFill.numSamples;
 
-            int bufferOffset = activeBuffer * NUM_AUDIO_CHANNELS * audioSetup.bufferSize;
+            int totalBufferSize = NUM_AUDIO_CHANNELS * audioSetup.bufferSize;
             while (--numSamples >= 0)
             {
                 const float currentSample = (float)(std::sin(currentAngle) * level);
                 
                 for (int chan = outputBuffer->getNumChannels(); --chan >= 0;)
                 {
-                    sharedAudioBuffer_[bufferOffset + chan * audioSetup.bufferSize + startSample] = currentSample;
+                    sharedAudioBuffer_[totalBufferSize + chan * audioSetup.bufferSize + startSample] = currentSample;
 //                    outputBuffer->addSample(chan, startSample, currentSample);
                 }
                 
                 currentAngle += angleDelta;
                 ++startSample;
             }
+            memcpy(&sharedAudioBuffer_[0], &sharedAudioBuffer_[totalBufferSize], totalBufferSize * sizeof(float));
         }
         
         // artificial load generator
@@ -129,7 +124,6 @@ struct ChildAudioComponent::Pimpl : public AudioSource
     
     int childId_;
     SharedMemory* shm_;
-    ChildAudioState* state_;
     float* sharedAudioBuffer_;
     
     AudioDeviceManager deviceManager_;
