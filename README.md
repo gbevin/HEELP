@@ -17,7 +17,8 @@ It has two main goals:
 * Scalable UI with sleak and bare-bones vector-graphics 
 * Small enough to run on restricted devices like the BeagleBone Black
 * Channel-based mixer with fixed number of sends and busses for clarity
-* Channels and busses can host any number of instrument and effect plugins in series
+* Channels can host any number of instrument and effect plugins in series
+* Busses can host any number of effect plugins in series
 * Per-channel input selection with multiple possible sources (ie. each channel has its set of MIDI, controller and audio ports)
 * Plugins and channels can't be changed in real-time, you set up your environment and parametrize it
 * Channels and busses can have custom colors for the background and foreground for easy identification
@@ -35,6 +36,7 @@ Having a rigid structure of a list of channels and busses with sends has a serie
 * It's very easy to understand what is going on during a performance or rehearsal
 * The graph is stable, allowing for completely predictible application behavior
 * Channels can input and output both MIDI and audio
+* There's no master bus in the main process, only aux busses, each channel outputs to the audio interface directly 
 * Busses can only receive and output audio
 * Each channel runs as a seperate process:
     * Any channel process (and its plugins) can run on another CPU core, leveraging the parallel nature of modern computers
