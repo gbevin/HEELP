@@ -25,9 +25,6 @@
 #include <sys/shm.h>
 #elif JUCE_WINDOWS
 #include <windows.h>
-#include <stdio.h>
-#include <conio.h>
-#include <tchar.h>
 #pragma comment(lib, "user32.lib")
 #endif
 

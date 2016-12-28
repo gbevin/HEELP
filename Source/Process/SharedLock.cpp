@@ -23,6 +23,7 @@
 #include <semaphore.h>
 #include <sys/sem.h>
 #elif JUCE_WINDOWS
+#include <windows.h>
 #endif
 
 using namespace heelp;
@@ -40,14 +41,18 @@ struct SharedLock::Pimpl
     
     String semaphoreName()
     {
-        return "/heelp/sem/"+String(childId_);
+#if JUCE_MAC || JUCE_LINUX
+        return "/com.uwyn.heelp_sem_"+String(childId_);
+#elif JUCE_WINDOWS
+        return "Global\\com.uwyn.heelp_sem_" + String(childId_);
+#endif
     }
     
     void createForChild(int childId)
     {
         childId_ = childId;
-#if JUCE_MAC || JUCE_LINUX
         String name = semaphoreName();
+#if JUCE_MAC || JUCE_LINUX
         sem_t* sem = sem_open(name.toRawUTF8(), O_CREAT, 0644, 1);
         if (sem == SEM_FAILED)
         {
@@ -57,14 +62,23 @@ struct SharedLock::Pimpl
         }
         sem_ = sem;
 #elif JUCE_WINDOWS
+        HANDLE hSem = CreateSemaphoreW(NULL, 1, 1, name.toWideCharPointer());
+        if (hSem == nullptr)
+        {
+            LOG("Could not create semaphore object (" << (int)GetLastError() << ")");
+            // TODO : clean up more respectfully
+            ::exit(1);
+        }
+        sem_ = hSem;
+
 #endif
     }
     
     void openForChild(int childId)
     {
         childId_ = childId;
-#if JUCE_MAC || JUCE_LINUX
         String name = semaphoreName();
+#if JUCE_MAC || JUCE_LINUX
         sem_t* sem = sem_open(name.toRawUTF8(), 0, 0644, 0);
         if (sem == SEM_FAILED)
         {
@@ -74,6 +88,14 @@ struct SharedLock::Pimpl
         }
         sem_ = sem;
 #elif JUCE_WINDOWS
+        HANDLE hSem = OpenSemaphoreW(SEMAPHORE_MODIFY_STATE, false, name.toWideCharPointer());
+        if (hSem == nullptr)
+        {
+            LOG("Could not open semaphore object (" << (int)GetLastError() << ")");
+            // TODO : clean up more respectfully
+            ::exit(1);
+        }
+        sem_ = hSem;
 #endif
     }
 
@@ -84,6 +106,7 @@ struct SharedLock::Pimpl
         String name = semaphoreName();
         sem_unlink(name.toRawUTF8());
 #elif JUCE_WINDOWS
+        CloseHandle(sem_);
 #endif
     }
 
@@ -92,6 +115,7 @@ struct SharedLock::Pimpl
 #if JUCE_MAC || JUCE_LINUX
         sem_wait(sem_);
 #elif JUCE_WINDOWS
+        WaitForSingleObject(sem_, INFINITE);
 #endif
     }
     
@@ -100,6 +124,7 @@ struct SharedLock::Pimpl
 #if JUCE_MAC || JUCE_LINUX
         sem_post(sem_);
 #elif JUCE_WINDOWS
+        ReleaseSemaphore(sem_, 1, NULL);
 #endif
     }
     
@@ -107,6 +132,7 @@ struct SharedLock::Pimpl
 #if JUCE_MAC || JUCE_LINUX
     sem_t* sem_;
 #elif JUCE_WINDOWS
+    HANDLE sem_;
 #endif
 };
 
