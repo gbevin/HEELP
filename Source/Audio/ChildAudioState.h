@@ -24,7 +24,7 @@ namespace heelp
 {
     struct ChildAudioState
     {
-        CriticalSection mutex_;
+//        CriticalSection mutex_;
     };
 }
 

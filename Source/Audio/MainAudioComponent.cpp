@@ -99,9 +99,9 @@ struct MainAudioComponent::Pimpl : public AudioAppComponent
             ScopedReadLock g(childInfosLock_);
             for (auto it = childInfos_.begin(); it != childInfos_.end(); ++it)
             {
-                it->second.state_->mutex_.enter();
+//                it->second.state_->mutex_.enter();
                 memcpy(it->second.localAudioBuffer_, it->second.sharedAudioBuffer_, NUM_AUDIO_CHANNELS * bufferToFill.numSamples * sizeof(float));
-                it->second.state_->mutex_.exit();
+//                it->second.state_->mutex_.exit();
             }
         }
         

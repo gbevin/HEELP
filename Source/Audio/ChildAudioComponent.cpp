@@ -109,9 +109,9 @@ struct ChildAudioComponent::Pimpl : public AudioSource
                 currentAngle += angleDelta;
                 ++startSample;
             }
-            state_->mutex_.enter();
+//            state_->mutex_.enter();
             memcpy(&sharedAudioBuffer_[0], &sharedAudioBuffer_[totalBufferSize], totalBufferSize * sizeof(float));
-            state_->mutex_.exit();
+//            state_->mutex_.exit();
         }
         
         // artificial load generator
