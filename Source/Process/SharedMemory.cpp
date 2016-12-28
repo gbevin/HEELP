@@ -21,8 +21,7 @@
 
 #if JUCE_MAC || JUCE_LINUX
 #include <sys/types.h>
-#include <sys/ipc.h>
-#include <sys/shm.h>
+#include <sys/mman.h>
 #elif JUCE_WINDOWS
 #include <windows.h>
 #pragma comment(lib, "user32.lib")
@@ -32,7 +31,7 @@ using namespace heelp;
 
 struct SharedMemory::Pimpl
 {
-    Pimpl() : created_(false), shmAddress_(nullptr)
+    Pimpl() : childId_(-1), created_(false), size_(0), shmAddress_(nullptr)
     {
     }
     
@@ -40,14 +39,30 @@ struct SharedMemory::Pimpl
     {
         destruct();
     }
-    
-    void createWithSize(size_t size)
-    {
+
 #if JUCE_MAC || JUCE_LINUX
-        int64_t shmId = shmget(IPC_PRIVATE, size, IPC_CREAT|IPC_EXCL|0666);
-        if (shmId < 0)
+    String shmName()
+    {
+        return "/tmp/com.uwyn.heelp_sem_"+String(childId_);
+    }
+#endif
+    
+    void createForChildWithSize(int childId, size_t size)
+    {
+        childId_ = childId;
+        size_ = size;
+#if JUCE_MAC || JUCE_LINUX
+        String name = shmName();
+        int64_t shmFd = shm_open(name.toRawUTF8(), O_CREAT|O_EXCL|O_RDWR, S_IRUSR|S_IWUSR);
+        if (shmFd < 0)
         {
-            LOG("shmget error " << errno);
+            LOG("shm_open error " << errno);
+            // TODO : clean up more respectfully
+            exit(1);
+        }
+        if (ftruncate(shmFd, size) == -1)
+        {
+            LOG("ftruncate error " << errno);
             // TODO : clean up more respectfully
             exit(1);
         }
@@ -61,11 +76,11 @@ struct SharedMemory::Pimpl
             // TODO : clean up more respectfully
             exit(1);
         }
-        int64_t shmId = (int64_t)hMapFile;
+        int64_t shmFd = (int64_t)hMapFile;
 #endif
 
         created_ = true;
-        shmId_ = shmId;
+        shmFd_ = shmFd;
         
         attach();
     }
@@ -75,15 +90,16 @@ struct SharedMemory::Pimpl
         if (shmAddress_ == nullptr)
         {
 #if JUCE_MAC || JUCE_LINUX
-            char* sharedMemory = (char*)shmat(shmId_, 0, SHM_RND);
-            if (sharedMemory == nullptr)
+            char* sharedMemory = (char*)mmap(nullptr, size_, PROT_READ|PROT_WRITE, MAP_SHARED, shmFd_, 0);
+            close(shmFd_);
+            if (sharedMemory == MAP_FAILED)
             {
-                LOG("shmat error " << errno);
+                LOG("mmap error " << errno);
                 // TODO : clean up more respectfully
                 exit(1);
             }
 #elif JUCE_WINDOWS
-            LPCTSTR pBuf = (LPTSTR)MapViewOfFile((HANDLE)shmId_, FILE_MAP_ALL_ACCESS, 0, 0, 0);
+            LPCTSTR pBuf = (LPTSTR)MapViewOfFile((HANDLE)shmFd_, FILE_MAP_ALL_ACCESS, 0, 0, 0);
             if (pBuf == nullptr)
             {
                 LOG("Could not map view of file (" << (int)GetLastError() << ")");
@@ -104,9 +120,15 @@ struct SharedMemory::Pimpl
         if (created_)
         {
 #if JUCE_MAC || JUCE_LINUX
-            shmctl(shmId_, IPC_RMID, 0);
+            String name = shmName();
+            if (shm_unlink(name.toRawUTF8()) == -1)
+            {
+                LOG("shm_unlink error " << errno);
+                // TODO : clean up more respectfully
+                exit(1);
+            }
 #elif JUCE_WINDOWS
-            CloseHandle((HANDLE)shmId_);
+            CloseHandle((HANDLE)shmFd_);
 #endif
             created_ = false;
         }
@@ -117,7 +139,12 @@ struct SharedMemory::Pimpl
         if (shmAddress_)
         {
 #if JUCE_MAC || JUCE_LINUX
-            shmdt(shmAddress_);
+            if (munmap(shmAddress_, size_) == -1)
+            {
+                LOG("munmap error " << errno);
+                // TODO : clean up more respectfully
+                exit(1);
+            }
 #elif JUCE_WINDOWS
             UnmapViewOfFile(shmAddress_);
 #endif
@@ -125,18 +152,37 @@ struct SharedMemory::Pimpl
         }
     }
     
-    void attachWithId(int64_t shmId)
+    void attachForChildWithInfo(int childId, int64_t info)
     {
         if (shmAddress_ == nullptr && !created_)
         {
-            shmId_ = shmId;
+            childId_ = childId;
+#if JUCE_MAC || JUCE_LINUX
+            size_ = info;
+            
+            String name = shmName();
+            int64_t shmFd = shm_open(name.toRawUTF8(), O_RDWR, S_IRUSR|S_IWUSR);
+            if (shmFd < 0)
+            {
+                LOG("shm_open error " << errno);
+                // TODO : clean up more respectfully
+                exit(1);
+            }
+            shmFd_ = shmFd;
+#elif JUCE_WINDOWS
+            shmFd_ = info;
+#endif
             attach();
         }
     }
     
-    int64_t getShmId()
+    int64_t getShmInfo()
     {
-        return shmId_;
+#if JUCE_MAC || JUCE_LINUX
+        return size_;
+#elif JUCE_WINDOWS
+        return shmFd_;
+#endif
     }
     
     char* getShmAddress()
@@ -144,27 +190,29 @@ struct SharedMemory::Pimpl
         return shmAddress_;
     }
     
+    int childId_;
     bool created_;
-    int64_t shmId_;
+    size_t size_;
+    int64_t shmFd_;
     char* shmAddress_;
 };
 
 SharedMemory::SharedMemory() : pimpl_(new Pimpl())  {}
 SharedMemory::~SharedMemory()                       { pimpl_ = nullptr; }
 
-SharedMemory* SharedMemory::createWithSize(size_t size)
+SharedMemory* SharedMemory::createForChildWithSize(int childId, size_t size)
 {
     SharedMemory* mem = new SharedMemory();
-    mem->pimpl_->createWithSize(size);
+    mem->pimpl_->createForChildWithSize(childId, size);
     return mem;
 }
 
-SharedMemory* SharedMemory::attachWithId(int64_t shmId)
+SharedMemory* SharedMemory::attachForChildWithInfo(int childId, int64_t info)
 {
     SharedMemory* mem = new SharedMemory();
-    mem->pimpl_->attachWithId(shmId);
+    mem->pimpl_->attachForChildWithInfo(childId, info);
     return mem;
 }
 
-int64_t SharedMemory::getShmId()    { return pimpl_->getShmId(); }
+int64_t SharedMemory::getShmInfo()  { return pimpl_->getShmInfo(); }
 char* SharedMemory::getShmAddress() { return pimpl_->getShmAddress(); }

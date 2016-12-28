@@ -25,12 +25,12 @@ namespace heelp
     class SharedMemory
     {
     public:
-        static SharedMemory* createWithSize(size_t size);
-        static SharedMemory* attachWithId(int64_t shmId);
+        static SharedMemory* createForChildWithSize(int childId, size_t size);
+        static SharedMemory* attachForChildWithInfo(int childId, int64_t info);
         
         virtual ~SharedMemory();
         
-        int64_t getShmId();
+        int64_t getShmInfo();
         char* getShmAddress();
         
         struct Pimpl;

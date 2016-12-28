@@ -36,7 +36,7 @@ struct HeelpChildApplication::Pimpl
         Process::setDockIconVisible(false);
 #endif
 
-        int64_t shmId = 0;
+        int64_t shmInfo = 0;
         StringArray params = JUCEApplication::getInstance()->getCommandLineParameterArray();
         for (auto&& param : params)
         {
@@ -44,9 +44,9 @@ struct HeelpChildApplication::Pimpl
             {
                 childId_ = param.substring(String(CMD_ARG_CHILDID).length()).getIntValue();
             }
-            if (param.startsWith(CMD_ARG_SHMID))
+            if (param.startsWith(CMD_ARG_SHMINFO))
             {
-                shmId = param.substring(String(CMD_ARG_SHMID).length()).getIntValue();
+                shmInfo = param.substring(String(CMD_ARG_SHMINFO).length()).getIntValue();
             }
         }
 
@@ -59,21 +59,21 @@ struct HeelpChildApplication::Pimpl
         logger_ = new HeelpLogger(childId_);
         Logger::setCurrentLogger(logger_);
 
-        if (shmId == 0)
+        if (shmInfo == 0)
         {
-            LOG("Couldn't determine shared memory ID to use for child ID" << childId_);
+            LOG("Couldn't determine shared memory info to use for child ID" << childId_);
             return false;
         }
 
-        shm_ = SharedMemory::attachWithId(shmId);
+        shm_ = SharedMemory::attachForChildWithInfo(childId_, shmInfo);
         if (shm_ == nullptr)
         {
-            LOG("Couldn't attach shared memory ID " << shmId << " for child ID" << childId_);
+            LOG("Couldn't attach shared memory with info " << shmInfo << " for child ID" << childId_);
             return false;
         }
 
         audio_ = new ChildAudioComponent(childId_, shm_);
-        LOG("Initialised child " << childId_ << " with shared memory ID " << shmId);
+        LOG("Initialised child " << childId_ << " with shared memory info " << shmInfo);
         
         return true;
     }
@@ -90,7 +90,7 @@ struct HeelpChildApplication::Pimpl
     
     void startAudio(ValueTree state)
     {
-        LOG("Setting up audio for child " << childId_ << " with shared memory ID " << shm_->getShmId());
+        LOG("Setting up audio for child " << childId_ << " with shared memory info " << shm_->getShmInfo());
         audio_->startAudio(state);
     }
     

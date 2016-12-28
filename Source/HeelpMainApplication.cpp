@@ -136,7 +136,7 @@ struct HeelpMainApplication::Pimpl : public ChangeListener
         
         int bufferSizeBytes = NUM_AUDIO_CHANNELS * setup.bufferSize * sizeof(float);
         float* localBuffer = (float*)malloc(bufferSizeBytes);
-        SharedMemory* shm = SharedMemory::createWithSize(NUM_BUFFERS * bufferSizeBytes);
+        SharedMemory* shm = SharedMemory::createForChildWithSize(childId, NUM_BUFFERS * bufferSizeBytes);
         audio_->registerChild(childId, shm, localBuffer);
         
         AudioMasterProcess* masterProcess = new AudioMasterProcess(parent_, childId);
@@ -147,8 +147,8 @@ struct HeelpMainApplication::Pimpl : public ChangeListener
         
         StringArray args;
         args.add(HeelpChildApplication::CMD_ARG_CHILDID+String(childId));
-        args.add(HeelpChildApplication::CMD_ARG_SHMID+String(shm->getShmId()));
-        LOG("Launching child " << childId << " with shared memory ID " << shm->getShmId());
+        args.add(HeelpChildApplication::CMD_ARG_SHMINFO+String(shm->getShmInfo()));
+        LOG("Launching child " << childId << " with shared memory info " << shm->getShmInfo());
         if (masterProcess->launchSlaveProcess(File::getSpecialLocation(File::currentExecutableFile), audioCommandLineUID, args))
         {
             LOG("Child process started");
