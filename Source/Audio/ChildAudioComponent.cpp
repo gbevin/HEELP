@@ -20,6 +20,7 @@
 #include "../HeelpApplication.h"
 #include "../Utils.h"
 #include "../Process/AudioProcessMessageTypes.h"
+#include "ChildAudioState.h"
 
 using namespace heelp;
 
@@ -27,7 +28,8 @@ struct ChildAudioComponent::Pimpl : public AudioSource
 {
     Pimpl(int childId, SharedMemory* shm) : childId_(childId), shm_(shm), sharedAudioBuffer_(nullptr)
     {
-        sharedAudioBuffer_ = (float*)shm_->getShmAddress();
+        state_ = (ChildAudioState*)shm_->getShmAddress();
+        sharedAudioBuffer_ = (float*)&(shm_->getShmAddress()[sizeof(ChildAudioState)]);
     }
 
     ~Pimpl()
@@ -93,21 +95,23 @@ struct ChildAudioComponent::Pimpl : public AudioSource
             int startSample = 0;
             int numSamples = bufferToFill.numSamples;
 
-            int totalBufferSize = NUM_AUDIO_CHANNELS * audioSetup.bufferSize;
+            int totalBufferSize = NUM_AUDIO_CHANNELS * bufferToFill.numSamples;
             while (--numSamples >= 0)
             {
                 const float currentSample = (float)(std::sin(currentAngle) * level);
                 
                 for (int chan = outputBuffer->getNumChannels(); --chan >= 0;)
                 {
-                    sharedAudioBuffer_[totalBufferSize + chan * audioSetup.bufferSize + startSample] = currentSample;
+                    sharedAudioBuffer_[totalBufferSize + chan * bufferToFill.numSamples + startSample] = currentSample;
 //                    outputBuffer->addSample(chan, startSample, currentSample);
                 }
                 
                 currentAngle += angleDelta;
                 ++startSample;
             }
+            state_->mutex_.enter();
             memcpy(&sharedAudioBuffer_[0], &sharedAudioBuffer_[totalBufferSize], totalBufferSize * sizeof(float));
+            state_->mutex_.exit();
         }
         
         // artificial load generator
@@ -124,6 +128,7 @@ struct ChildAudioComponent::Pimpl : public AudioSource
     
     int childId_;
     SharedMemory* shm_;
+    ChildAudioState* state_;
     float* sharedAudioBuffer_;
     
     AudioDeviceManager deviceManager_;

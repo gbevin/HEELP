@@ -35,7 +35,7 @@ namespace heelp
         void pause();
         void resume();
 
-        void registerChild(int childId, SharedMemory* shm);
+        void registerChild(int childId, SharedMemory* shm, float* localBuffer);
         void unregisterChild(int childId);
         
         struct Pimpl;

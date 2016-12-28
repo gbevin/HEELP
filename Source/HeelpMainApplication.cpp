@@ -21,6 +21,7 @@
 #include "HeelpChildApplication.h"
 #include "HeelpLogger.h"
 #include "Utils.h"
+#include "Audio/ChildAudioState.h"
 #include "Audio/MainAudioComponent.h"
 #include "Process/AudioMasterProcess.h"
 #include "Process/AudioProcessMessageTypes.h"
@@ -48,9 +49,15 @@ namespace
                 delete shm_;
                 shm_ = nullptr;
             }
+            if (localBuffer_)
+            {
+                free(localBuffer_);
+                localBuffer_ = nullptr;
+            }
         }
         AudioMasterProcess* process_;
         SharedMemory* shm_;
+        float* localBuffer_;
     };
 }
 
@@ -128,13 +135,15 @@ struct HeelpMainApplication::Pimpl : public ChangeListener
         AudioDeviceManager::AudioDeviceSetup setup;
         dm.getAudioDeviceSetup(setup);
         
-        SharedMemory* shm = SharedMemory::createWithSize(NUM_BUFFERS * NUM_AUDIO_CHANNELS * setup.bufferSize * sizeof(float));
-        audio_->registerChild(childId, shm);
+        int bufferSizeBytes = NUM_AUDIO_CHANNELS * setup.bufferSize * sizeof(float);
+        float* localBuffer = (float*)malloc(bufferSizeBytes);
+        SharedMemory* shm = SharedMemory::createWithSize(sizeof(ChildAudioState) + NUM_BUFFERS * bufferSizeBytes);
+        audio_->registerChild(childId, shm, localBuffer);
         
         AudioMasterProcess* masterProcess = new AudioMasterProcess(parent_, childId);
         {
             ScopedWriteLock g(masterProcessInfosLock_);
-            masterProcessInfos_.insert(std::pair<int, MasterProcessInfo>{childId, {masterProcess, shm}});
+            masterProcessInfos_.insert(std::pair<int, MasterProcessInfo>{childId, {masterProcess, shm, localBuffer}});
         }
         
         StringArray args;

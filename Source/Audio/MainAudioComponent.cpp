@@ -19,6 +19,7 @@
 
 #include "../HeelpApplication.h"
 #include "../Utils.h"
+#include "ChildAudioState.h"
 
 #include <map>
 
@@ -29,7 +30,9 @@ namespace
     struct ChildInfo
     {
         SharedMemory* const shm_;
+        ChildAudioState* const state_;
         float* const sharedAudioBuffer_;
+        float* const localAudioBuffer_;
     };
 }
 
@@ -61,9 +64,9 @@ struct MainAudioComponent::Pimpl : public AudioAppComponent
         paused_ = false;
     }
 
-    void registerChild(int childId, SharedMemory* shm)
+    void registerChild(int childId, SharedMemory* shm, float* localBuffer)
     {
-        ChildInfo childInfo = {shm, (float*)shm->getShmAddress()};
+        ChildInfo childInfo = {shm, (ChildAudioState*)shm->getShmAddress(), (float*)(shm->getShmAddress() + sizeof(ChildAudioState)), localBuffer};
         ScopedWriteLock g(childInfosLock_);
         childInfos_.insert(std::pair<int, ChildInfo>{childId, childInfo});
     }
@@ -92,25 +95,34 @@ struct MainAudioComponent::Pimpl : public AudioAppComponent
             return;
         }
 
-        AudioDeviceManager::AudioDeviceSetup setup;
-        deviceManager.getAudioDeviceSetup(setup);
+        {
+            ScopedReadLock g(childInfosLock_);
+            for (auto it = childInfos_.begin(); it != childInfos_.end(); ++it)
+            {
+                it->second.state_->mutex_.enter();
+                memcpy(it->second.localAudioBuffer_, it->second.sharedAudioBuffer_, NUM_AUDIO_CHANNELS * bufferToFill.numSamples * sizeof(float));
+                it->second.state_->mutex_.exit();
+            }
+        }
         
         AudioSampleBuffer* outputBuffer = bufferToFill.buffer;
         outputBuffer->clear();
         
         int startSample = 0;
         int numSamples = bufferToFill.numSamples;
-        ScopedReadLock g(childInfosLock_);
-        while (--numSamples >= 0)
         {
-            for (int chan = outputBuffer->getNumChannels(); --chan >= 0;)
+            ScopedReadLock g(childInfosLock_);
+            while (--numSamples >= 0)
             {
-                for (auto it = childInfos_.begin(); it != childInfos_.end(); ++it)
+                for (int chan = outputBuffer->getNumChannels(); --chan >= 0;)
                 {
-                    outputBuffer->addSample(chan, startSample, it->second.sharedAudioBuffer_[chan * setup.bufferSize + startSample]);
+                    for (auto it = childInfos_.begin(); it != childInfos_.end(); ++it)
+                    {
+                        outputBuffer->addSample(chan, startSample, it->second.localAudioBuffer_[chan * bufferToFill.numSamples + startSample]);
+                    }
                 }
+                ++startSample;
             }
-            ++startSample;
         }
     }
 
@@ -129,7 +141,7 @@ MainAudioComponent::~MainAudioComponent()                       { pimpl_ = nullp
 
 AudioDeviceManager& MainAudioComponent::getDeviceManager()              { return pimpl_->getDeviceManager(); }
 
-void MainAudioComponent::pause()                                        { pimpl_->pause(); }
-void MainAudioComponent::resume()                                       { pimpl_->resume(); }
-void MainAudioComponent::registerChild(int childId, SharedMemory* shm)  { pimpl_->registerChild(childId, shm); }
-void MainAudioComponent::unregisterChild(int childId)                   { pimpl_->unregisterChild(childId); }
+void MainAudioComponent::pause()                                                            { pimpl_->pause(); }
+void MainAudioComponent::resume()                                                           { pimpl_->resume(); }
+void MainAudioComponent::registerChild(int childId, SharedMemory* shm, float* localBuffer)  { pimpl_->registerChild(childId, shm, localBuffer); }
+void MainAudioComponent::unregisterChild(int childId)                                       { pimpl_->unregisterChild(childId); }

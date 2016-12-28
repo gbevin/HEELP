@@ -18,11 +18,13 @@
 #ifndef CHILDAUDIOSTATE_H_INCLUDED
 #define CHILDAUDIOSTATE_H_INCLUDED
 
+#include "JuceHeader.h"
+
 namespace heelp
 {
     struct ChildAudioState
     {
-        int activeBuffer_;
+        CriticalSection mutex_;
     };
 }
 
