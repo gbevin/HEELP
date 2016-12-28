@@ -19,7 +19,7 @@
 
 #include "../HeelpApplication.h"
 #include "../Utils.h"
-#include "ChildAudioState.h"
+#include "../Process/SharedLock.h"
 
 #include <map>
 
@@ -29,8 +29,8 @@ namespace
 {
     struct ChildInfo
     {
+        SharedLock* const lock_;
         SharedMemory* const shm_;
-        ChildAudioState* const state_;
         float* const sharedAudioBuffer_;
         float* const localAudioBuffer_;
     };
@@ -66,7 +66,7 @@ struct MainAudioComponent::Pimpl : public AudioAppComponent
 
     void registerChild(int childId, SharedMemory* shm, float* localBuffer)
     {
-        ChildInfo childInfo = {shm, (ChildAudioState*)shm->getShmAddress(), (float*)(shm->getShmAddress() + sizeof(ChildAudioState)), localBuffer};
+        ChildInfo childInfo = {SharedLock::createForChild(childId), shm, (float*)shm->getShmAddress(), localBuffer};
         ScopedWriteLock g(childInfosLock_);
         childInfos_.insert(std::pair<int, ChildInfo>{childId, childInfo});
     }
@@ -77,6 +77,7 @@ struct MainAudioComponent::Pimpl : public AudioAppComponent
         std::map<int, ChildInfo>::iterator it = childInfos_.find(childId);
         if (it != childInfos_.end())
         {
+            delete it->second.lock_;
             childInfos_.erase(it);
         }
     }
@@ -99,9 +100,9 @@ struct MainAudioComponent::Pimpl : public AudioAppComponent
             ScopedReadLock g(childInfosLock_);
             for (auto it = childInfos_.begin(); it != childInfos_.end(); ++it)
             {
-//                it->second.state_->mutex_.enter();
+                it->second.lock_->enter();
                 memcpy(it->second.localAudioBuffer_, it->second.sharedAudioBuffer_, NUM_AUDIO_CHANNELS * bufferToFill.numSamples * sizeof(float));
-//                it->second.state_->mutex_.exit();
+                it->second.lock_->exit();
             }
         }
         

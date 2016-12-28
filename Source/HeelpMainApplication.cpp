@@ -21,7 +21,6 @@
 #include "HeelpChildApplication.h"
 #include "HeelpLogger.h"
 #include "Utils.h"
-#include "Audio/ChildAudioState.h"
 #include "Audio/MainAudioComponent.h"
 #include "Process/AudioMasterProcess.h"
 #include "Process/AudioProcessMessageTypes.h"
@@ -114,7 +113,7 @@ struct HeelpMainApplication::Pimpl : public ChangeListener
         if (dm.getCurrentDeviceTypeObject() && dm.getCurrentAudioDevice())
         {
             // TODO : these should become proper channels, just generating four to test with now
-            for (int childId = 1; childId <= 4; ++childId)
+            for (int childId = 1; childId <= 8; ++childId)
             {
                 launchChildProcess(childId);
             }
@@ -137,7 +136,7 @@ struct HeelpMainApplication::Pimpl : public ChangeListener
         
         int bufferSizeBytes = NUM_AUDIO_CHANNELS * setup.bufferSize * sizeof(float);
         float* localBuffer = (float*)malloc(bufferSizeBytes);
-        SharedMemory* shm = SharedMemory::createWithSize(sizeof(ChildAudioState) + NUM_BUFFERS * bufferSizeBytes);
+        SharedMemory* shm = SharedMemory::createWithSize(NUM_BUFFERS * bufferSizeBytes);
         audio_->registerChild(childId, shm, localBuffer);
         
         AudioMasterProcess* masterProcess = new AudioMasterProcess(parent_, childId);

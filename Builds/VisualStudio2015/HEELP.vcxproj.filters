@@ -364,6 +364,9 @@
     <ClCompile Include="..\..\Source\Process\AudioSlaveProcess.cpp">
       <Filter>HEELP\Source\Process</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Process\SharedLock.cpp">
+      <Filter>HEELP\Source\Process</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Process\SharedMemory.cpp">
       <Filter>HEELP\Source\Process</Filter>
     </ClCompile>
@@ -2055,9 +2058,6 @@
     <ClInclude Include="..\..\Source\Audio\ChildAudioComponent.h">
       <Filter>HEELP\Source\Audio</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Audio\ChildAudioState.h">
-      <Filter>HEELP\Source\Audio</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Source\Audio\MainAudioComponent.h">
       <Filter>HEELP\Source\Audio</Filter>
     </ClInclude>
@@ -2071,6 +2071,9 @@
       <Filter>HEELP\Source\Process</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Process\AudioSlaveProcess.h">
+      <Filter>HEELP\Source\Process</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Process\SharedLock.h">
       <Filter>HEELP\Source\Process</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Process\SharedMemory.h">

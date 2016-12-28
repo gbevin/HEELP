@@ -134,6 +134,7 @@
     <ClCompile Include="..\..\Source\Process\AudioMasterProcess.cpp"/>
     <ClCompile Include="..\..\Source\Process\AudioProcessMessageUtils.cpp"/>
     <ClCompile Include="..\..\Source\Process\AudioSlaveProcess.cpp"/>
+    <ClCompile Include="..\..\Source\Process\SharedLock.cpp"/>
     <ClCompile Include="..\..\Source\Process\SharedMemory.cpp"/>
     <ClCompile Include="..\..\Source\UI\MainContentComponent.cpp"/>
     <ClCompile Include="..\..\Source\UI\MainWindow.cpp"/>
@@ -1675,12 +1676,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Source\Audio\ChildAudioComponent.h"/>
-    <ClInclude Include="..\..\Source\Audio\ChildAudioState.h"/>
     <ClInclude Include="..\..\Source\Audio\MainAudioComponent.h"/>
     <ClInclude Include="..\..\Source\Process\AudioMasterProcess.h"/>
     <ClInclude Include="..\..\Source\Process\AudioProcessMessageTypes.h"/>
     <ClInclude Include="..\..\Source\Process\AudioProcessMessageUtils.h"/>
     <ClInclude Include="..\..\Source\Process\AudioSlaveProcess.h"/>
+    <ClInclude Include="..\..\Source\Process\SharedLock.h"/>
     <ClInclude Include="..\..\Source\Process\SharedMemory.h"/>
     <ClInclude Include="..\..\Source\UI\MainContentComponent.h"/>
     <ClInclude Include="..\..\Source\UI\MainWindow.h"/>

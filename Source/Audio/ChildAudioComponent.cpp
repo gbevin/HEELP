@@ -20,16 +20,14 @@
 #include "../HeelpApplication.h"
 #include "../Utils.h"
 #include "../Process/AudioProcessMessageTypes.h"
-#include "ChildAudioState.h"
+#include "../Process/SharedLock.h"
 
 using namespace heelp;
 
 struct ChildAudioComponent::Pimpl : public AudioSource
 {
-    Pimpl(int childId, SharedMemory* shm) : childId_(childId), shm_(shm), sharedAudioBuffer_(nullptr)
+    Pimpl(int childId, SharedMemory* shm) : childId_(childId), shm_(shm), sharedAudioBuffer_((float*)shm_->getShmAddress()), lock_(nullptr)
     {
-        state_ = (ChildAudioState*)shm_->getShmAddress();
-        sharedAudioBuffer_ = (float*)&(shm_->getShmAddress()[sizeof(ChildAudioState)]);
     }
 
     ~Pimpl()
@@ -70,6 +68,11 @@ struct ChildAudioComponent::Pimpl : public AudioSource
 
     void prepareToPlay(int samplesPerBlockExpected, double sampleRate)
     {
+        if (lock_ == nullptr)
+        {
+            lock_ = SharedLock::openForChild(childId_);
+        }
+        
         LOG("Preparing to play audio..." << newLine <<
             " samplesPerBlockExpected = " << samplesPerBlockExpected << newLine <<
             " sampleRate = " << sampleRate);
@@ -83,7 +86,7 @@ struct ChildAudioComponent::Pimpl : public AudioSource
         static double currentAngle = 0.0;
         static double level = 0.5;
         
-        double cyclesPerSecond = MidiMessage::getMidiNoteInHertz(40 + childId_ * 12);
+        double cyclesPerSecond = MidiMessage::getMidiNoteInHertz(52 + childId_ * 2);
         
         AudioDeviceManager::AudioDeviceSetup audioSetup;
         deviceManager_.getAudioDeviceSetup(audioSetup);
@@ -109,9 +112,10 @@ struct ChildAudioComponent::Pimpl : public AudioSource
                 currentAngle += angleDelta;
                 ++startSample;
             }
-//            state_->mutex_.enter();
+            
+            lock_->enter();
             memcpy(&sharedAudioBuffer_[0], &sharedAudioBuffer_[totalBufferSize], totalBufferSize * sizeof(float));
-//            state_->mutex_.exit();
+            lock_->exit();
         }
         
         // artificial load generator
@@ -124,12 +128,18 @@ struct ChildAudioComponent::Pimpl : public AudioSource
     void releaseResources()
     {
         LOG("Releasing audio resources");
+        if (lock_ != nullptr)
+        {
+            delete lock_;
+            lock_ = nullptr;
+        }
     }
     
-    int childId_;
-    SharedMemory* shm_;
-    ChildAudioState* state_;
-    float* sharedAudioBuffer_;
+    const int childId_;
+    SharedMemory* const shm_;
+    float* const sharedAudioBuffer_;
+    
+    SharedLock* lock_;
     
     AudioDeviceManager deviceManager_;
     AudioSourcePlayer audioSourcePlayer_;

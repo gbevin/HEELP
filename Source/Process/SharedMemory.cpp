@@ -48,7 +48,8 @@ struct SharedMemory::Pimpl
     {
 #if JUCE_MAC || JUCE_LINUX
         int64_t shmId = shmget(IPC_PRIVATE, size, IPC_CREAT|IPC_EXCL|0666);
-        if (shmId < 0) {
+        if (shmId < 0)
+        {
             LOG("shmget error " << errno);
             // TODO : clean up more respectfully
             exit(1);

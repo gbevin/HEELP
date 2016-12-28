@@ -15,17 +15,32 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef CHILDAUDIOSTATE_H_INCLUDED
-#define CHILDAUDIOSTATE_H_INCLUDED
+#ifndef SHAREDLOCK_H_INCLUDED
+#define SHAREDLOCK_H_INCLUDED
 
 #include "JuceHeader.h"
 
 namespace heelp
 {
-    struct ChildAudioState
+    class SharedLock
     {
-//        CriticalSection mutex_;
+    public:
+        static SharedLock* createForChild(int childId);
+        static SharedLock* openForChild(int childId);
+        
+        virtual ~SharedLock();
+        
+        void enter();
+        void exit();
+        
+        struct Pimpl;
+    private:
+        SharedLock();
+        
+        ScopedPointer<Pimpl> pimpl_;
+        
+        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SharedLock)
     };
 }
 
-#endif  // CHILDAUDIOSTATE_H_INCLUDED
+#endif  // SHAREDLOCK_H_INCLUDED
