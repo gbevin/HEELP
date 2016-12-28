@@ -67,9 +67,16 @@ struct SharedMemory::Pimpl
             exit(1);
         }
 #elif JUCE_WINDOWS
-        SECURITY_ATTRIBUTES sa;
-        sa.bInheritHandle = true;
-        HANDLE hMapFile = CreateFileMapping(INVALID_HANDLE_VALUE, &sa, PAGE_READWRITE, 0, size, nullptr);
+        SECURITY_ATTRIBUTES sec_attr;
+        SECURITY_DESCRIPTOR sd;
+        InitializeSecurityDescriptor(&sd, SECURITY_DESCRIPTOR_REVISION);
+        SetSecurityDescriptorDacl(&sd, TRUE, NULL, FALSE);
+
+        sec_attr.nLength = sizeof(sec_attr);
+        sec_attr.bInheritHandle = TRUE;
+        sec_attr.lpSecurityDescriptor = &sd;
+
+        HANDLE hMapFile = CreateFileMapping(INVALID_HANDLE_VALUE, &sec_attr, PAGE_READWRITE, 0, size, nullptr);
         if (hMapFile == nullptr)
         {
             LOG("Could not create file mapping object (" << (int)GetLastError() << ")");
