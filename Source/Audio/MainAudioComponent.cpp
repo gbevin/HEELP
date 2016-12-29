@@ -18,8 +18,8 @@
 #include "MainAudioComponent.h"
 
 #include "../HeelpApplication.h"
+#include "../HeelpMainApplication.h"
 #include "../Utils.h"
-#include "../Process/SharedLock.h"
 #include "ChildAudioState.h"
 
 #include <map>
@@ -34,13 +34,14 @@ namespace
         ChildAudioState* const state_;
         float* const sharedAudioBuffer_;
         float* const localAudioBuffer_;
+        bool started_;
         long lastFinishedBuffer_;
     };
 }
 
 struct MainAudioComponent::Pimpl : public AudioAppComponent
 {
-    Pimpl() : paused_(true)
+    Pimpl(HeelpMainApplication* mainApplication) : mainApplication_(mainApplication), paused_(true)
     {
         setAudioChannels(0, NUM_AUDIO_CHANNELS);
     }
@@ -74,7 +75,7 @@ struct MainAudioComponent::Pimpl : public AudioAppComponent
 
     void registerChild(int childId, SharedMemory* shm, float* localBuffer)
     {
-        ChildInfo childInfo = {shm, (ChildAudioState*)shm->getShmAddress(), (float*)(shm->getShmAddress() + sizeof(ChildAudioState)), localBuffer, -1};
+        ChildInfo childInfo = {shm, (ChildAudioState*)shm->getShmAddress(), (float*)(shm->getShmAddress() + sizeof(ChildAudioState)), localBuffer, false, -1};
         ScopedWriteLock g(childInfosLock_);
         childInfos_.insert(std::pair<int, ChildInfo>{childId, childInfo});
     }
@@ -86,7 +87,7 @@ struct MainAudioComponent::Pimpl : public AudioAppComponent
         if (it != childInfos_.end())
         {
             childInfos_.erase(it);
-            LOG("Deleted child " << String(childId) << " : " << String(childInfos_.size()) << " children left");
+            LOG("Deleted child " << String(childId) << " : " << String(childInfos_.size()) << " children remaining");
         }
     }
     
@@ -96,13 +97,15 @@ struct MainAudioComponent::Pimpl : public AudioAppComponent
             " samplesPerBlockExpected = " << samplesPerBlockExpected << newLine <<
             " sampleRate = " << sampleRate);
     }
-
+    
     void getNextAudioBlock(const AudioSourceChannelInfo& bufferToFill)
     {
         if (paused_.get())
         {
             return;
         }
+
+        int totalBufferSize = NUM_AUDIO_CHANNELS * bufferToFill.numSamples;
 
         bool childrenDone;
         do
@@ -113,12 +116,27 @@ struct MainAudioComponent::Pimpl : public AudioAppComponent
                 ScopedReadLock g(childInfosLock_);
                 for (auto it = childInfos_.begin(); it != childInfos_.end(); ++it)
                 {
-                    it->second.state_->ready_ = true;
-                    if (it->second.lastFinishedBuffer_ == it->second.state_->finishedBuffer_)
+                    int childId = it->first;
+                    ChildInfo& childInfo = it->second;
+                    
+                    if (!childInfo.started_)
                     {
-//                        LOG("child " << it->first << " not done : lastFinishedBuffer_=" << it->second.lastFinishedBuffer_ << " finishedBuffer_=" << it->second.state_->finishedBuffer_);
+                        childInfo.started_ = true;
+                        mainApplication_->startChildProcessAudio(childId);
                         childrenDone = false;
-                        break;
+                    }
+                    else
+                    {
+                        childInfo.state_->ready_ = true;
+                        if (childInfo.lastFinishedBuffer_ == childInfo.state_->finishedBuffer_)
+                        {
+//                          LOG("child " << childId << " not done : lastFinishedBuffer_=" << childInfo.lastFinishedBuffer_ << " finishedBuffer_=" << childInfo.state_->finishedBuffer_);
+                            for (int i = 0; i < totalBufferSize; ++i)
+                            {
+                                childInfo.localAudioBuffer_[i] = 0.0f;
+                            }
+                            childrenDone = false;
+                        }
                     }
                 }
             }
@@ -128,7 +146,8 @@ struct MainAudioComponent::Pimpl : public AudioAppComponent
                 ScopedReadLock g(childInfosLock_);
                 for (auto it = childInfos_.begin(); it != childInfos_.end(); ++it)
                 {
-                    it->second.lastFinishedBuffer_ = it->second.state_->finishedBuffer_;
+                    ChildInfo& childInfo = it->second;
+                    childInfo.lastFinishedBuffer_ = childInfo.state_->finishedBuffer_;
                 }
                 break;
             }
@@ -142,8 +161,8 @@ struct MainAudioComponent::Pimpl : public AudioAppComponent
             ScopedReadLock g(childInfosLock_);
             for (auto it = childInfos_.begin(); it != childInfos_.end(); ++it)
             {
-                int totalBufferSize = NUM_AUDIO_CHANNELS * bufferToFill.numSamples;
-                memcpy(it->second.localAudioBuffer_, &it->second.sharedAudioBuffer_[it->second.state_->finishedBuffer_*totalBufferSize], totalBufferSize * sizeof(float));
+                ChildInfo& childInfo = it->second;
+                memcpy(childInfo.localAudioBuffer_, &childInfo.sharedAudioBuffer_[childInfo.state_->finishedBuffer_ * totalBufferSize], totalBufferSize * sizeof(float));
             }
         }
         
@@ -160,7 +179,8 @@ struct MainAudioComponent::Pimpl : public AudioAppComponent
                 {
                     for (auto it = childInfos_.begin(); it != childInfos_.end(); ++it)
                     {
-                        outputBuffer->addSample(chan, startSample, it->second.localAudioBuffer_[chan * bufferToFill.numSamples + startSample]);
+                        ChildInfo& childInfo = it->second;
+                        outputBuffer->addSample(chan, startSample, childInfo.localAudioBuffer_[chan * bufferToFill.numSamples + startSample]);
                     }
                 }
                 ++startSample;
@@ -173,13 +193,14 @@ struct MainAudioComponent::Pimpl : public AudioAppComponent
         LOG("Releasing audio resources");
     }
     
+    HeelpMainApplication* const mainApplication_;
     Atomic<int> paused_;
     ReadWriteLock childInfosLock_;
     std::map<int, ChildInfo> childInfos_;
 };
 
-MainAudioComponent::MainAudioComponent() : pimpl_(new Pimpl())  {}
-MainAudioComponent::~MainAudioComponent()                       { pimpl_ = nullptr; }
+MainAudioComponent::MainAudioComponent(HeelpMainApplication* mainApplication) : pimpl_(new Pimpl(mainApplication))  {}
+MainAudioComponent::~MainAudioComponent()                                                                           { pimpl_ = nullptr; }
 
 AudioDeviceManager& MainAudioComponent::getDeviceManager()              { return pimpl_->getDeviceManager(); }
 

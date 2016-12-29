@@ -35,6 +35,7 @@ namespace heelp
         AudioDeviceManager* getAudioDeviceManager() const override;
         
         void launchChildProcess(int childId);
+        void startChildProcessAudio(int childId);
         void killChildProcess(int childId);
         
         struct Pimpl;

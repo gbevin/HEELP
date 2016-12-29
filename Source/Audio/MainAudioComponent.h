@@ -20,6 +20,7 @@
 
 #include "JuceHeader.h"
 
+#include "../HeelpMainApplication.h"
 #include "../Process/SharedMemory.h"
 
 namespace heelp
@@ -27,7 +28,7 @@ namespace heelp
     class MainAudioComponent
     {
     public:
-        MainAudioComponent();
+        MainAudioComponent(HeelpMainApplication* mainApplication);
         ~MainAudioComponent();
         
         AudioDeviceManager& getDeviceManager();

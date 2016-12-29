@@ -73,7 +73,7 @@ struct HeelpMainApplication::Pimpl : public ChangeListener
         logger_ = new HeelpLogger(0);
         Logger::setCurrentLogger(logger_);
         
-        audio_ = new MainAudioComponent();
+        audio_ = new MainAudioComponent(parent_);
         audio_->getDeviceManager().addChangeListener(this);
         
         if (commandLine.contains("--console") ||
@@ -135,15 +135,36 @@ struct HeelpMainApplication::Pimpl : public ChangeListener
         AudioDeviceManager::AudioDeviceSetup setup;
         dm.getAudioDeviceSetup(setup);
         
-        int bufferSizeBytes = NUM_AUDIO_CHANNELS * setup.bufferSize * sizeof(float);
-        float* localBuffer = (float*)malloc(bufferSizeBytes);
+        // calculate active buffer sizes
+        int bufferSize = NUM_AUDIO_CHANNELS * setup.bufferSize;
+        int bufferSizeBytes = bufferSize * sizeof(float);
+        
+        // prepare local audio buffer
+        float* localAudioBuffer = (float*)malloc(bufferSizeBytes);
+        for (int i = 0; i < bufferSize; ++i)
+        {
+            localAudioBuffer[i] = 0.0f;
+        }
+        
+        // prepare shared memory and audio buffer
         SharedMemory* shm = SharedMemory::createForChildWithSize(childId, sizeof(ChildAudioState) + NUM_BUFFERS * bufferSizeBytes);
-        audio_->registerChild(childId, shm, localBuffer);
+        
+        ChildAudioState* childAudioState_ = (ChildAudioState*)shm->getShmAddress();
+        childAudioState_->reset();
+        
+        float* sharedAudioBuffer = (float*)(shm->getShmAddress() + sizeof(ChildAudioState));
+        for (int i = 0; i < NUM_BUFFERS * bufferSize; ++i)
+        {
+            sharedAudioBuffer[i] = 0.0f;
+        }
+        
+        // register child and launch it
+        audio_->registerChild(childId, shm, localAudioBuffer);
         
         AudioMasterProcess* masterProcess = new AudioMasterProcess(parent_, childId);
         {
             ScopedWriteLock g(masterProcessInfosLock_);
-            masterProcessInfos_.insert(std::pair<int, MasterProcessInfo>{childId, {masterProcess, shm, localBuffer}});
+            masterProcessInfos_.insert(std::pair<int, MasterProcessInfo>{childId, {masterProcess, shm, localAudioBuffer}});
         }
         
         StringArray args;
@@ -153,12 +174,25 @@ struct HeelpMainApplication::Pimpl : public ChangeListener
         if (masterProcess->launchSlaveProcess(File::getSpecialLocation(File::currentExecutableFile), audioCommandLineUID, args))
         {
             LOG("Child process started");
-            sendAudioDeviceStateToChild(masterProcess);
         }
     }
     
-    void sendAudioDeviceStateToChild(AudioMasterProcess* masterProcess)
+    void startChildProcessAudio(int childId)
     {
+        AudioMasterProcess* masterProcess = nullptr;
+        {
+            ScopedWriteLock g(masterProcessInfosLock_);
+            std::map<int, MasterProcessInfo>::iterator it = masterProcessInfos_.find(childId);
+            if (it != masterProcessInfos_.end())
+            {
+                masterProcess = it->second.process_;
+            }
+        }
+        if (masterProcess == nullptr)
+        {
+            return;
+        }
+        
         ValueTree message(AudioProcessMessageTypes::AUDIODEVICEMANAGER_STATE);
         AudioDeviceManager& dm = audio_->getDeviceManager();
         if (dm.getCurrentAudioDevice())
@@ -246,4 +280,5 @@ bool HeelpMainApplication::initialise(const String& commandLine)        { return
 void HeelpMainApplication::shutdown()                                   { pimpl_->shutdown(); }
 AudioDeviceManager* HeelpMainApplication::getAudioDeviceManager() const { return pimpl_->getAudioDeviceManager(); }
 void HeelpMainApplication::launchChildProcess(int childId)              { pimpl_->launchChildProcess(childId); }
+void HeelpMainApplication::startChildProcessAudio(int childId)          { pimpl_->startChildProcessAudio(childId); }
 void HeelpMainApplication::killChildProcess(int childId)                { pimpl_->killChildProcess(childId); }

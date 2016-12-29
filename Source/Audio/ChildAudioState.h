@@ -22,6 +22,12 @@ namespace heelp
 {
     struct ChildAudioState
     {
+        void reset()
+        {
+            ready_ = false;
+            finishedBuffer_ = -1;
+        }
+        
         long ready_;
         long finishedBuffer_;
     };
