@@ -76,7 +76,7 @@ struct SharedMemory::Pimpl
         sec_attr.bInheritHandle = TRUE;
         sec_attr.lpSecurityDescriptor = &sd;
 
-        HANDLE hMapFile = CreateFileMapping(INVALID_HANDLE_VALUE, &sec_attr, PAGE_READWRITE, 0, size, nullptr);
+        HANDLE hMapFile = CreateFileMapping(INVALID_HANDLE_VALUE, &sec_attr, PAGE_READWRITE, 0, (DWORD)size, nullptr);
         if (hMapFile == nullptr)
         {
             LOG("Could not create file mapping object (" << (int)GetLastError() << ")");
