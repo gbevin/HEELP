@@ -78,6 +78,7 @@ struct MainAudioComponent::Pimpl : public AudioAppComponent
         ChildInfo childInfo = {shm, (ChildAudioState*)shm->getShmAddress(), (float*)(shm->getShmAddress() + sizeof(ChildAudioState)), localBuffer, false, -1};
         ScopedWriteLock g(childInfosLock_);
         childInfos_.insert(std::pair<int, ChildInfo>{childId, childInfo});
+        LOG("Child " << childId << " : registered, now " << String(childInfos_.size()) << " children active");
     }
     
     void unregisterChild(int childId)
@@ -87,7 +88,7 @@ struct MainAudioComponent::Pimpl : public AudioAppComponent
         if (it != childInfos_.end())
         {
             childInfos_.erase(it);
-            LOG("Deleted child " << String(childId) << " : " << String(childInfos_.size()) << " children remaining");
+            LOG("Child " << childId << " : unregistered, now " << String(childInfos_.size()) << " children active");
         }
     }
     
@@ -100,6 +101,9 @@ struct MainAudioComponent::Pimpl : public AudioAppComponent
     
     void getNextAudioBlock(const AudioSourceChannelInfo& bufferToFill)
     {
+        AudioSampleBuffer* outputBuffer = bufferToFill.buffer;
+        outputBuffer->clear();
+        
         if (paused_.get())
         {
             return;
@@ -108,9 +112,11 @@ struct MainAudioComponent::Pimpl : public AudioAppComponent
         int totalBufferSize = NUM_AUDIO_CHANNELS * bufferToFill.numSamples;
 
         bool childrenDone;
+        bool silent;
         do
         {
             childrenDone = true;
+            silent = false;
             
             {
                 ScopedReadLock g(childInfosLock_);
@@ -123,7 +129,7 @@ struct MainAudioComponent::Pimpl : public AudioAppComponent
                     {
                         childInfo.started_ = true;
                         mainApplication_->startChildProcessAudio(childId);
-                        childrenDone = false;
+                        silent = true;
                     }
                     else
                     {
@@ -131,14 +137,15 @@ struct MainAudioComponent::Pimpl : public AudioAppComponent
                         if (childInfo.lastFinishedBuffer_ == childInfo.state_->finishedBuffer_)
                         {
 //                          LOG("child " << childId << " not done : lastFinishedBuffer_=" << childInfo.lastFinishedBuffer_ << " finishedBuffer_=" << childInfo.state_->finishedBuffer_);
-                            for (int i = 0; i < totalBufferSize; ++i)
-                            {
-                                childInfo.localAudioBuffer_[i] = 0.0f;
-                            }
                             childrenDone = false;
                         }
                     }
                 }
+            }
+            
+            if (silent)
+            {
+                return;
             }
             
             if (childrenDone)
@@ -151,9 +158,6 @@ struct MainAudioComponent::Pimpl : public AudioAppComponent
                 }
                 break;
             }
-            
-            // TODO: might want to find something better than waiting for at least a millisecond to continue
-            Thread::sleep(1);
         }
         while (true);
         
@@ -165,9 +169,6 @@ struct MainAudioComponent::Pimpl : public AudioAppComponent
                 memcpy(childInfo.localAudioBuffer_, &childInfo.sharedAudioBuffer_[childInfo.state_->finishedBuffer_ * totalBufferSize], totalBufferSize * sizeof(float));
             }
         }
-        
-        AudioSampleBuffer* outputBuffer = bufferToFill.buffer;
-        outputBuffer->clear();
         
         int startSample = 0;
         int numSamples = bufferToFill.numSamples;

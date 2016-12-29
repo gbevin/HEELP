@@ -17,23 +17,29 @@
  */
 #include "AudioMasterProcess.h"
 
+#include "AudioProcessMessageTypes.h"
 #include "AudioProcessMessageUtils.h"
 #include "../Utils.h"
 
 using namespace heelp;
 
-AudioMasterProcess::AudioMasterProcess(HeelpMainApplication* app, int identifier) : app_(app), identifier_(identifier)
+AudioMasterProcess::AudioMasterProcess(HeelpMainApplication* app, int childId) : app_(app), childId_(childId)
 {
 }
 
 void AudioMasterProcess::handleMessageFromSlave(const MemoryBlock& mb)
 {
     ValueTree msg(memoryBlockToValueTree(mb));
-    LOG("Received: " + valueTreeToString(msg));
+    String type = msg.getType().toString();
+    
+    if (type == AudioProcessMessageTypes::AUDIOSLAVEPROCESS_READY)
+    {
+        app_->childProcessIsActive(childId_);
+    }
 }
 
 void AudioMasterProcess::handleConnectionLost()
 {
-    LOG("Connection lost to child process!");
-    app_->killChildProcess(identifier_);
+    LOG("Child " << childId_ << " : connection to slave lost");
+    app_->killChildProcess(childId_);
 }

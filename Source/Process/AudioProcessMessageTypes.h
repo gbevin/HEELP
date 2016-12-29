@@ -24,6 +24,7 @@ namespace heelp
 {
     namespace AudioProcessMessageTypes
     {
+        constexpr const char* const AUDIOSLAVEPROCESS_READY = "AudioSlaveProcess::Ready";
         constexpr const char* const AUDIODEVICEMANAGER_STATE = "AudioDeviceManager::State";
     };
     

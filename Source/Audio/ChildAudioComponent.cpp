@@ -158,7 +158,7 @@ struct ChildAudioComponent::Pimpl : public AudioSource
     const int childId_;
     SharedMemory* const shm_;
     ChildAudioState* state_;
-    float*  sharedAudioBuffer_;
+    float* sharedAudioBuffer_;
     float* localAudioBuffer_;
     
     AudioDeviceManager deviceManager_;

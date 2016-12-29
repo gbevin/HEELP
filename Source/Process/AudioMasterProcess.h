@@ -27,14 +27,14 @@ namespace heelp
     class AudioMasterProcess : public ChildProcessMaster, private DeletedAtShutdown
     {
     public:
-        AudioMasterProcess(HeelpMainApplication* app, int identifier);
+        AudioMasterProcess(HeelpMainApplication* app, int childId);
         
         void handleMessageFromSlave(const MemoryBlock& mb) override;
         void handleConnectionLost() override;
 
     private:
         HeelpMainApplication* app_;
-        int identifier_;
+        int childId_;
         
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AudioMasterProcess)
     };
