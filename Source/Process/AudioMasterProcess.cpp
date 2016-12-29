@@ -34,6 +34,7 @@ void AudioMasterProcess::handleMessageFromSlave(const MemoryBlock& mb)
     
     if (type == AudioProcessMessageTypes::AUDIOSLAVEPROCESS_READY)
     {
+        LOG("Child " << childId_ << " : master received " << AudioProcessMessageTypes::AUDIOSLAVEPROCESS_READY);
         app_->childProcessIsActive(childId_);
     }
 }
