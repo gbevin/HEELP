@@ -21,6 +21,7 @@
 #include "HeelpChildApplication.h"
 #include "HeelpLogger.h"
 #include "Utils.h"
+#include "Audio/ChildAudioState.h"
 #include "Audio/MainAudioComponent.h"
 #include "Process/AudioMasterProcess.h"
 #include "Process/AudioProcessMessageTypes.h"
@@ -136,7 +137,7 @@ struct HeelpMainApplication::Pimpl : public ChangeListener
         
         int bufferSizeBytes = NUM_AUDIO_CHANNELS * setup.bufferSize * sizeof(float);
         float* localBuffer = (float*)malloc(bufferSizeBytes);
-        SharedMemory* shm = SharedMemory::createForChildWithSize(childId, NUM_BUFFERS * bufferSizeBytes);
+        SharedMemory* shm = SharedMemory::createForChildWithSize(childId, sizeof(ChildAudioState) + NUM_BUFFERS * bufferSizeBytes);
         audio_->registerChild(childId, shm, localBuffer);
         
         AudioMasterProcess* masterProcess = new AudioMasterProcess(parent_, childId);

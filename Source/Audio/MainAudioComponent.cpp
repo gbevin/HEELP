@@ -20,6 +20,7 @@
 #include "../HeelpApplication.h"
 #include "../Utils.h"
 #include "../Process/SharedLock.h"
+#include "ChildAudioState.h"
 
 #include <map>
 
@@ -29,10 +30,11 @@ namespace
 {
     struct ChildInfo
     {
-        SharedLock* const lock_;
         SharedMemory* const shm_;
+        ChildAudioState* const state_;
         float* const sharedAudioBuffer_;
         float* const localAudioBuffer_;
+        long lastFinishedBuffer_;
     };
 }
 
@@ -61,12 +63,18 @@ struct MainAudioComponent::Pimpl : public AudioAppComponent
 
     void resume()
     {
+        ScopedReadLock g(childInfosLock_);
+        for (auto it = childInfos_.begin(); it != childInfos_.end(); ++it)
+        {
+            it->second.lastFinishedBuffer_ = -1;
+        }
+        
         paused_ = false;
     }
 
     void registerChild(int childId, SharedMemory* shm, float* localBuffer)
     {
-        ChildInfo childInfo = {SharedLock::createForChild(childId), shm, (float*)shm->getShmAddress(), localBuffer};
+        ChildInfo childInfo = {shm, (ChildAudioState*)shm->getShmAddress(), (float*)(shm->getShmAddress() + sizeof(ChildAudioState)), localBuffer, -1};
         ScopedWriteLock g(childInfosLock_);
         childInfos_.insert(std::pair<int, ChildInfo>{childId, childInfo});
     }
@@ -77,8 +85,8 @@ struct MainAudioComponent::Pimpl : public AudioAppComponent
         std::map<int, ChildInfo>::iterator it = childInfos_.find(childId);
         if (it != childInfos_.end())
         {
-            delete it->second.lock_;
             childInfos_.erase(it);
+            LOG("Deleted child " << String(childId) << " : " << String(childInfos_.size()) << " children left");
         }
     }
     
@@ -96,13 +104,46 @@ struct MainAudioComponent::Pimpl : public AudioAppComponent
             return;
         }
 
+        bool childrenDone;
+        do
+        {
+            childrenDone = true;
+            
+            {
+                ScopedReadLock g(childInfosLock_);
+                for (auto it = childInfos_.begin(); it != childInfos_.end(); ++it)
+                {
+                    it->second.state_->ready_ = true;
+                    if (it->second.lastFinishedBuffer_ == it->second.state_->finishedBuffer_)
+                    {
+//                        LOG("child " << it->first << " not done : lastFinishedBuffer_=" << it->second.lastFinishedBuffer_ << " finishedBuffer_=" << it->second.state_->finishedBuffer_);
+                        childrenDone = false;
+                        break;
+                    }
+                }
+            }
+            
+            if (childrenDone)
+            {
+                ScopedReadLock g(childInfosLock_);
+                for (auto it = childInfos_.begin(); it != childInfos_.end(); ++it)
+                {
+                    it->second.lastFinishedBuffer_ = it->second.state_->finishedBuffer_;
+                }
+                break;
+            }
+            
+            // TODO: might want to find something better than waiting for at least a millisecond to continue
+            Thread::sleep(1);
+        }
+        while (true);
+        
         {
             ScopedReadLock g(childInfosLock_);
             for (auto it = childInfos_.begin(); it != childInfos_.end(); ++it)
             {
-                it->second.lock_->enter();
-                memcpy(it->second.localAudioBuffer_, it->second.sharedAudioBuffer_, NUM_AUDIO_CHANNELS * bufferToFill.numSamples * sizeof(float));
-                it->second.lock_->exit();
+                int totalBufferSize = NUM_AUDIO_CHANNELS * bufferToFill.numSamples;
+                memcpy(it->second.localAudioBuffer_, &it->second.sharedAudioBuffer_[it->second.state_->finishedBuffer_*totalBufferSize], totalBufferSize * sizeof(float));
             }
         }
         

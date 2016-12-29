@@ -21,12 +21,13 @@
 #include "../Utils.h"
 #include "../Process/AudioProcessMessageTypes.h"
 #include "../Process/SharedLock.h"
+#include "ChildAudioState.h"
 
 using namespace heelp;
 
 struct ChildAudioComponent::Pimpl : public AudioSource
 {
-    Pimpl(int childId, SharedMemory* shm) : childId_(childId), shm_(shm), sharedAudioBuffer_((float*)shm_->getShmAddress()), lock_(nullptr)
+    Pimpl(int childId, SharedMemory* shm) : childId_(childId), shm_(shm), state_(nullptr), sharedAudioBuffer_(nullptr), localAudioBuffer_(nullptr)
     {
     }
 
@@ -37,6 +38,10 @@ struct ChildAudioComponent::Pimpl : public AudioSource
 
     void startAudio(ValueTree state)
     {
+        state_ = (ChildAudioState*)shm_->getShmAddress();
+        state_->ready_ = false;
+        state_->finishedBuffer_ = -1;
+        
         AudioDeviceManager::AudioDeviceSetup setup;
         deviceManager_.getAudioDeviceSetup(setup);
         if (state.getNumProperties())
@@ -50,6 +55,20 @@ struct ChildAudioComponent::Pimpl : public AudioSource
         String audioError = deviceManager_.initialise(0, NUM_AUDIO_CHANNELS, nullptr, true, "", &setup);
         jassert(audioError.isEmpty());
         
+        sharedAudioBuffer_ = (float*)&(shm_->getShmAddress()[sizeof(ChildAudioState)]);
+
+        int bufferSizeSamples = 4096;
+        if (deviceManager_.getCurrentAudioDevice())
+        {
+            bufferSizeSamples = deviceManager_.getCurrentAudioDevice()->getCurrentBufferSizeSamples();
+        }
+        if (localAudioBuffer_)
+        {
+            free(localAudioBuffer_);
+        }
+        LOG("Allocating local audio buffer for " << bufferSizeSamples << " samples");
+        localAudioBuffer_ = (float*)malloc(NUM_AUDIO_CHANNELS * bufferSizeSamples * sizeof(float));
+
         deviceManager_.addAudioCallback(&audioSourcePlayer_);
         audioSourcePlayer_.setSource(this);
     }
@@ -59,6 +78,11 @@ struct ChildAudioComponent::Pimpl : public AudioSource
         audioSourcePlayer_.setSource(nullptr);
         deviceManager_.removeAudioCallback(&audioSourcePlayer_);
         deviceManager_.closeAudioDevice();
+        if (localAudioBuffer_)
+        {
+            free(localAudioBuffer_);
+            localAudioBuffer_ = nullptr;
+        }
     }
     
     AudioDeviceManager& getDeviceManager()
@@ -68,11 +92,6 @@ struct ChildAudioComponent::Pimpl : public AudioSource
 
     void prepareToPlay(int samplesPerBlockExpected, double sampleRate)
     {
-        if (lock_ == nullptr)
-        {
-            lock_ = SharedLock::openForChild(childId_);
-        }
-        
         LOG("Preparing to play audio..." << newLine <<
             " samplesPerBlockExpected = " << samplesPerBlockExpected << newLine <<
             " sampleRate = " << sampleRate);
@@ -80,6 +99,11 @@ struct ChildAudioComponent::Pimpl : public AudioSource
 
     void getNextAudioBlock(const AudioSourceChannelInfo& bufferToFill)
     {
+        if (!state_->ready_)
+        {
+            return;
+        }
+        
         AudioSampleBuffer* outputBuffer = bufferToFill.buffer;
         outputBuffer->clear();
         
@@ -105,7 +129,7 @@ struct ChildAudioComponent::Pimpl : public AudioSource
                 
                 for (int chan = outputBuffer->getNumChannels(); --chan >= 0;)
                 {
-                    sharedAudioBuffer_[totalBufferSize + chan * bufferToFill.numSamples + startSample] = currentSample;
+                    localAudioBuffer_[chan * bufferToFill.numSamples + startSample] = currentSample;
 //                    outputBuffer->addSample(chan, startSample, currentSample);
                 }
                 
@@ -113,33 +137,30 @@ struct ChildAudioComponent::Pimpl : public AudioSource
                 ++startSample;
             }
             
-            lock_->enter();
-            memcpy(&sharedAudioBuffer_[0], &sharedAudioBuffer_[totalBufferSize], totalBufferSize * sizeof(float));
-            lock_->exit();
+            // artificial load generator
+//            static double dummyvar = 0;
+//            int target = 50000 + rnd_.nextInt(10)*5000;
+//            for (int i = 0; i < target; ++i) {
+//                dummyvar = double(rnd_.nextInt() + i) / double(INT_MAX);
+//            }
+
+            long finishedBuffer = (state_->finishedBuffer_ == 0 ? 1 : 0);
+            memcpy(&sharedAudioBuffer_[finishedBuffer*totalBufferSize], localAudioBuffer_, totalBufferSize * sizeof(float));
+            state_->finishedBuffer_ = finishedBuffer;
         }
-        
-        // artificial load generator
-//        static double dummyvar = 0;
-//        for (int i = 0; i < 300000; ++i) {
-//            dummyvar = double(arc4random() + i) / double(INT_MAX);
-//        }
     }
 
     void releaseResources()
     {
         LOG("Releasing audio resources");
-        if (lock_ != nullptr)
-        {
-            delete lock_;
-            lock_ = nullptr;
-        }
     }
     
+    Random rnd_;
     const int childId_;
     SharedMemory* const shm_;
-    float* const sharedAudioBuffer_;
-    
-    SharedLock* lock_;
+    ChildAudioState* state_;
+    float*  sharedAudioBuffer_;
+    float* localAudioBuffer_;
     
     AudioDeviceManager deviceManager_;
     AudioSourcePlayer audioSourcePlayer_;

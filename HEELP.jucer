@@ -11,6 +11,8 @@
               file="Source/Audio/ChildAudioComponent.cpp"/>
         <FILE id="XMRW5G" name="ChildAudioComponent.h" compile="0" resource="0"
               file="Source/Audio/ChildAudioComponent.h"/>
+        <FILE id="W8owoy" name="ChildAudioState.h" compile="0" resource="0"
+              file="Source/Audio/ChildAudioState.h"/>
         <FILE id="m7e8NN" name="MainAudioComponent.cpp" compile="1" resource="0"
               file="Source/Audio/MainAudioComponent.cpp"/>
         <FILE id="zdmTwe" name="MainAudioComponent.h" compile="0" resource="0"
