@@ -20,7 +20,6 @@
 #include "../HeelpApplication.h"
 #include "../Utils.h"
 #include "../Process/AudioProcessMessageTypes.h"
-#include "../Process/SharedLock.h"
 #include "ChildAudioState.h"
 
 using namespace heelp;
@@ -29,6 +28,8 @@ struct ChildAudioComponent::Pimpl : public AudioSource
 {
     Pimpl(int childId, SharedMemory* shm) : childId_(childId), shm_(shm), state_(nullptr), sharedAudioBuffer_(nullptr), localAudioBuffer_(nullptr)
     {
+        state_ = (ChildAudioState*)shm_->getShmAddress();
+        state_->reset();
     }
 
     ~Pimpl()
@@ -38,8 +39,6 @@ struct ChildAudioComponent::Pimpl : public AudioSource
 
     void startAudio(ValueTree state)
     {
-        state_ = (ChildAudioState*)shm_->getShmAddress();
-        state_->ready_ = false;
         state_->finishedBuffer_ = -1;
         
         AudioDeviceManager::AudioDeviceSetup setup;
