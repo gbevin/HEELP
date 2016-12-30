@@ -27,6 +27,7 @@
 #include "Process/AudioProcessMessageTypes.h"
 #include "Process/AudioProcessMessageUtils.h"
 #include "Process/SharedMemory.h"
+#include "UI/MainContentComponent.h"
 #include "UI/MainWindow.h"
 
 #include <map>
@@ -114,7 +115,7 @@ struct HeelpMainApplication::Pimpl : public ChangeListener
         if (dm.getCurrentDeviceTypeObject() && dm.getCurrentAudioDevice())
         {
             // TODO : these should become proper channels, just generating four to test with now
-            for (int childId = 1; childId <= 8; ++childId)
+            for (int childId = 1; childId <= 10; ++childId)
             {
                 launchChildProcess(childId);
             }
@@ -288,6 +289,8 @@ HeelpMainApplication::~HeelpMainApplication()                           { pimpl_
 bool HeelpMainApplication::initialise(const String& commandLine)        { return pimpl_->initialise(commandLine); }
 void HeelpMainApplication::shutdown()                                   { pimpl_->shutdown(); }
 AudioDeviceManager* HeelpMainApplication::getAudioDeviceManager() const { return pimpl_->getAudioDeviceManager(); }
+
+void HeelpMainApplication::setRegisteredChildrenCount(int count)        { ((MainContentComponent*)pimpl_->mainWindow_->getContentComponent())->setRegisteredChildrenCount(count); }
 void HeelpMainApplication::launchChildProcess(int childId)              { pimpl_->launchChildProcess(childId); }
 void HeelpMainApplication::childProcessIsActive(int childId)            { pimpl_->childProcessIsActive(childId); }
 void HeelpMainApplication::startChildProcessAudio(int childId)          { pimpl_->startChildProcessAudio(childId); }

@@ -107,9 +107,20 @@ struct ChildAudioComponent::Pimpl : public AudioSource
         outputBuffer->clear();
         
         static double currentAngle = 0.0;
-        static double level = 0.5;
+        static double level = 0.1;
         
-        double cyclesPerSecond = MidiMessage::getMidiNoteInHertz(52 + childId_ * 2);
+        int noteOffset = childId_ / 3 * 12;
+        int modulo = childId_ % 3;
+        if (modulo == 1)
+        {
+            noteOffset += 4;
+        }
+        else if (modulo == 2)
+        {
+            noteOffset += 7;
+        }
+        
+        double cyclesPerSecond = MidiMessage::getMidiNoteInHertz(48 + noteOffset);
         
         AudioDeviceManager::AudioDeviceSetup audioSetup;
         deviceManager_.getAudioDeviceSetup(audioSetup);
@@ -129,6 +140,9 @@ struct ChildAudioComponent::Pimpl : public AudioSource
                 for (int chan = outputBuffer->getNumChannels(); --chan >= 0;)
                 {
                     localAudioBuffer_[chan * bufferToFill.numSamples + startSample] = currentSample;
+                    // TODO: once the main process has aux bus support, this should be uncommented
+                    // to output the audio straight to the audio interface in each child, after the
+                    // relevant DSP (gain, panning, ...)
 //                    outputBuffer->addSample(chan, startSample, currentSample);
                 }
                 

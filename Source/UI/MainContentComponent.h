@@ -31,8 +31,11 @@ namespace heelp
         void paint(Graphics&) override;
         void resized() override;
 
+        void setRegisteredChildrenCount(int count);
+        
     private:
         ScopedPointer<AudioDeviceSelectorComponent> audioSetupComponent_;
+        int registeredChildrenCount_;
         
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainContentComponent)
     };

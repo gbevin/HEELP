@@ -25,6 +25,8 @@ MainContentComponent::MainContentComponent()
 {
     audioSetupComponent_ = new AudioDeviceSelectorComponent(*HeelpApplication::getHeelpInstance()->getAudioDeviceManager(), 0, 0, 0, NUM_AUDIO_CHANNELS, false, false, true, false);
     addAndMakeVisible(audioSetupComponent_);
+    
+    registeredChildrenCount_ = 0;
 
     setSize(600, 400);
 }
@@ -36,9 +38,21 @@ MainContentComponent::~MainContentComponent()
 void MainContentComponent::paint(Graphics& g)
 {
     g.fillAll(Colour(0xfff7f7f7));
+
+    g.setFont(Font(16.0f));
+    g.setColour(Colours::black);
+    Rectangle<int> bounds = getLocalBounds();
+    bounds.reduce(10, 10);
+    g.drawText("Registered children : " + String(registeredChildrenCount_), bounds, Justification::centredBottom, true);
 }
 
 void MainContentComponent::resized()
 {
     audioSetupComponent_->setBounds(0, 20, getWidth(), getHeight() - 20);
+}
+
+void MainContentComponent::setRegisteredChildrenCount(int count)
+{
+    registeredChildrenCount_ = count;
+    repaint();
 }

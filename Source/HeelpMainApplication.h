@@ -33,6 +33,8 @@ namespace heelp
         bool initialise(const String& commandLine) override;
         void shutdown() override;
         AudioDeviceManager* getAudioDeviceManager() const override;
+
+        void setRegisteredChildrenCount(int count);
         
         void launchChildProcess(int childId);
         void childProcessIsActive(int childId);
