@@ -80,7 +80,7 @@ struct MainAudioComponent::Pimpl : public AudioAppComponent
         ScopedWriteLock g(childInfosLock_);
         childInfos_.insert(std::pair<int, ChildInfo>{childId, childInfo});
         LOG("Child " << childId << " : registered, now " << String(childInfos_.size()) << " children active");
-        mainApplication_->setRegisteredChildrenCount(childInfos_.size());
+        mainApplication_->setRegisteredChildrenCount((int)childInfos_.size());
     }
     
     void unregisterChild(int childId)
@@ -92,7 +92,7 @@ struct MainAudioComponent::Pimpl : public AudioAppComponent
             childInfos_.erase(it);
             LOG("Child " << childId << " : unregistered, now " << String(childInfos_.size()) << " children active");
         }
-        mainApplication_->setRegisteredChildrenCount(childInfos_.size());
+        mainApplication_->setRegisteredChildrenCount((int)childInfos_.size());
     }
     
     void prepareToPlay(int samplesPerBlockExpected, double sampleRate)
@@ -115,21 +115,23 @@ struct MainAudioComponent::Pimpl : public AudioAppComponent
         // if a child is registered, but the audio hasn't started yet, do so
         // and silence its output for this audio callback, given it time
         // to start up
-        ScopedReadLock g(childInfosLock_);
-        for (auto it = childInfos_.begin(); it != childInfos_.end(); ++it)
         {
-            int childId = it->first;
-            ChildInfo& childInfo = it->second;
+            ScopedReadLock g(childInfosLock_);
+            for (auto it = childInfos_.begin(); it != childInfos_.end(); ++it)
+            {
+                int childId = it->first;
+                ChildInfo& childInfo = it->second;
             
-            if (!childInfo.started_)
-            {
-                childInfo.started_ = true;
-                mainApplication_->startChildProcessAudio(childId);
-                childInfo.silent_ = true;
-            }
-            else if (childInfo.silent_)
-            {
-                childInfo.silent_ = false;
+                if (!childInfo.started_)
+                {
+                    childInfo.started_ = true;
+                    mainApplication_->startChildProcessAudio(childId);
+                    childInfo.silent_ = true;
+                }
+                else if (childInfo.silent_)
+                {
+                    childInfo.silent_ = false;
+                }
             }
         }
         
