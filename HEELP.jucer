@@ -96,26 +96,28 @@
         <MODULEPATH id="juce_osc" path="../../JUCE/modules"/>
       </MODULEPATHS>
     </XCODE_MAC>
-    <VS2015 targetFolder="Builds/VisualStudio2015">
+    <VS2015 targetFolder="Builds/VisualStudio2015" extraDefs="JUCE_ASIO=1">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
-                       isDebug="1" optimisation="1" targetName="HEELP" fastMath="1"/>
+                       isDebug="1" optimisation="1" targetName="HEELP" fastMath="1"
+                       headerPath="..\..\Add_Steinberg_SDKs_here\ASIOSDK2.3\common"/>
         <CONFIGURATION name="Release" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
-                       isDebug="0" optimisation="3" targetName="HEELP" fastMath="1"/>
+                       isDebug="0" optimisation="3" targetName="HEELP" fastMath="1"
+                       headerPath="..\..\Add_Steinberg_SDKs_here\ASIOSDK2.3\common"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
-        <MODULEPATH id="juce_core" path="../../JUCE/modules"/>
-        <MODULEPATH id="juce_events" path="../../JUCE/modules"/>
-        <MODULEPATH id="juce_graphics" path="../../JUCE/modules"/>
-        <MODULEPATH id="juce_data_structures" path="../../JUCE/modules"/>
-        <MODULEPATH id="juce_gui_basics" path="../../JUCE/modules"/>
-        <MODULEPATH id="juce_gui_extra" path="../../JUCE/modules"/>
-        <MODULEPATH id="juce_audio_basics" path="../../JUCE/modules"/>
-        <MODULEPATH id="juce_audio_devices" path="../../JUCE/modules"/>
-        <MODULEPATH id="juce_audio_formats" path="../../JUCE/modules"/>
-        <MODULEPATH id="juce_audio_processors" path="../../JUCE/modules"/>
-        <MODULEPATH id="juce_audio_utils" path="../../JUCE/modules"/>
-        <MODULEPATH id="juce_osc" path="../../JUCE/modules"/>
+        <MODULEPATH id="juce_core" path="..\JUCE\modules"/>
+        <MODULEPATH id="juce_events" path="..\JUCE\modules"/>
+        <MODULEPATH id="juce_graphics" path="..\JUCE\modules"/>
+        <MODULEPATH id="juce_data_structures" path="..\JUCE\modules"/>
+        <MODULEPATH id="juce_gui_basics" path="..\JUCE\modules"/>
+        <MODULEPATH id="juce_gui_extra" path="..\JUCE\modules"/>
+        <MODULEPATH id="juce_audio_basics" path="..\JUCE\modules"/>
+        <MODULEPATH id="juce_audio_devices" path="..\JUCE\modules"/>
+        <MODULEPATH id="juce_audio_formats" path="..\JUCE\modules"/>
+        <MODULEPATH id="juce_audio_processors" path="..\JUCE\modules"/>
+        <MODULEPATH id="juce_audio_utils" path="..\JUCE\modules"/>
+        <MODULEPATH id="juce_osc" path="..\JUCE\modules"/>
       </MODULEPATHS>
     </VS2015>
     <LINUX_MAKE targetFolder="Builds/LinuxMakefile">
