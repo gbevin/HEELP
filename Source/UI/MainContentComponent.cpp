@@ -53,6 +53,9 @@ void MainContentComponent::resized()
 
 void MainContentComponent::setRegisteredChildrenCount(int count)
 {
-    registeredChildrenCount_ = count;
-    repaint();
+    if (count != registeredChildrenCount_)
+    {
+        registeredChildrenCount_ = count;
+        repaint();
+    }
 }

@@ -40,7 +40,23 @@ namespace
     };
 }
 
-struct MainAudioComponent::Pimpl : public AudioAppComponent
+namespace
+{
+    enum MainAudioComponentEventsMessageType
+    {
+        registeredChildrenUpdated
+    };
+
+    struct MainAudioComponentEventsMessage : Message
+    {
+        MainAudioComponentEventsMessage(const MainAudioComponentEventsMessageType type) : type_(type) {}
+        ~MainAudioComponentEventsMessage() {}
+
+        const MainAudioComponentEventsMessageType type_;
+    };
+}
+
+struct MainAudioComponent::Pimpl : AudioAppComponent, MessageListener
 {
     Pimpl(HeelpMainApplication* mainApplication) : mainApplication_(mainApplication), paused_(true)
     {
@@ -80,7 +96,7 @@ struct MainAudioComponent::Pimpl : public AudioAppComponent
         ScopedWriteLock g(childInfosLock_);
         childInfos_.insert(std::pair<int, ChildInfo>{childId, childInfo});
         LOG("Child " << childId << " : registered, now " << String(childInfos_.size()) << " children active");
-        mainApplication_->setRegisteredChildrenCount((int)childInfos_.size());
+        postMessage(new MainAudioComponentEventsMessage(registeredChildrenUpdated));
     }
     
     void unregisterChild(int childId)
@@ -92,9 +108,24 @@ struct MainAudioComponent::Pimpl : public AudioAppComponent
             childInfos_.erase(it);
             LOG("Child " << childId << " : unregistered, now " << String(childInfos_.size()) << " children active");
         }
-        mainApplication_->setRegisteredChildrenCount((int)childInfos_.size());
+        postMessage(new MainAudioComponentEventsMessage(registeredChildrenUpdated));
     }
-    
+
+    void handleMessage(const Message& message)
+    {
+        MainAudioComponentEventsMessage* msg = (MainAudioComponentEventsMessage*)&message;
+        switch (msg->type_)
+        {
+            case registeredChildrenUpdated:
+            {
+                mainApplication_->setRegisteredChildrenCount((int)childInfos_.size());
+                break;
+            }
+            default:
+                break;
+       }
+    }
+
     void prepareToPlay(int samplesPerBlockExpected, double sampleRate)
     {
         LOG("Preparing to play audio..." << newLine <<
