@@ -40,9 +40,9 @@ namespace
     };
 }
 
-struct AudioSlaveProcess::Pimpl : MessageListener
+struct AudioSlaveProcess::Pimpl : MessageListener, Timer
 {
-    Pimpl(AudioSlaveProcess* parent, HeelpChildApplication* app) : parent_(parent), app_(app)
+    Pimpl(AudioSlaveProcess* parent, HeelpChildApplication* app) : parent_(parent), app_(app), receivedAudioDeviceManagerState_(false)
     {
     }
 
@@ -53,6 +53,9 @@ struct AudioSlaveProcess::Pimpl : MessageListener
         
         if (type == AudioProcessMessageTypes::AUDIODEVICEMANAGER_STATE)
         {
+            stopTimer();
+            receivedAudioDeviceManagerState_ = true;
+            
             LOG("Received from master " << AudioProcessMessageTypes::AUDIODEVICEMANAGER_STATE);
             postMessage(new AudioSlaveEventsMessage(initialiseAudio, msg));
         }
@@ -75,9 +78,24 @@ struct AudioSlaveProcess::Pimpl : MessageListener
     
     void handleConnectionMade()
     {
+        sendSlaveReady();
+        startTimer(500);
+    }
+    
+    void sendSlaveReady()
+    {
         LOG("Slave connection made, sending " << AudioProcessMessageTypes::AUDIOSLAVEPROCESS_READY);
         ValueTree msg(AudioProcessMessageTypes::AUDIOSLAVEPROCESS_READY);
         parent_->sendMessageToMaster(valueTreeToMemoryBlock(msg));
+    }
+    
+    void timerCallback()
+    {
+        if (receivedAudioDeviceManagerState_.get())
+        {
+            stopTimer();
+        }
+        sendSlaveReady();
     }
     
     void handleConnectionLost()
@@ -87,6 +105,7 @@ struct AudioSlaveProcess::Pimpl : MessageListener
     
     AudioSlaveProcess* parent_;
     HeelpChildApplication* app_;
+    Atomic<int> receivedAudioDeviceManagerState_;
 };
 
 AudioSlaveProcess::AudioSlaveProcess(HeelpChildApplication* app)  : pimpl_(new Pimpl(this, app))    {}

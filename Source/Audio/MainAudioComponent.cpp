@@ -92,9 +92,13 @@ struct MainAudioComponent::Pimpl : AudioAppComponent, MessageListener
     
     void registerChild(int childId, SharedMemory* shm, float* localBuffer)
     {
-        ChildInfo childInfo = {shm, (ChildAudioState*)shm->getShmAddress(), (float*)(shm->getShmAddress() + sizeof(ChildAudioState)), localBuffer, false, true, -1};
         {
             ScopedWriteLock g(childInfosLock_);
+            if (childInfos_.find(childId) != childInfos_.end())
+            {
+                return;
+            }
+            ChildInfo childInfo = {shm, (ChildAudioState*)shm->getShmAddress(), (float*)(shm->getShmAddress() + sizeof(ChildAudioState)), localBuffer, false, true, -1};
             childInfos_.insert(std::pair<int, ChildInfo>{childId, childInfo});
             LOG("Child " << childId << " : registered, now " << String(childInfos_.size()) << " children active");
         }
