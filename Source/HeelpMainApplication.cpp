@@ -168,6 +168,7 @@ struct HeelpMainApplication::Pimpl : public ChangeListener
         
         StringArray args;
         args.add(HeelpChildApplication::CMD_ARG_CHILDID+String(childId));
+        args.add(HeelpChildApplication::CMD_ARG_SHMUUID+String(shm->getShmUUID()));
         args.add(HeelpChildApplication::CMD_ARG_SHMINFO+String(shm->getShmInfo()));
         LOG("Child " << childId << " : launching with shared memory info " << shm->getShmInfo());
         if (masterProcess->launchSlaveProcess(File::getSpecialLocation(File::currentExecutableFile), audioCommandLineUID, args))
@@ -178,12 +179,18 @@ struct HeelpMainApplication::Pimpl : public ChangeListener
     
     void childProcessIsActive(int childId)
     {
-        ScopedWriteLock g(masterProcessInfosLock_);
-        auto it = masterProcessInfos_.find(childId);
-        if (it != masterProcessInfos_.end())
+        MasterProcessInfo* info = nullptr;
         {
-            MasterProcessInfo& info = it->second;
-            audio_->registerChild(childId, info.shm_, info.localBuffer_);
+            ScopedWriteLock g(masterProcessInfosLock_);
+            auto it = masterProcessInfos_.find(childId);
+            if (it != masterProcessInfos_.end())
+            {
+                info = &it->second;
+            }
+        }
+        if (info)
+        {
+            audio_->registerChild(childId, info->shm_, info->localBuffer_);
         }
     }
     
@@ -255,13 +262,15 @@ struct HeelpMainApplication::Pimpl : public ChangeListener
     {
         LOG("Shutdown");
         
-        ScopedWriteLock g(masterProcessInfosLock_);
-        for (auto it = masterProcessInfos_.begin(); it != masterProcessInfos_.end(); ++it)
+        audio_->unregisterAllChildren();
         {
-            audio_->unregisterChild(it->first);
-            it->second.destruct();
+            ScopedWriteLock g(masterProcessInfosLock_);
+            for (auto it = masterProcessInfos_.begin(); it != masterProcessInfos_.end(); ++it)
+            {
+                it->second.destruct();
+            }
+            masterProcessInfos_.clear();
         }
-        masterProcessInfos_.clear();
 
         audio_->getDeviceManager().removeChangeListener(this);
         audio_ = nullptr;

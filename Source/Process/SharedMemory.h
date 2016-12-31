@@ -26,10 +26,11 @@ namespace heelp
     {
     public:
         static SharedMemory* createForChildWithSize(int childId, size_t size);
-        static SharedMemory* attachForChildWithInfo(int childId, int64_t info);
+        static SharedMemory* attachForChildWithInfo(int childId, String uuid, int64_t info);
         
         virtual ~SharedMemory();
         
+        String getShmUUID();
         int64_t getShmInfo();
         char* getShmAddress();
         

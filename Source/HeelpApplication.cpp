@@ -33,6 +33,7 @@ struct HeelpApplication::Pimpl
     void initialise(const String& commandLine)
     {
         if (commandLine.contains(HeelpChildApplication::CMD_ARG_CHILDID) &&
+            commandLine.contains(HeelpChildApplication::CMD_ARG_SHMUUID) &&
             commandLine.contains(HeelpChildApplication::CMD_ARG_SHMINFO))
         {
             HeelpChildApplication* realApp = new HeelpChildApplication();

@@ -36,6 +36,7 @@ struct HeelpChildApplication::Pimpl
         Process::setDockIconVisible(false);
 #endif
 
+        String shmUUID;
         int64_t shmInfo = 0;
         StringArray params = JUCEApplication::getInstance()->getCommandLineParameterArray();
         for (auto&& param : params)
@@ -43,6 +44,10 @@ struct HeelpChildApplication::Pimpl
             if (param.startsWith(CMD_ARG_CHILDID))
             {
                 childId_ = param.substring(String(CMD_ARG_CHILDID).length()).getIntValue();
+            }
+            if (param.startsWith(CMD_ARG_SHMUUID))
+            {
+                shmUUID = param.substring(String(CMD_ARG_SHMUUID).length());
             }
             if (param.startsWith(CMD_ARG_SHMINFO))
             {
@@ -59,13 +64,19 @@ struct HeelpChildApplication::Pimpl
         logger_ = new HeelpLogger(childId_);
         Logger::setCurrentLogger(logger_);
 
+        if (shmUUID.isEmpty())
+        {
+            LOG("Couldn't determine shared memory UUID to use for child ID" << childId_);
+            return false;
+        }
+
         if (shmInfo == 0)
         {
             LOG("Couldn't determine shared memory info to use for child ID" << childId_);
             return false;
         }
-
-        shm_ = SharedMemory::attachForChildWithInfo(childId_, shmInfo);
+        
+        shm_ = SharedMemory::attachForChildWithInfo(childId_, shmUUID, shmInfo);
         if (shm_ == nullptr)
         {
             LOG("Couldn't attach shared memory with info " << shmInfo << " for child ID" << childId_);

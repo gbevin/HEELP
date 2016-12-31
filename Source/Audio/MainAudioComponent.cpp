@@ -93,21 +93,35 @@ struct MainAudioComponent::Pimpl : AudioAppComponent, MessageListener
     void registerChild(int childId, SharedMemory* shm, float* localBuffer)
     {
         ChildInfo childInfo = {shm, (ChildAudioState*)shm->getShmAddress(), (float*)(shm->getShmAddress() + sizeof(ChildAudioState)), localBuffer, false, true, -1};
-        ScopedWriteLock g(childInfosLock_);
-        childInfos_.insert(std::pair<int, ChildInfo>{childId, childInfo});
-        LOG("Child " << childId << " : registered, now " << String(childInfos_.size()) << " children active");
+        {
+            ScopedWriteLock g(childInfosLock_);
+            childInfos_.insert(std::pair<int, ChildInfo>{childId, childInfo});
+            LOG("Child " << childId << " : registered, now " << String(childInfos_.size()) << " children active");
+        }
         postMessage(new MainAudioComponentEventsMessage(registeredChildrenUpdated));
     }
     
     void unregisterChild(int childId)
     {
-        ScopedWriteLock g(childInfosLock_);
-        std::map<int, ChildInfo>::iterator it = childInfos_.find(childId);
-        if (it != childInfos_.end())
         {
-            childInfos_.erase(it);
-            LOG("Child " << childId << " : unregistered, now " << String(childInfos_.size()) << " children active");
+            ScopedWriteLock g(childInfosLock_);
+            std::map<int, ChildInfo>::iterator it = childInfos_.find(childId);
+            if (it != childInfos_.end())
+            {
+                childInfos_.erase(it);
+                LOG("Child " << childId << " : unregistered, now " << String(childInfos_.size()) << " children active");
+            }
         }
+        postMessage(new MainAudioComponentEventsMessage(registeredChildrenUpdated));
+    }
+    
+    void unregisterAllChildren()
+    {
+        {
+            ScopedWriteLock g(childInfosLock_);
+            childInfos_.clear();
+        }
+        LOG("All children unregistered, now " << String(childInfos_.size()) << " children active");
         postMessage(new MainAudioComponentEventsMessage(registeredChildrenUpdated));
     }
 
@@ -146,6 +160,8 @@ struct MainAudioComponent::Pimpl : AudioAppComponent, MessageListener
         // if a child is registered, but the audio hasn't started yet, do so
         // and silence its output for this audio callback, given it time
         // to start up
+        static Array<int> childrenToStart;
+        childrenToStart.clearQuick();
         {
             ScopedReadLock g(childInfosLock_);
             for (auto it = childInfos_.begin(); it != childInfos_.end(); ++it)
@@ -156,7 +172,7 @@ struct MainAudioComponent::Pimpl : AudioAppComponent, MessageListener
                 if (!childInfo.started_)
                 {
                     childInfo.started_ = true;
-                    mainApplication_->startChildProcessAudio(childId);
+                    childrenToStart.add(childId);
                     childInfo.silent_ = true;
                 }
                 else if (childInfo.silent_)
@@ -164,6 +180,10 @@ struct MainAudioComponent::Pimpl : AudioAppComponent, MessageListener
                     childInfo.silent_ = false;
                 }
             }
+        }
+        for (int childId : childrenToStart)
+        {
+            mainApplication_->startChildProcessAudio(childId);
         }
         
         // this is sort of a spin-lock that waits for the children's changes to the
@@ -239,3 +259,4 @@ void MainAudioComponent::pause()                                                
 void MainAudioComponent::resume()                                                           { pimpl_->resume(); }
 void MainAudioComponent::registerChild(int childId, SharedMemory* shm, float* localBuffer)  { pimpl_->registerChild(childId, shm, localBuffer); }
 void MainAudioComponent::unregisterChild(int childId)                                       { pimpl_->unregisterChild(childId); }
+void MainAudioComponent::unregisterAllChildren()                                            { pimpl_->unregisterAllChildren(); }

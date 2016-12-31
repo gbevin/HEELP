@@ -28,6 +28,7 @@ namespace heelp
     {
     public:
         constexpr static const char* const CMD_ARG_CHILDID = "--childid=";
+        constexpr static const char* const CMD_ARG_SHMUUID = "--shmuuid=";
         constexpr static const char* const CMD_ARG_SHMINFO = "--shminfo=";
         
         HeelpChildApplication();

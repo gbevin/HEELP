@@ -43,12 +43,14 @@ struct SharedMemory::Pimpl
 #if JUCE_MAC || JUCE_LINUX
     String shmName()
     {
-        return "/tmp/com.uwyn.heelp_sem_"+String(childId_);
+        return "/tmp/heelp_"+uuid_+"_"+String(childId_);
     }
 #endif
     
     void createForChildWithSize(int childId, size_t size)
     {
+        Time now = Time::getCurrentTime();
+        uuid_ = now.formatted("%y%m%d%H%M%S")+String(now.getMilliseconds());
         childId_ = childId;
         size_ = size;
 #if JUCE_MAC || JUCE_LINUX
@@ -56,7 +58,7 @@ struct SharedMemory::Pimpl
         int64_t shmFd = shm_open(name.toRawUTF8(), O_CREAT|O_EXCL|O_RDWR, S_IRUSR|S_IWUSR);
         if (shmFd < 0)
         {
-            LOG("shm_open error " << errno);
+            LOG("shm_open " << name << " error " << errno);
             // TODO : clean up more respectfully
             exit(1);
         }
@@ -159,11 +161,12 @@ struct SharedMemory::Pimpl
         }
     }
     
-    void attachForChildWithInfo(int childId, int64_t info)
+    void attachForChildWithInfo(int childId, String uuid, int64_t info)
     {
         if (shmAddress_ == nullptr && !created_)
         {
             childId_ = childId;
+            uuid_ = uuid;
 #if JUCE_MAC || JUCE_LINUX
             size_ = info;
             
@@ -183,6 +186,11 @@ struct SharedMemory::Pimpl
         }
     }
     
+    String getShmUUID()
+    {
+        return uuid_;
+    }
+    
     int64_t getShmInfo()
     {
 #if JUCE_MAC || JUCE_LINUX
@@ -198,6 +206,7 @@ struct SharedMemory::Pimpl
     }
     
     int childId_;
+    String uuid_;
     bool created_;
     size_t size_;
     int64_t shmFd_;
@@ -214,12 +223,13 @@ SharedMemory* SharedMemory::createForChildWithSize(int childId, size_t size)
     return mem;
 }
 
-SharedMemory* SharedMemory::attachForChildWithInfo(int childId, int64_t info)
+SharedMemory* SharedMemory::attachForChildWithInfo(int childId, String uuid, int64_t info)
 {
     SharedMemory* mem = new SharedMemory();
-    mem->pimpl_->attachForChildWithInfo(childId, info);
+    mem->pimpl_->attachForChildWithInfo(childId, uuid, info);
     return mem;
 }
 
+String SharedMemory::getShmUUID()  { return pimpl_->getShmUUID(); }
 int64_t SharedMemory::getShmInfo()  { return pimpl_->getShmInfo(); }
 char* SharedMemory::getShmAddress() { return pimpl_->getShmAddress(); }
