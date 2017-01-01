@@ -274,6 +274,7 @@ struct HeelpMainApplication::Pimpl : public ChangeListener
         if (state)
         {
             stateString = "\n" + state->createDocument("");
+            delete state;
         }
         LOG("Audio device configuration changed." << stateString);
 
