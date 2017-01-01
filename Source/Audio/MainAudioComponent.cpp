@@ -56,11 +56,12 @@ namespace
     };
 }
 
-struct MainAudioComponent::Pimpl : AudioAppComponent, MessageListener
+struct MainAudioComponent::Pimpl : AudioSource, MessageListener
 {
     Pimpl(HeelpMainApplication* mainApplication) : mainApplication_(mainApplication), paused_(true)
     {
-        setAudioChannels(0, NUM_AUDIO_CHANNELS);
+        mainApplication_->getAudioDeviceManager()->addAudioCallback(&audioSourcePlayer_);
+        audioSourcePlayer_.setSource(this);
     }
     
     ~Pimpl()
@@ -68,10 +69,11 @@ struct MainAudioComponent::Pimpl : AudioAppComponent, MessageListener
         shutdownAudio();
         childInfos_.clear();
     }
-    
-    AudioDeviceManager& getDeviceManager()
+
+    void shutdownAudio()
     {
-        return deviceManager;
+        audioSourcePlayer_.setSource(nullptr);
+        mainApplication_->getAudioDeviceManager()->removeAudioCallback(&audioSourcePlayer_);
     }
     
     void pause()
@@ -252,12 +254,12 @@ struct MainAudioComponent::Pimpl : AudioAppComponent, MessageListener
     Atomic<int> paused_;
     ReadWriteLock childInfosLock_;
     std::map<int, ChildInfo> childInfos_;
+
+    AudioSourcePlayer audioSourcePlayer_;
 };
 
 MainAudioComponent::MainAudioComponent(HeelpMainApplication* mainApplication) : pimpl_(new Pimpl(mainApplication))  {}
 MainAudioComponent::~MainAudioComponent()                                                                           { pimpl_ = nullptr; }
-
-AudioDeviceManager& MainAudioComponent::getDeviceManager()              { return pimpl_->getDeviceManager(); }
 
 void MainAudioComponent::pause()                                                            { pimpl_->pause(); }
 void MainAudioComponent::resume()                                                           { pimpl_->resume(); }

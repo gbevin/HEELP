@@ -30,8 +30,6 @@ namespace heelp
     public:
         MainAudioComponent(HeelpMainApplication* mainApplication);
         ~MainAudioComponent();
-        
-        AudioDeviceManager& getDeviceManager();
 
         void pause();
         void resume();

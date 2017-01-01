@@ -73,9 +73,8 @@ struct HeelpMainApplication::Pimpl : public ChangeListener
         // setup logging system
         logger_ = new HeelpLogger(0);
         Logger::setCurrentLogger(logger_);
-        
-        audio_ = new MainAudioComponent(parent_);
-        audio_->getDeviceManager().addChangeListener(this);
+
+        audioDeviceManager_.addChangeListener(this);
         
         if (commandLine.contains("--console") ||
             (SystemStats::getOperatingSystemType() == SystemStats::OperatingSystemType::Linux && SystemStats::getEnvironmentVariable("DISPLAY", "").isEmpty()))
@@ -89,30 +88,33 @@ struct HeelpMainApplication::Pimpl : public ChangeListener
             LOG("Running as a GUI application.");
             mainWindow_ = new MainWindow(JUCEApplication::getInstance()->getApplicationName());
         }
-        
-        startChildren();
-        
+                
         Process::makeForegroundProcess();
         
+        String audioError = audioDeviceManager_.initialise(0, NUM_AUDIO_CHANNELS, nullptr, true);
+        if (audioError.isNotEmpty())
+        {
+            LOG("Error while initializing audio device manager: " << audioError);
+        }
+
         return true;
     }
     
-    AudioDeviceManager* getAudioDeviceManager() const
+    AudioDeviceManager* getAudioDeviceManager()
     {
-        if (audio_ == nullptr)
-        {
-            return nullptr;
-        }
-        
-        return &audio_->getDeviceManager();
+        return &audioDeviceManager_;
     }
     
     void startChildren()
     {
+        if (audio_ == nullptr)
+        {
+            return;
+        }
+
         audio_->pause();
 
-        AudioDeviceManager& dm = audio_->getDeviceManager();
-        if (dm.getCurrentDeviceTypeObject() && dm.getCurrentAudioDevice())
+        if (audioDeviceManager_.getCurrentDeviceTypeObject() && audioDeviceManager_.getCurrentAudioDevice())
         {
             // TODO : these should become proper channels, just generating four to test with now
             for (int childId = 1; childId <= 10; ++childId)
@@ -132,9 +134,8 @@ struct HeelpMainApplication::Pimpl : public ChangeListener
             return;
         }
         
-        AudioDeviceManager& dm = audio_->getDeviceManager();
         AudioDeviceManager::AudioDeviceSetup setup;
-        dm.getAudioDeviceSetup(setup);
+        audioDeviceManager_.getAudioDeviceSetup(setup);
         
         // calculate active buffer sizes
         int bufferSize = NUM_AUDIO_CHANNELS * setup.bufferSize;
@@ -179,12 +180,17 @@ struct HeelpMainApplication::Pimpl : public ChangeListener
     
     void childProcessIsActive(int childId)
     {
+        if (audio_ == nullptr)
+        {
+            return;
+        }
+
         MasterProcessInfo* info = nullptr;
         {
             ScopedWriteLock g(masterProcessInfosLock_);
             auto it = masterProcessInfos_.find(childId);
             if (it != masterProcessInfos_.end())
-            {
+            { 
                 info = &it->second;
             }
         }
@@ -211,11 +217,10 @@ struct HeelpMainApplication::Pimpl : public ChangeListener
         }
         
         ValueTree msg(AudioProcessMessageTypes::AUDIODEVICEMANAGER_STATE);
-        AudioDeviceManager& dm = audio_->getDeviceManager();
-        if (dm.getCurrentAudioDevice())
+        if (audioDeviceManager_.getCurrentAudioDevice())
         {
             AudioDeviceManager::AudioDeviceSetup setup;
-            dm.getAudioDeviceSetup(setup);
+            audioDeviceManager_.getAudioDeviceSetup(setup);
   
             msg.setProperty(AudioProcessMessageProperties::AUDIO_DEVICE_INPUTNAME, setup.inputDeviceName, nullptr);
             msg.setProperty(AudioProcessMessageProperties::AUDIO_DEVICE_OUTPUTNAME, setup.outputDeviceName, nullptr);
@@ -227,6 +232,11 @@ struct HeelpMainApplication::Pimpl : public ChangeListener
     
     void killAllChildren()
     {
+        if (audio_ == nullptr)
+        {
+            return;
+        }
+
         audio_->pause();
 
         std::map<int, MasterProcessInfo>::iterator it;
@@ -240,6 +250,10 @@ struct HeelpMainApplication::Pimpl : public ChangeListener
     
     void killChildProcess(int childId)
     {
+        if (audio_ == nullptr)
+        {
+            return;
+        }
         audio_->unregisterChild(childId);
         
         ScopedWriteLock g(masterProcessInfosLock_);
@@ -252,9 +266,24 @@ struct HeelpMainApplication::Pimpl : public ChangeListener
         }
     }
 
+
     void changeListenerCallback(ChangeBroadcaster*)
     {
+        XmlElement* state = audioDeviceManager_.createStateXml();
+        String stateString;
+        if (state)
+        {
+            stateString = "\n" + state->createDocument("");
+        }
+        LOG("Audio device configuration changed." << stateString);
+
         killAllChildren();
+        if (audio_)
+        {
+            audio_ = nullptr;
+        }
+
+        audio_ = new MainAudioComponent(parent_);
         startChildren();
     }
 
@@ -272,16 +301,17 @@ struct HeelpMainApplication::Pimpl : public ChangeListener
             masterProcessInfos_.clear();
         }
 
-        audio_->getDeviceManager().removeChangeListener(this);
+        audioDeviceManager_.removeChangeListener(this);
+        audioDeviceManager_.closeAudioDevice();
         audio_ = nullptr;
 
         mainWindow_ = nullptr;
 
         Logger::setCurrentLogger(nullptr);
         logger_ = nullptr;
-
     }
     
+    AudioDeviceManager audioDeviceManager_;
     HeelpMainApplication* const parent_;
     ScopedPointer<FileLogger> logger_;
     
