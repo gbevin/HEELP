@@ -62,7 +62,7 @@ namespace
     };
 }
 
-struct HeelpMainApplication::Pimpl : public ChangeListener
+struct HeelpMainApplication::Pimpl : public ChangeListener, public Timer
 {
     Pimpl(HeelpMainApplication* parent) : parent_(parent), logger_(nullptr), audio_(nullptr)
     {
@@ -266,9 +266,21 @@ struct HeelpMainApplication::Pimpl : public ChangeListener
         }
     }
 
-
     void changeListenerCallback(ChangeBroadcaster*)
     {
+        killAllChildren();
+        if (audio_)
+        {
+            audio_ = nullptr;
+        }
+
+        startTimer(1000);
+    }
+
+    void timerCallback()
+    {
+        stopTimer();
+
         XmlElement* state = audioDeviceManager_.createStateXml();
         String stateString;
         if (state)
@@ -277,12 +289,6 @@ struct HeelpMainApplication::Pimpl : public ChangeListener
             delete state;
         }
         LOG("Audio device configuration changed." << stateString);
-
-        killAllChildren();
-        if (audio_)
-        {
-            audio_ = nullptr;
-        }
 
         audio_ = new MainAudioComponent(parent_);
         startChildren();
