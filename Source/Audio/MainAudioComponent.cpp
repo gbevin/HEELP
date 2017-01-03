@@ -72,6 +72,7 @@ struct MainAudioComponent::Pimpl : AudioSource, MessageListener
 
     void shutdownAudio()
     {
+        pause();
         audioSourcePlayer_.setSource(nullptr);
         mainApplication_->getAudioDeviceManager()->removeAudioCallback(&audioSourcePlayer_);
     }
@@ -197,6 +198,11 @@ struct MainAudioComponent::Pimpl : AudioSource, MessageListener
         bool sharedMemoryChangesAreVisible;
         do
         {
+            if (paused_.get())
+            {
+                return;
+            }
+
             sharedMemoryChangesAreVisible = true;
             
             ScopedReadLock g(childInfosLock_);
@@ -248,6 +254,7 @@ struct MainAudioComponent::Pimpl : AudioSource, MessageListener
     void releaseResources()
     {
         LOG("Releasing audio resources");
+        shutdownAudio();
     }
     
     HeelpMainApplication* const mainApplication_;

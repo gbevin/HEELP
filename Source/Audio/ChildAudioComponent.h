@@ -32,6 +32,7 @@ namespace heelp
         
         void startAudio(ValueTree state);
         AudioDeviceManager& getDeviceManager();
+        void shutdownAudio();
                 
         struct Pimpl;
     private:

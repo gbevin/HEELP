@@ -104,10 +104,18 @@ struct HeelpChildApplication::Pimpl
         LOG("Setting up audio for child " << childId_ << " with shared memory info " << shm_->getShmInfo());
         audio_->startAudio(state);
     }
-    
+
+    void shutdownAudio()
+    {
+        LOG("Shutting down audio for child " << childId_ << " with shared memory info " << shm_->getShmInfo());
+        audio_->shutdownAudio();
+    }
+
     void shutdown()
     {
         LOG("Shutdown");
+
+        shutdownAudio();
         
         Logger::setCurrentLogger(nullptr);
         logger_ = nullptr;
@@ -130,3 +138,4 @@ bool HeelpChildApplication::initialise(const String& commandLine)           { re
 void HeelpChildApplication::shutdown()                                      { pimpl_->shutdown(); }
 AudioDeviceManager* HeelpChildApplication::getAudioDeviceManager() const    { return pimpl_->getAudioDeviceManager(); }
 void HeelpChildApplication::startAudio(ValueTree state)                     { pimpl_->startAudio(state); }
+void HeelpChildApplication::shutdownAudio()                                 { pimpl_->shutdownAudio(); }

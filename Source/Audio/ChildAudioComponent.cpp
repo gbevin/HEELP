@@ -26,7 +26,7 @@ using namespace heelp;
 
 struct ChildAudioComponent::Pimpl : public AudioSource
 {
-    Pimpl(int childId, SharedMemory* shm) : childId_(childId), shm_(shm), state_(nullptr), sharedAudioBuffer_(nullptr), localAudioBuffer_(nullptr)
+    Pimpl(int childId, SharedMemory* shm) : childId_(childId), shm_(shm), state_(nullptr), sharedAudioBuffer_(nullptr), paused_(true)
     {
         state_ = (ChildAudioState*)shm_->getShmAddress();
         state_->reset();
@@ -39,6 +39,7 @@ struct ChildAudioComponent::Pimpl : public AudioSource
 
     void startAudio(ValueTree state)
     {
+        paused_ = true;
         state_->finishedBuffer_ = -1;
         
         AudioDeviceManager::AudioDeviceSetup setup;
@@ -61,12 +62,8 @@ struct ChildAudioComponent::Pimpl : public AudioSource
         {
             bufferSizeSamples = deviceManager_.getCurrentAudioDevice()->getCurrentBufferSizeSamples();
         }
-        if (localAudioBuffer_)
-        {
-            free(localAudioBuffer_);
-        }
         LOG("Allocating local audio buffer for " << bufferSizeSamples << " samples");
-        localAudioBuffer_ = (float*)malloc(NUM_AUDIO_CHANNELS * bufferSizeSamples * sizeof(float));
+        localAudioBuffer_.ensureSize(NUM_AUDIO_CHANNELS * bufferSizeSamples * sizeof(float), true);
 
         deviceManager_.addAudioCallback(&audioSourcePlayer_);
         audioSourcePlayer_.setSource(this);
@@ -74,14 +71,10 @@ struct ChildAudioComponent::Pimpl : public AudioSource
     
     void shutdownAudio()
     {
+        paused_ = true;
         audioSourcePlayer_.setSource(nullptr);
         deviceManager_.removeAudioCallback(&audioSourcePlayer_);
         deviceManager_.closeAudioDevice();
-        if (localAudioBuffer_)
-        {
-            free(localAudioBuffer_);
-            localAudioBuffer_ = nullptr;
-        }
     }
     
     AudioDeviceManager& getDeviceManager()
@@ -94,17 +87,19 @@ struct ChildAudioComponent::Pimpl : public AudioSource
         LOG("Preparing to play audio..." << newLine <<
             " samplesPerBlockExpected = " << samplesPerBlockExpected << newLine <<
             " sampleRate = " << sampleRate);
+        paused_ = false;
     }
 
     void getNextAudioBlock(const AudioSourceChannelInfo& bufferToFill)
     {
-        if (!state_->ready_)
+
+        AudioSampleBuffer* outputBuffer = bufferToFill.buffer;
+        outputBuffer->clear();
+
+        if (!state_->ready_ || paused_.get())
         {
             return;
         }
-        
-        AudioSampleBuffer* outputBuffer = bufferToFill.buffer;
-        outputBuffer->clear();
         
         static double currentAngle = 0.0;
         static double level = 0.1;
@@ -139,7 +134,7 @@ struct ChildAudioComponent::Pimpl : public AudioSource
                 
                 for (int chan = outputBuffer->getNumChannels(); --chan >= 0;)
                 {
-                    localAudioBuffer_[chan * bufferToFill.numSamples + startSample] = currentSample;
+                    ((float*)localAudioBuffer_.getData())[chan * bufferToFill.numSamples + startSample] = currentSample;
                     // TODO: once the main process has aux bus support, this should be uncommented
                     // to output the audio straight to the audio interface in each child, after the
                     // relevant DSP (gain, panning, ...)
@@ -158,7 +153,7 @@ struct ChildAudioComponent::Pimpl : public AudioSource
 //            }
 
             long finishedBuffer = (state_->finishedBuffer_ == 0 ? 1 : 0);
-            memcpy(&sharedAudioBuffer_[finishedBuffer*totalBufferSize], localAudioBuffer_, totalBufferSize * sizeof(float));
+            memcpy(&sharedAudioBuffer_[finishedBuffer*totalBufferSize], localAudioBuffer_.getData(), totalBufferSize * sizeof(float));
             state_->finishedBuffer_ = finishedBuffer;
         }
     }
@@ -166,6 +161,7 @@ struct ChildAudioComponent::Pimpl : public AudioSource
     void releaseResources()
     {
         LOG("Releasing audio resources");
+        shutdownAudio();
     }
     
     Random rnd_;
@@ -173,8 +169,10 @@ struct ChildAudioComponent::Pimpl : public AudioSource
     SharedMemory* const shm_;
     ChildAudioState* state_;
     float* sharedAudioBuffer_;
-    float* localAudioBuffer_;
-    
+    MemoryBlock localAudioBuffer_;
+
+    Atomic<int> paused_;
+
     AudioDeviceManager deviceManager_;
     AudioSourcePlayer audioSourcePlayer_;
 };
@@ -184,3 +182,4 @@ ChildAudioComponent::~ChildAudioComponent()                                     
 
 void ChildAudioComponent::startAudio(ValueTree state)       { pimpl_->startAudio(state); }
 AudioDeviceManager& ChildAudioComponent::getDeviceManager() { return pimpl_->getDeviceManager(); }
+void ChildAudioComponent::shutdownAudio()                   { pimpl_->shutdownAudio(); }

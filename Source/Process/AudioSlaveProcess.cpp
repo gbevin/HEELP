@@ -100,6 +100,7 @@ struct AudioSlaveProcess::Pimpl : MessageListener, Timer
     
     void handleConnectionLost()
     {
+        app_->shutdownAudio();
         JUCEApplication::quit();
     }
     

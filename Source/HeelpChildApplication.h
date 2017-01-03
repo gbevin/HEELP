@@ -39,6 +39,7 @@ namespace heelp
         AudioDeviceManager* getAudioDeviceManager() const override;
         
         void startAudio(ValueTree valueTree);
+        void shutdownAudio();
         
         struct Pimpl;
     private:
