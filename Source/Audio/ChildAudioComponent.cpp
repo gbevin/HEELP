@@ -57,14 +57,6 @@ struct ChildAudioComponent::Pimpl : public AudioSource
         
         sharedAudioBuffer_ = (float*)&(shm_->getShmAddress()[sizeof(ChildAudioState)]);
 
-        int bufferSizeSamples = 4096;
-        if (deviceManager_.getCurrentAudioDevice())
-        {
-            bufferSizeSamples = deviceManager_.getCurrentAudioDevice()->getCurrentBufferSizeSamples();
-        }
-        LOG("Allocating local audio buffer for " << bufferSizeSamples << " samples");
-        localAudioBuffer_.ensureSize(NUM_AUDIO_CHANNELS * bufferSizeSamples * sizeof(float), true);
-
         deviceManager_.addAudioCallback(&audioSourcePlayer_);
         audioSourcePlayer_.setSource(this);
     }
@@ -127,18 +119,13 @@ struct ChildAudioComponent::Pimpl : public AudioSource
             int startSample = 0;
             int numSamples = bufferToFill.numSamples;
 
-            int totalBufferSize = NUM_AUDIO_CHANNELS * bufferToFill.numSamples;
             while (--numSamples >= 0)
             {
                 const float currentSample = (float)(std::sin(currentAngle) * level);
                 
                 for (int chan = outputBuffer->getNumChannels(); --chan >= 0;)
                 {
-                    ((float*)localAudioBuffer_.getData())[chan * bufferToFill.numSamples + startSample] = currentSample;
-                    // TODO: once the main process has aux bus support, this should be uncommented
-                    // to output the audio straight to the audio interface in each child, after the
-                    // relevant DSP (gain, panning, ...)
-//                    outputBuffer->addSample(chan, startSample, currentSample);
+                    outputBuffer->addSample(chan, startSample, currentSample);
                 }
                 
                 currentAngle += angleDelta;
@@ -153,9 +140,19 @@ struct ChildAudioComponent::Pimpl : public AudioSource
 //            }
 
             long finishedBuffer = (state_->finishedBuffer_ == 0 ? 1 : 0);
-            memcpy(&sharedAudioBuffer_[finishedBuffer*totalBufferSize], localAudioBuffer_.getData(), totalBufferSize * sizeof(float));
+            int totalBufferSize = NUM_AUDIO_CHANNELS * bufferToFill.numSamples;
+            int channelBufferSizeBytes = bufferToFill.numSamples * sizeof(float);
+            for (int chan = outputBuffer->getNumChannels(); --chan >= 0;)
+            {
+                memcpy(&sharedAudioBuffer_[finishedBuffer*totalBufferSize + bufferToFill.numSamples*chan], outputBuffer->getReadPointer(chan), channelBufferSizeBytes);
+            }
             state_->finishedBuffer_ = finishedBuffer;
         }
+
+        // TODO: once the main process has aux bus support, this should be commented
+        // to output the audio straight to the audio interface in each child, after the
+        // relevant DSP (gain, panning, ...)
+        outputBuffer->clear();
     }
 
     void releaseResources()
@@ -169,7 +166,6 @@ struct ChildAudioComponent::Pimpl : public AudioSource
     SharedMemory* const shm_;
     ChildAudioState* state_;
     float* sharedAudioBuffer_;
-    MemoryBlock localAudioBuffer_;
 
     Atomic<int> paused_;
 
