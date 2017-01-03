@@ -67,6 +67,8 @@ struct MainAudioComponent::Pimpl : AudioSource, MessageListener
     ~Pimpl()
     {
         shutdownAudio();
+        
+        ScopedWriteLock g(childInfosLock_);
         childInfos_.clear();
     }
 
@@ -127,8 +129,8 @@ struct MainAudioComponent::Pimpl : AudioSource, MessageListener
         {
             ScopedWriteLock g(childInfosLock_);
             childInfos_.clear();
+            LOG("All children unregistered, now " << String(childInfos_.size()) << " children active");
         }
-        LOG("All children unregistered, now " << String(childInfos_.size()) << " children active");
         postMessage(new MainAudioComponentEventsMessage(registeredChildrenUpdated));
     }
 
@@ -139,6 +141,7 @@ struct MainAudioComponent::Pimpl : AudioSource, MessageListener
         {
             case registeredChildrenUpdated:
             {
+                ScopedReadLock g(childInfosLock_);
                 mainApplication_->setRegisteredChildrenCount((int)childInfos_.size());
                 break;
             }
