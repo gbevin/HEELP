@@ -20,14 +20,14 @@
 
 #include "JuceHeader.h"
 
-#include "../HeelpChildApplication.h"
+#include "../HeelpSharedMemoryChildApplication.h"
 
 namespace heelp
 {
     class AudioSlaveProcess : public ChildProcessSlave, private DeletedAtShutdown
     {
     public:
-        AudioSlaveProcess(HeelpChildApplication* app);
+        AudioSlaveProcess(HeelpSharedMemoryChildApplication* app);
         virtual ~AudioSlaveProcess();
 
         void handleMessageFromMaster(const MemoryBlock& mb) override;

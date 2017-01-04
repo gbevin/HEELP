@@ -42,7 +42,7 @@ namespace
 
 struct AudioSlaveProcess::Pimpl : MessageListener, Timer
 {
-    Pimpl(AudioSlaveProcess* parent, HeelpChildApplication* app) : parent_(parent), app_(app), receivedAudioDeviceManagerState_(false)
+    Pimpl(AudioSlaveProcess* parent, HeelpSharedMemoryChildApplication* app) : parent_(parent), app_(app), receivedAudioDeviceManagerState_(false)
     {
     }
 
@@ -105,11 +105,11 @@ struct AudioSlaveProcess::Pimpl : MessageListener, Timer
     }
     
     AudioSlaveProcess* parent_;
-    HeelpChildApplication* app_;
+    HeelpSharedMemoryChildApplication* app_;
     Atomic<int> receivedAudioDeviceManagerState_;
 };
 
-AudioSlaveProcess::AudioSlaveProcess(HeelpChildApplication* app)  : pimpl_(new Pimpl(this, app))    {}
+AudioSlaveProcess::AudioSlaveProcess(HeelpSharedMemoryChildApplication* app)  : pimpl_(new Pimpl(this, app))    {}
 AudioSlaveProcess::~AudioSlaveProcess()                                                             { pimpl_ = nullptr; }
 
 void AudioSlaveProcess::handleMessageFromMaster(const MemoryBlock& mb)  { pimpl_->handleMessageFromMaster(mb); }

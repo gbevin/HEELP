@@ -24,7 +24,7 @@ namespace heelp
 {
     static const int NUM_AUDIO_CHANNELS = 2;
     static const int NUM_BUFFERS = 2;
-    static const char* audioCommandLineUID = "heelpUID";
+    static const char* HEELP_COMMANDLINE_UID = "heelpUID";
     
 
     class HeelpApplication  : public JUCEApplication

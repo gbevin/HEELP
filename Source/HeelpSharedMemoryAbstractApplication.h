@@ -15,18 +15,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef ABSTRACTHEELPAPPLICATION_H_INCLUDED
-#define ABSTRACTHEELPAPPLICATION_H_INCLUDED
+#ifndef HEELPSHAREDMEMORYABSTRACTAPPLICATION_H_INCLUDED
+#define HEELPSHAREDMEMORYABSTRACTAPPLICATION_H_INCLUDED
 
 #include "JuceHeader.h"
 
 namespace heelp
 {
-    class AbstractHeelpApplication
+    class HeelpSharedMemoryAbstractApplication
     {
     public:
-        AbstractHeelpApplication() {}
-        virtual ~AbstractHeelpApplication() {}
+        HeelpSharedMemoryAbstractApplication() {}
+        virtual ~HeelpSharedMemoryAbstractApplication() {}
         
         virtual bool initialise(const String& commandLine) = 0;
         virtual void shutdown() = 0;
@@ -34,4 +34,4 @@ namespace heelp
     };
 }
 
-#endif  // ABSTRACTHEELPAPPLICATION_H_INCLUDED
+#endif  // HEELPSHAREDMEMORYABSTRACTAPPLICATION_H_INCLUDED

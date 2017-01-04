@@ -20,19 +20,19 @@
 
 #include "JuceHeader.h"
 
-#include "AbstractHeelpApplication.h"
+#include "HeelpSharedMemoryAbstractApplication.h"
 
 namespace heelp
 {
-    class HeelpChildApplication : public AbstractHeelpApplication
+    class HeelpSharedMemoryChildApplication : public HeelpSharedMemoryAbstractApplication
     {
     public:
         constexpr static const char* const CMD_ARG_CHILDID = "--childid=";
         constexpr static const char* const CMD_ARG_SHMUUID = "--shmuuid=";
         constexpr static const char* const CMD_ARG_SHMINFO = "--shminfo=";
         
-        HeelpChildApplication();
-        virtual ~HeelpChildApplication();
+        HeelpSharedMemoryChildApplication();
+        virtual ~HeelpSharedMemoryChildApplication();
         
         bool initialise(const String& commandLine) override;
         void shutdown() override;
@@ -45,7 +45,7 @@ namespace heelp
     private:
         ScopedPointer<Pimpl> pimpl_;
         
-        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (HeelpChildApplication)
+        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (HeelpSharedMemoryChildApplication)
     };
 }
 

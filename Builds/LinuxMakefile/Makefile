@@ -67,8 +67,8 @@ OBJECTS := \
   $(JUCE_OBJDIR)/MainContentComponent_52535d99.o \
   $(JUCE_OBJDIR)/MainWindow_5f9c9b05.o \
   $(JUCE_OBJDIR)/HeelpApplication_d02c53ad.o \
-  $(JUCE_OBJDIR)/HeelpChildApplication_7df9aca1.o \
-  $(JUCE_OBJDIR)/HeelpMainApplication_f5aca8b4.o \
+  $(JUCE_OBJDIR)/HeelpSharedMemoryChildApplication_3487b387.o \
+  $(JUCE_OBJDIR)/HeelpSharedMemoryMainApplication_776f2d0e.o \
   $(JUCE_OBJDIR)/HeelpLogger_ce25639d.o \
   $(JUCE_OBJDIR)/Main_90ebc5c2.o \
   $(JUCE_OBJDIR)/juce_audio_basics_6b797ca1.o \
@@ -155,14 +155,14 @@ $(JUCE_OBJDIR)/HeelpApplication_d02c53ad.o: ../../Source/HeelpApplication.cpp
 	@echo "Compiling HeelpApplication.cpp"
 	@$(CXX) $(JUCE_CXXFLAGS) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/HeelpChildApplication_7df9aca1.o: ../../Source/HeelpChildApplication.cpp
+$(JUCE_OBJDIR)/HeelpSharedMemoryChildApplication_3487b387.o: ../../Source/HeelpSharedMemoryChildApplication.cpp
 	-@mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling HeelpChildApplication.cpp"
+	@echo "Compiling HeelpSharedMemoryChildApplication.cpp"
 	@$(CXX) $(JUCE_CXXFLAGS) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/HeelpMainApplication_f5aca8b4.o: ../../Source/HeelpMainApplication.cpp
+$(JUCE_OBJDIR)/HeelpSharedMemoryMainApplication_776f2d0e.o: ../../Source/HeelpSharedMemoryMainApplication.cpp
 	-@mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling HeelpMainApplication.cpp"
+	@echo "Compiling HeelpSharedMemoryMainApplication.cpp"
 	@$(CXX) $(JUCE_CXXFLAGS) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/HeelpLogger_ce25639d.o: ../../Source/HeelpLogger.cpp

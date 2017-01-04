@@ -20,20 +20,20 @@
 
 #include "JuceHeader.h"
 
-#include "../HeelpMainApplication.h"
+#include "../HeelpSharedMemoryMainApplication.h"
 
 namespace heelp
 {
     class AudioMasterProcess : public ChildProcessMaster, private DeletedAtShutdown
     {
     public:
-        AudioMasterProcess(HeelpMainApplication* app, int childId);
+        AudioMasterProcess(HeelpSharedMemoryMainApplication* app, int childId);
         
         void handleMessageFromSlave(const MemoryBlock& mb) override;
         void handleConnectionLost() override;
 
     private:
-        HeelpMainApplication* app_;
+        HeelpSharedMemoryMainApplication* app_;
         int childId_;
         
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AudioMasterProcess)

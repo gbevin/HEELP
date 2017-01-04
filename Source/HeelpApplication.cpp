@@ -17,8 +17,8 @@
  */
 #include "HeelpApplication.h"
 
-#include "HeelpChildApplication.h"
-#include "HeelpMainApplication.h"
+#include "HeelpSharedMemoryChildApplication.h"
+#include "HeelpSharedMemoryMainApplication.h"
 #include "Utils.h"
 #include "Process/AudioSlaveProcess.h"
 
@@ -32,17 +32,17 @@ struct HeelpApplication::Pimpl
     
     void initialise(const String& commandLine)
     {
-        if (commandLine.contains(HeelpChildApplication::CMD_ARG_CHILDID) &&
-            commandLine.contains(HeelpChildApplication::CMD_ARG_SHMUUID) &&
-            commandLine.contains(HeelpChildApplication::CMD_ARG_SHMINFO))
+        if (commandLine.contains(HeelpSharedMemoryChildApplication::CMD_ARG_CHILDID) &&
+            commandLine.contains(HeelpSharedMemoryChildApplication::CMD_ARG_SHMUUID) &&
+            commandLine.contains(HeelpSharedMemoryChildApplication::CMD_ARG_SHMINFO))
         {
-            HeelpChildApplication* realApp = new HeelpChildApplication();
+            HeelpSharedMemoryChildApplication* realApp = new HeelpSharedMemoryChildApplication();
             realApp_ = realApp;
             bool started = false;
             if (realApp->initialise(commandLine))
             {
                 ScopedPointer<AudioSlaveProcess> slave(new AudioSlaveProcess(realApp));
-                if (slave->initialiseFromCommandLine(commandLine, audioCommandLineUID))
+                if (slave->initialiseFromCommandLine(commandLine, HEELP_COMMANDLINE_UID))
                 {
                     slave.release(); // allow the slave object to stay alive - it'll handle its own deletion.
                     started = true;
@@ -56,7 +56,7 @@ struct HeelpApplication::Pimpl
         }
         else
         {
-            HeelpMainApplication* realApp = new HeelpMainApplication();
+            HeelpSharedMemoryMainApplication* realApp = new HeelpSharedMemoryMainApplication();
             realApp_ = realApp;
             realApp->initialise(commandLine);
         }
@@ -83,7 +83,7 @@ struct HeelpApplication::Pimpl
         quit();
     }
     
-    ScopedPointer<AbstractHeelpApplication> realApp_;
+    ScopedPointer<HeelpSharedMemoryAbstractApplication> realApp_;
 };
 
 HeelpApplication::HeelpApplication() : pimpl_(new Pimpl())  {}

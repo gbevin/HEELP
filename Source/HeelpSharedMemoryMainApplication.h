@@ -20,15 +20,15 @@
 
 #include "JuceHeader.h"
 
-#include "AbstractHeelpApplication.h"
+#include "HeelpSharedMemoryAbstractApplication.h"
 
 namespace heelp
 {
-    class HeelpMainApplication : public AbstractHeelpApplication
+    class HeelpSharedMemoryMainApplication : public HeelpSharedMemoryAbstractApplication
     {
     public:
-        HeelpMainApplication();
-        virtual ~HeelpMainApplication();
+        HeelpSharedMemoryMainApplication();
+        virtual ~HeelpSharedMemoryMainApplication();
         
         bool initialise(const String& commandLine) override;
         void shutdown() override;
@@ -45,7 +45,7 @@ namespace heelp
     private:
         ScopedPointer<Pimpl> pimpl_;
         
-        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (HeelpMainApplication)
+        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (HeelpSharedMemoryMainApplication)
     };
 }
 
