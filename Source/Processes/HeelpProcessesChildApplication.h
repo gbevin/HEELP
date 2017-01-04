@@ -15,38 +15,38 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef HEELPMAINAPPLICATION_H_INCLUDED
-#define HEELPMAINAPPLICATION_H_INCLUDED
+#ifndef HEELPPROCESSESCHILDAPPLICATION_H_INCLUDED
+#define HEELPPROCESSESCHILDAPPLICATION_H_INCLUDED
 
 #include "JuceHeader.h"
 
-#include "HeelpSharedMemoryAbstractApplication.h"
+#include "../AbstractHeelpApplication.h"
 
 namespace heelp
 {
-    class HeelpSharedMemoryMainApplication : public HeelpSharedMemoryAbstractApplication
+    class HeelpProcessesChildApplication : public AbstractHeelpApplication
     {
     public:
-        HeelpSharedMemoryMainApplication();
-        virtual ~HeelpSharedMemoryMainApplication();
+        constexpr static const char* const CMD_ARG_CHILDID = "--childid=";
+        constexpr static const char* const CMD_ARG_SHMUUID = "--shmuuid=";
+        constexpr static const char* const CMD_ARG_SHMINFO = "--shminfo=";
+        
+        HeelpProcessesChildApplication();
+        virtual ~HeelpProcessesChildApplication();
         
         bool initialise(const String& commandLine) override;
         void shutdown() override;
         AudioDeviceManager* getAudioDeviceManager() const override;
-
-        void setRegisteredChildrenCount(int count);
         
-        void launchChildProcess(int childId);
-        void childProcessIsActive(int childId);
-        void startChildProcessAudio(int childId);
-        void killChildProcess(int childId);
+        void startAudio(ValueTree valueTree);
+        void shutdownAudio();
         
         struct Pimpl;
     private:
         ScopedPointer<Pimpl> pimpl_;
         
-        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (HeelpSharedMemoryMainApplication)
+        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (HeelpProcessesChildApplication)
     };
 }
 
-#endif  // HEELPMAINAPPLICATION_H_INCLUDED
+#endif  // HEELPPROCESSESCHILDAPPLICATION_H_INCLUDED

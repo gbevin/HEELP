@@ -15,30 +15,31 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef AUDIOMASTERPROCESS_H_INCLUDED
-#define AUDIOMASTERPROCESS_H_INCLUDED
+#ifndef CHILDAUDIOCOMPONENT_H_INCLUDED
+#define CHILDAUDIOCOMPONENT_H_INCLUDED
 
 #include "JuceHeader.h"
 
-#include "../HeelpSharedMemoryMainApplication.h"
+#include "SharedMemory.h"
 
 namespace heelp
 {
-    class AudioMasterProcess : public ChildProcessMaster, private DeletedAtShutdown
+    class ChildAudioComponent
     {
     public:
-        AudioMasterProcess(HeelpSharedMemoryMainApplication* app, int childId);
+        ChildAudioComponent(int childId, SharedMemory* shm);
+        ~ChildAudioComponent();
         
-        void handleMessageFromSlave(const MemoryBlock& mb) override;
-        void handleConnectionLost() override;
-
+        void startAudio(ValueTree state);
+        AudioDeviceManager& getDeviceManager();
+        void shutdownAudio();
+                
+        struct Pimpl;
     private:
-        HeelpSharedMemoryMainApplication* app_;
-        int childId_;
-        
-        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AudioMasterProcess)
+        ScopedPointer<Pimpl> pimpl_;
+
+        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ChildAudioComponent)
     };
 }
 
-
-#endif  // AUDIOMASTERPROCESS_H_INCLUDED
+#endif  // CHILDAUDIOCOMPONENT_H_INCLUDED

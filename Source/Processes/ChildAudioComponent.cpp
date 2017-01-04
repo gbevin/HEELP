@@ -19,7 +19,7 @@
 
 #include "../HeelpApplication.h"
 #include "../Utils.h"
-#include "../Process/AudioProcessMessageTypes.h"
+#include "AudioProcessMessageTypes.h"
 #include "ChildAudioState.h"
 
 using namespace heelp;

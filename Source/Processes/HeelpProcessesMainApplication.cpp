@@ -15,20 +15,20 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "HeelpSharedMemoryMainApplication.h"
+#include "HeelpProcessesMainApplication.h"
 
-#include "HeelpApplication.h"
-#include "HeelpSharedMemoryChildApplication.h"
-#include "HeelpLogger.h"
-#include "Utils.h"
-#include "Audio/ChildAudioState.h"
-#include "Audio/MainAudioComponent.h"
-#include "Process/AudioMasterProcess.h"
-#include "Process/AudioProcessMessageTypes.h"
-#include "Process/AudioProcessMessageUtils.h"
-#include "Process/SharedMemory.h"
-#include "UI/MainContentComponent.h"
-#include "UI/MainWindow.h"
+#include "../HeelpApplication.h"
+#include "../HeelpLogger.h"
+#include "../Utils.h"
+#include "../UI/MainContentComponent.h"
+#include "../UI/MainWindow.h"
+#include "AudioMasterProcess.h"
+#include "AudioProcessMessageTypes.h"
+#include "AudioProcessMessageUtils.h"
+#include "ChildAudioState.h"
+#include "HeelpProcessesChildApplication.h"
+#include "MainAudioComponent.h"
+#include "SharedMemory.h"
 
 #include <map>
 
@@ -62,9 +62,9 @@ namespace
     };
 }
 
-struct HeelpSharedMemoryMainApplication::Pimpl : public ChangeListener, public Timer
+struct HeelpProcessesMainApplication::Pimpl : public ChangeListener, public Timer
 {
-    Pimpl(HeelpSharedMemoryMainApplication* parent) : parent_(parent), logger_(nullptr), audio_(nullptr)
+    Pimpl(HeelpProcessesMainApplication* parent) : parent_(parent), logger_(nullptr), audio_(nullptr)
     {
     }
     
@@ -168,9 +168,9 @@ struct HeelpSharedMemoryMainApplication::Pimpl : public ChangeListener, public T
         }
         
         StringArray args;
-        args.add(HeelpSharedMemoryChildApplication::CMD_ARG_CHILDID+String(childId));
-        args.add(HeelpSharedMemoryChildApplication::CMD_ARG_SHMUUID+String(shm->getShmUUID()));
-        args.add(HeelpSharedMemoryChildApplication::CMD_ARG_SHMINFO+String(shm->getShmInfo()));
+        args.add(HeelpProcessesChildApplication::CMD_ARG_CHILDID+String(childId));
+        args.add(HeelpProcessesChildApplication::CMD_ARG_SHMUUID+String(shm->getShmUUID()));
+        args.add(HeelpProcessesChildApplication::CMD_ARG_SHMINFO+String(shm->getShmInfo()));
         LOG("Child " << childId << " : launching with shared memory info " << shm->getShmInfo());
         if (masterProcess->launchSlaveProcess(File::getSpecialLocation(File::currentExecutableFile), HEELP_COMMANDLINE_UID, args))
         {
@@ -319,7 +319,7 @@ struct HeelpSharedMemoryMainApplication::Pimpl : public ChangeListener, public T
     }
     
     AudioDeviceManager audioDeviceManager_;
-    HeelpSharedMemoryMainApplication* const parent_;
+    HeelpProcessesMainApplication* const parent_;
     ScopedPointer<FileLogger> logger_;
     
     ScopedPointer<MainAudioComponent> audio_;
@@ -329,15 +329,15 @@ struct HeelpSharedMemoryMainApplication::Pimpl : public ChangeListener, public T
     std::map<int, MasterProcessInfo> masterProcessInfos_;
 };
 
-HeelpSharedMemoryMainApplication::HeelpSharedMemoryMainApplication() : pimpl_(new Pimpl(this))  {}
-HeelpSharedMemoryMainApplication::~HeelpSharedMemoryMainApplication()                           { pimpl_ = nullptr; }
+HeelpProcessesMainApplication::HeelpProcessesMainApplication() : pimpl_(new Pimpl(this))  {}
+HeelpProcessesMainApplication::~HeelpProcessesMainApplication()                           { pimpl_ = nullptr; }
 
-bool HeelpSharedMemoryMainApplication::initialise(const String& commandLine)        { return pimpl_->initialise(commandLine); }
-void HeelpSharedMemoryMainApplication::shutdown()                                   { pimpl_->shutdown(); }
-AudioDeviceManager* HeelpSharedMemoryMainApplication::getAudioDeviceManager() const { return pimpl_->getAudioDeviceManager(); }
+bool HeelpProcessesMainApplication::initialise(const String& commandLine)        { return pimpl_->initialise(commandLine); }
+void HeelpProcessesMainApplication::shutdown()                                   { pimpl_->shutdown(); }
+AudioDeviceManager* HeelpProcessesMainApplication::getAudioDeviceManager() const { return pimpl_->getAudioDeviceManager(); }
 
-void HeelpSharedMemoryMainApplication::setRegisteredChildrenCount(int count)        { ((MainContentComponent*)pimpl_->mainWindow_->getContentComponent())->setRegisteredChildrenCount(count); }
-void HeelpSharedMemoryMainApplication::launchChildProcess(int childId)              { pimpl_->launchChildProcess(childId); }
-void HeelpSharedMemoryMainApplication::childProcessIsActive(int childId)            { pimpl_->childProcessIsActive(childId); }
-void HeelpSharedMemoryMainApplication::startChildProcessAudio(int childId)          { pimpl_->startChildProcessAudio(childId); }
-void HeelpSharedMemoryMainApplication::killChildProcess(int childId)                { pimpl_->killChildProcess(childId); }
+void HeelpProcessesMainApplication::setRegisteredChildrenCount(int count)        { ((MainContentComponent*)pimpl_->mainWindow_->getContentComponent())->setRegisteredChildrenCount(count); }
+void HeelpProcessesMainApplication::launchChildProcess(int childId)              { pimpl_->launchChildProcess(childId); }
+void HeelpProcessesMainApplication::childProcessIsActive(int childId)            { pimpl_->childProcessIsActive(childId); }
+void HeelpProcessesMainApplication::startChildProcessAudio(int childId)          { pimpl_->startChildProcessAudio(childId); }
+void HeelpProcessesMainApplication::killChildProcess(int childId)                { pimpl_->killChildProcess(childId); }

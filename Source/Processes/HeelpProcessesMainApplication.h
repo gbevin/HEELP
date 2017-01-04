@@ -15,31 +15,38 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef AUDIOSLAVEPROCESS_H_INCLUDED
-#define AUDIOSLAVEPROCESS_H_INCLUDED
+#ifndef HEELPPROCESSESMAINAPPLICATION_H_INCLUDED
+#define HEELPPROCESSESMAINAPPLICATION_H_INCLUDED
 
 #include "JuceHeader.h"
 
-#include "../HeelpSharedMemoryChildApplication.h"
+#include "../AbstractHeelpApplication.h"
 
 namespace heelp
 {
-    class AudioSlaveProcess : public ChildProcessSlave, private DeletedAtShutdown
+    class HeelpProcessesMainApplication : public AbstractHeelpApplication
     {
     public:
-        AudioSlaveProcess(HeelpSharedMemoryChildApplication* app);
-        virtual ~AudioSlaveProcess();
+        HeelpProcessesMainApplication();
+        virtual ~HeelpProcessesMainApplication();
+        
+        bool initialise(const String& commandLine) override;
+        void shutdown() override;
+        AudioDeviceManager* getAudioDeviceManager() const override;
 
-        void handleMessageFromMaster(const MemoryBlock& mb) override;
-        void handleConnectionMade() override;
-        void handleConnectionLost() override;
+        void setRegisteredChildrenCount(int count);
+        
+        void launchChildProcess(int childId);
+        void childProcessIsActive(int childId);
+        void startChildProcessAudio(int childId);
+        void killChildProcess(int childId);
         
         struct Pimpl;
     private:
         ScopedPointer<Pimpl> pimpl_;
         
-        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AudioSlaveProcess)
+        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (HeelpProcessesMainApplication)
     };
 }
 
-#endif  // AUDIOSLAVEPROCESS_H_INCLUDED
+#endif  // HEELPPROCESSESMAINAPPLICATION_H_INCLUDED

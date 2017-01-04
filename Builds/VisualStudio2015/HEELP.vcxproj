@@ -130,18 +130,19 @@
     </Bscmake>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\Source\Audio\ChildAudioComponent.cpp"/>
-    <ClCompile Include="..\..\Source\Audio\MainAudioComponent.cpp"/>
-    <ClCompile Include="..\..\Source\Process\AudioMasterProcess.cpp"/>
-    <ClCompile Include="..\..\Source\Process\AudioProcessMessageUtils.cpp"/>
-    <ClCompile Include="..\..\Source\Process\AudioSlaveProcess.cpp"/>
-    <ClCompile Include="..\..\Source\Process\SharedLock.cpp"/>
-    <ClCompile Include="..\..\Source\Process\SharedMemory.cpp"/>
+    <ClCompile Include="..\..\Source\Processes\AudioMasterProcess.cpp"/>
+    <ClCompile Include="..\..\Source\Processes\AudioProcessMessageUtils.cpp"/>
+    <ClCompile Include="..\..\Source\Processes\AudioSlaveProcess.cpp"/>
+    <ClCompile Include="..\..\Source\Processes\ChildAudioComponent.cpp"/>
+    <ClCompile Include="..\..\Source\Processes\HeelpProcessesChildApplication.cpp"/>
+    <ClCompile Include="..\..\Source\Processes\HeelpProcessesMainApplication.cpp"/>
+    <ClCompile Include="..\..\Source\Processes\MainAudioComponent.cpp"/>
+    <ClCompile Include="..\..\Source\Processes\SharedLock.cpp"/>
+    <ClCompile Include="..\..\Source\Processes\SharedMemory.cpp"/>
+    <ClCompile Include="..\..\Source\Threads\HeelpThreadsApplication.cpp"/>
     <ClCompile Include="..\..\Source\UI\MainContentComponent.cpp"/>
     <ClCompile Include="..\..\Source\UI\MainWindow.cpp"/>
     <ClCompile Include="..\..\Source\HeelpApplication.cpp"/>
-    <ClCompile Include="..\..\Source\HeelpSharedMemoryChildApplication.cpp"/>
-    <ClCompile Include="..\..\Source\HeelpSharedMemoryMainApplication.cpp"/>
     <ClCompile Include="..\..\Source\HeelpLogger.cpp"/>
     <ClCompile Include="..\..\Source\Main.cpp"/>
     <ClCompile Include="..\..\JuceLibraryCode\modules\juce_audio_basics\buffers\juce_AudioChannelSet.cpp">
@@ -1676,21 +1677,22 @@
     <ClCompile Include="..\..\JuceLibraryCode\juce_osc.cpp"/>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\Source\Audio\ChildAudioComponent.h"/>
-    <ClInclude Include="..\..\Source\Audio\ChildAudioState.h"/>
-    <ClInclude Include="..\..\Source\Audio\MainAudioComponent.h"/>
-    <ClInclude Include="..\..\Source\Process\AudioMasterProcess.h"/>
-    <ClInclude Include="..\..\Source\Process\AudioProcessMessageTypes.h"/>
-    <ClInclude Include="..\..\Source\Process\AudioProcessMessageUtils.h"/>
-    <ClInclude Include="..\..\Source\Process\AudioSlaveProcess.h"/>
-    <ClInclude Include="..\..\Source\Process\SharedLock.h"/>
-    <ClInclude Include="..\..\Source\Process\SharedMemory.h"/>
+    <ClInclude Include="..\..\Source\Processes\AudioMasterProcess.h"/>
+    <ClInclude Include="..\..\Source\Processes\AudioProcessMessageTypes.h"/>
+    <ClInclude Include="..\..\Source\Processes\AudioProcessMessageUtils.h"/>
+    <ClInclude Include="..\..\Source\Processes\AudioSlaveProcess.h"/>
+    <ClInclude Include="..\..\Source\Processes\ChildAudioComponent.h"/>
+    <ClInclude Include="..\..\Source\Processes\ChildAudioState.h"/>
+    <ClInclude Include="..\..\Source\Processes\HeelpProcessesChildApplication.h"/>
+    <ClInclude Include="..\..\Source\Processes\HeelpProcessesMainApplication.h"/>
+    <ClInclude Include="..\..\Source\Processes\MainAudioComponent.h"/>
+    <ClInclude Include="..\..\Source\Processes\SharedLock.h"/>
+    <ClInclude Include="..\..\Source\Processes\SharedMemory.h"/>
+    <ClInclude Include="..\..\Source\Threads\HeelpThreadsApplication.h"/>
     <ClInclude Include="..\..\Source\UI\MainContentComponent.h"/>
     <ClInclude Include="..\..\Source\UI\MainWindow.h"/>
     <ClInclude Include="..\..\Source\HeelpApplication.h"/>
-    <ClInclude Include="..\..\Source\HeelpSharedMemoryAbstractApplication.h"/>
-    <ClInclude Include="..\..\Source\HeelpSharedMemoryChildApplication.h"/>
-    <ClInclude Include="..\..\Source\HeelpSharedMemoryMainApplication.h"/>
+    <ClInclude Include="..\..\Source\AbstractHeelpApplication.h"/>
     <ClInclude Include="..\..\Source\HeelpLogger.h"/>
     <ClInclude Include="..\..\Source\Utils.h"/>
     <ClInclude Include="..\..\JuceLibraryCode\modules\juce_audio_basics\buffers\juce_AudioChannelSet.h"/>

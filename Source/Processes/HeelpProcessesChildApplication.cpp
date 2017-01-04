@@ -15,16 +15,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "HeelpSharedMemoryChildApplication.h"
+#include "HeelpProcessesChildApplication.h"
 
-#include "HeelpLogger.h"
-#include "Utils.h"
-#include "Audio/ChildAudioComponent.h"
-#include "Process/SharedMemory.h"
+#include "../HeelpLogger.h"
+#include "../Utils.h"
+#include "ChildAudioComponent.h"
+#include "SharedMemory.h"
 
 using namespace heelp;
 
-struct HeelpSharedMemoryChildApplication::Pimpl
+struct HeelpProcessesChildApplication::Pimpl
 {
     Pimpl() : logger_(nullptr), childId_(-1), shm_(nullptr), audio_(nullptr)
     {
@@ -131,11 +131,11 @@ struct HeelpSharedMemoryChildApplication::Pimpl
     ScopedPointer<ChildAudioComponent> audio_;
 };
 
-HeelpSharedMemoryChildApplication::HeelpSharedMemoryChildApplication() : pimpl_(new Pimpl())    {}
-HeelpSharedMemoryChildApplication::~HeelpSharedMemoryChildApplication()                         { pimpl_ = nullptr; }
+HeelpProcessesChildApplication::HeelpProcessesChildApplication() : pimpl_(new Pimpl())    {}
+HeelpProcessesChildApplication::~HeelpProcessesChildApplication()                         { pimpl_ = nullptr; }
 
-bool HeelpSharedMemoryChildApplication::initialise(const String& commandLine)           { return pimpl_->initialise(commandLine); }
-void HeelpSharedMemoryChildApplication::shutdown()                                      { pimpl_->shutdown(); }
-AudioDeviceManager* HeelpSharedMemoryChildApplication::getAudioDeviceManager() const    { return pimpl_->getAudioDeviceManager(); }
-void HeelpSharedMemoryChildApplication::startAudio(ValueTree state)                     { pimpl_->startAudio(state); }
-void HeelpSharedMemoryChildApplication::shutdownAudio()                                 { pimpl_->shutdownAudio(); }
+bool HeelpProcessesChildApplication::initialise(const String& commandLine)           { return pimpl_->initialise(commandLine); }
+void HeelpProcessesChildApplication::shutdown()                                      { pimpl_->shutdown(); }
+AudioDeviceManager* HeelpProcessesChildApplication::getAudioDeviceManager() const    { return pimpl_->getAudioDeviceManager(); }
+void HeelpProcessesChildApplication::startAudio(ValueTree state)                     { pimpl_->startAudio(state); }
+void HeelpProcessesChildApplication::shutdownAudio()                                 { pimpl_->shutdownAudio(); }

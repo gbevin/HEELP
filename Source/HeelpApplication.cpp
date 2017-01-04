@@ -17,10 +17,11 @@
  */
 #include "HeelpApplication.h"
 
-#include "HeelpSharedMemoryChildApplication.h"
-#include "HeelpSharedMemoryMainApplication.h"
+#include "Processes/AudioSlaveProcess.h"
+#include "Processes/HeelpProcessesChildApplication.h"
+#include "Processes/HeelpProcessesMainApplication.h"
+#include "Threads/HeelpThreadsApplication.h"
 #include "Utils.h"
-#include "Process/AudioSlaveProcess.h"
 
 using namespace heelp;
 
@@ -32,11 +33,19 @@ struct HeelpApplication::Pimpl
     
     void initialise(const String& commandLine)
     {
-        if (commandLine.contains(HeelpSharedMemoryChildApplication::CMD_ARG_CHILDID) &&
-            commandLine.contains(HeelpSharedMemoryChildApplication::CMD_ARG_SHMUUID) &&
-            commandLine.contains(HeelpSharedMemoryChildApplication::CMD_ARG_SHMINFO))
+        if (true) {
+            HeelpThreadsApplication* realApp = new HeelpThreadsApplication();
+            realApp_ = realApp;
+            realApp->initialise(commandLine);
+            return;
+        }
+        
+        // keeping the shared memory version around for now
+        if (commandLine.contains(HeelpProcessesChildApplication::CMD_ARG_CHILDID) &&
+            commandLine.contains(HeelpProcessesChildApplication::CMD_ARG_SHMUUID) &&
+            commandLine.contains(HeelpProcessesChildApplication::CMD_ARG_SHMINFO))
         {
-            HeelpSharedMemoryChildApplication* realApp = new HeelpSharedMemoryChildApplication();
+            HeelpProcessesChildApplication* realApp = new HeelpProcessesChildApplication();
             realApp_ = realApp;
             bool started = false;
             if (realApp->initialise(commandLine))
@@ -56,7 +65,7 @@ struct HeelpApplication::Pimpl
         }
         else
         {
-            HeelpSharedMemoryMainApplication* realApp = new HeelpSharedMemoryMainApplication();
+            HeelpProcessesMainApplication* realApp = new HeelpProcessesMainApplication();
             realApp_ = realApp;
             realApp->initialise(commandLine);
         }
@@ -83,7 +92,7 @@ struct HeelpApplication::Pimpl
         quit();
     }
     
-    ScopedPointer<HeelpSharedMemoryAbstractApplication> realApp_;
+    ScopedPointer<AbstractHeelpApplication> realApp_;
 };
 
 HeelpApplication::HeelpApplication() : pimpl_(new Pimpl())  {}

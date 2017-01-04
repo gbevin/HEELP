@@ -15,38 +15,31 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef HEELPCHILDAPPLICATION_H_INCLUDED
-#define HEELPCHILDAPPLICATION_H_INCLUDED
+#ifndef HEELPTHREADSAPPLICATION_H_INCLUDED
+#define HEELPTHREADSAPPLICATION_H_INCLUDED
 
 #include "JuceHeader.h"
 
-#include "HeelpSharedMemoryAbstractApplication.h"
+#include "../AbstractHeelpApplication.h"
 
 namespace heelp
 {
-    class HeelpSharedMemoryChildApplication : public HeelpSharedMemoryAbstractApplication
+    class HeelpThreadsApplication : public AbstractHeelpApplication
     {
     public:
-        constexpr static const char* const CMD_ARG_CHILDID = "--childid=";
-        constexpr static const char* const CMD_ARG_SHMUUID = "--shmuuid=";
-        constexpr static const char* const CMD_ARG_SHMINFO = "--shminfo=";
-        
-        HeelpSharedMemoryChildApplication();
-        virtual ~HeelpSharedMemoryChildApplication();
+        HeelpThreadsApplication();
+        virtual ~HeelpThreadsApplication();
         
         bool initialise(const String& commandLine) override;
         void shutdown() override;
         AudioDeviceManager* getAudioDeviceManager() const override;
         
-        void startAudio(ValueTree valueTree);
-        void shutdownAudio();
-        
         struct Pimpl;
     private:
         ScopedPointer<Pimpl> pimpl_;
         
-        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (HeelpSharedMemoryChildApplication)
+        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (HeelpThreadsApplication)
     };
 }
 
-#endif  // HEELPCHILDAPPLICATION_H_INCLUDED
+#endif  // HEELPTHREADSAPPLICATION_H_INCLUDED

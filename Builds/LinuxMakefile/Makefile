@@ -57,18 +57,19 @@ ifeq ($(CONFIG),Release)
 endif
 
 OBJECTS := \
-  $(JUCE_OBJDIR)/ChildAudioComponent_f05d428b.o \
-  $(JUCE_OBJDIR)/MainAudioComponent_2d58d0e2.o \
-  $(JUCE_OBJDIR)/AudioMasterProcess_baed3740.o \
-  $(JUCE_OBJDIR)/AudioProcessMessageUtils_9db78a0c.o \
-  $(JUCE_OBJDIR)/AudioSlaveProcess_3d06ee2f.o \
-  $(JUCE_OBJDIR)/SharedLock_3f733879.o \
-  $(JUCE_OBJDIR)/SharedMemory_b0aa330f.o \
+  $(JUCE_OBJDIR)/AudioMasterProcess_b186f992.o \
+  $(JUCE_OBJDIR)/AudioProcessMessageUtils_e836c6de.o \
+  $(JUCE_OBJDIR)/AudioSlaveProcess_e1e2999d.o \
+  $(JUCE_OBJDIR)/ChildAudioComponent_14a95712.o \
+  $(JUCE_OBJDIR)/HeelpProcessesChildApplication_51346b00.o \
+  $(JUCE_OBJDIR)/HeelpProcessesMainApplication_d012275.o \
+  $(JUCE_OBJDIR)/MainAudioComponent_2e848f7b.o \
+  $(JUCE_OBJDIR)/SharedLock_13956ccb.o \
+  $(JUCE_OBJDIR)/SharedMemory_5109ae1.o \
+  $(JUCE_OBJDIR)/HeelpThreadsApplication_4d764eee.o \
   $(JUCE_OBJDIR)/MainContentComponent_52535d99.o \
   $(JUCE_OBJDIR)/MainWindow_5f9c9b05.o \
   $(JUCE_OBJDIR)/HeelpApplication_d02c53ad.o \
-  $(JUCE_OBJDIR)/HeelpSharedMemoryChildApplication_3487b387.o \
-  $(JUCE_OBJDIR)/HeelpSharedMemoryMainApplication_776f2d0e.o \
   $(JUCE_OBJDIR)/HeelpLogger_ce25639d.o \
   $(JUCE_OBJDIR)/Main_90ebc5c2.o \
   $(JUCE_OBJDIR)/juce_audio_basics_6b797ca1.o \
@@ -105,39 +106,54 @@ strip:
 	@echo Stripping HEELP
 	-@$(STRIP) --strip-unneeded $(JUCE_OUTDIR)/$(TARGET)
 
-$(JUCE_OBJDIR)/ChildAudioComponent_f05d428b.o: ../../Source/Audio/ChildAudioComponent.cpp
-	-@mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling ChildAudioComponent.cpp"
-	@$(CXX) $(JUCE_CXXFLAGS) -o "$@" -c "$<"
-
-$(JUCE_OBJDIR)/MainAudioComponent_2d58d0e2.o: ../../Source/Audio/MainAudioComponent.cpp
-	-@mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling MainAudioComponent.cpp"
-	@$(CXX) $(JUCE_CXXFLAGS) -o "$@" -c "$<"
-
-$(JUCE_OBJDIR)/AudioMasterProcess_baed3740.o: ../../Source/Process/AudioMasterProcess.cpp
+$(JUCE_OBJDIR)/AudioMasterProcess_b186f992.o: ../../Source/Processes/AudioMasterProcess.cpp
 	-@mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling AudioMasterProcess.cpp"
 	@$(CXX) $(JUCE_CXXFLAGS) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/AudioProcessMessageUtils_9db78a0c.o: ../../Source/Process/AudioProcessMessageUtils.cpp
+$(JUCE_OBJDIR)/AudioProcessMessageUtils_e836c6de.o: ../../Source/Processes/AudioProcessMessageUtils.cpp
 	-@mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling AudioProcessMessageUtils.cpp"
 	@$(CXX) $(JUCE_CXXFLAGS) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/AudioSlaveProcess_3d06ee2f.o: ../../Source/Process/AudioSlaveProcess.cpp
+$(JUCE_OBJDIR)/AudioSlaveProcess_e1e2999d.o: ../../Source/Processes/AudioSlaveProcess.cpp
 	-@mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling AudioSlaveProcess.cpp"
 	@$(CXX) $(JUCE_CXXFLAGS) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/SharedLock_3f733879.o: ../../Source/Process/SharedLock.cpp
+$(JUCE_OBJDIR)/ChildAudioComponent_14a95712.o: ../../Source/Processes/ChildAudioComponent.cpp
+	-@mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling ChildAudioComponent.cpp"
+	@$(CXX) $(JUCE_CXXFLAGS) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/HeelpProcessesChildApplication_51346b00.o: ../../Source/Processes/HeelpProcessesChildApplication.cpp
+	-@mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling HeelpProcessesChildApplication.cpp"
+	@$(CXX) $(JUCE_CXXFLAGS) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/HeelpProcessesMainApplication_d012275.o: ../../Source/Processes/HeelpProcessesMainApplication.cpp
+	-@mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling HeelpProcessesMainApplication.cpp"
+	@$(CXX) $(JUCE_CXXFLAGS) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/MainAudioComponent_2e848f7b.o: ../../Source/Processes/MainAudioComponent.cpp
+	-@mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling MainAudioComponent.cpp"
+	@$(CXX) $(JUCE_CXXFLAGS) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/SharedLock_13956ccb.o: ../../Source/Processes/SharedLock.cpp
 	-@mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling SharedLock.cpp"
 	@$(CXX) $(JUCE_CXXFLAGS) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/SharedMemory_b0aa330f.o: ../../Source/Process/SharedMemory.cpp
+$(JUCE_OBJDIR)/SharedMemory_5109ae1.o: ../../Source/Processes/SharedMemory.cpp
 	-@mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling SharedMemory.cpp"
+	@$(CXX) $(JUCE_CXXFLAGS) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/HeelpThreadsApplication_4d764eee.o: ../../Source/Threads/HeelpThreadsApplication.cpp
+	-@mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling HeelpThreadsApplication.cpp"
 	@$(CXX) $(JUCE_CXXFLAGS) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/MainContentComponent_52535d99.o: ../../Source/UI/MainContentComponent.cpp
@@ -153,16 +169,6 @@ $(JUCE_OBJDIR)/MainWindow_5f9c9b05.o: ../../Source/UI/MainWindow.cpp
 $(JUCE_OBJDIR)/HeelpApplication_d02c53ad.o: ../../Source/HeelpApplication.cpp
 	-@mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling HeelpApplication.cpp"
-	@$(CXX) $(JUCE_CXXFLAGS) -o "$@" -c "$<"
-
-$(JUCE_OBJDIR)/HeelpSharedMemoryChildApplication_3487b387.o: ../../Source/HeelpSharedMemoryChildApplication.cpp
-	-@mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling HeelpSharedMemoryChildApplication.cpp"
-	@$(CXX) $(JUCE_CXXFLAGS) -o "$@" -c "$<"
-
-$(JUCE_OBJDIR)/HeelpSharedMemoryMainApplication_776f2d0e.o: ../../Source/HeelpSharedMemoryMainApplication.cpp
-	-@mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling HeelpSharedMemoryMainApplication.cpp"
 	@$(CXX) $(JUCE_CXXFLAGS) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/HeelpLogger_ce25639d.o: ../../Source/HeelpLogger.cpp

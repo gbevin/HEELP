@@ -23,7 +23,7 @@
 
 using namespace heelp;
 
-AudioMasterProcess::AudioMasterProcess(HeelpSharedMemoryMainApplication* app, int childId) : app_(app), childId_(childId)
+AudioMasterProcess::AudioMasterProcess(HeelpProcessesMainApplication* app, int childId) : app_(app), childId_(childId)
 {
 }
 

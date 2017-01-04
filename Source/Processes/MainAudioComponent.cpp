@@ -18,9 +18,9 @@
 #include "MainAudioComponent.h"
 
 #include "../HeelpApplication.h"
-#include "../HeelpSharedMemoryMainApplication.h"
 #include "../Utils.h"
 #include "ChildAudioState.h"
+#include "HeelpProcessesMainApplication.h"
 
 #include <map>
 
@@ -58,7 +58,7 @@ namespace
 
 struct MainAudioComponent::Pimpl : AudioSource, MessageListener
 {
-    Pimpl(HeelpSharedMemoryMainApplication* mainApplication) : mainApplication_(mainApplication), paused_(true)
+    Pimpl(HeelpProcessesMainApplication* mainApplication) : mainApplication_(mainApplication), paused_(true)
     {
         mainApplication_->getAudioDeviceManager()->addAudioCallback(&audioSourcePlayer_);
         audioSourcePlayer_.setSource(this);
@@ -260,7 +260,7 @@ struct MainAudioComponent::Pimpl : AudioSource, MessageListener
         shutdownAudio();
     }
     
-    HeelpSharedMemoryMainApplication* const mainApplication_;
+    HeelpProcessesMainApplication* const mainApplication_;
     Atomic<int> paused_;
     ReadWriteLock childInfosLock_;
     std::map<int, ChildInfo> childInfos_;
@@ -268,7 +268,7 @@ struct MainAudioComponent::Pimpl : AudioSource, MessageListener
     AudioSourcePlayer audioSourcePlayer_;
 };
 
-MainAudioComponent::MainAudioComponent(HeelpSharedMemoryMainApplication* mainApplication) : pimpl_(new Pimpl(mainApplication))  {}
+MainAudioComponent::MainAudioComponent(HeelpProcessesMainApplication* mainApplication) : pimpl_(new Pimpl(mainApplication))  {}
 MainAudioComponent::~MainAudioComponent()                                                                           { pimpl_ = nullptr; }
 
 void MainAudioComponent::pause()                                                            { pimpl_->pause(); }

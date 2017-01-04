@@ -6,38 +6,50 @@
               companyEmail="info@uwyn.com">
   <MAINGROUP id="RzRwWG" name="HEELP">
     <GROUP id="{52C0A5B3-2A64-7A61-0620-C68CE8419BC5}" name="Source">
-      <GROUP id="{13396211-B7C8-4DD2-BAAA-CF856360E345}" name="Audio">
-        <FILE id="RAG926" name="ChildAudioComponent.cpp" compile="1" resource="0"
-              file="Source/Audio/ChildAudioComponent.cpp"/>
-        <FILE id="XMRW5G" name="ChildAudioComponent.h" compile="0" resource="0"
-              file="Source/Audio/ChildAudioComponent.h"/>
-        <FILE id="W8owoy" name="ChildAudioState.h" compile="0" resource="0"
-              file="Source/Audio/ChildAudioState.h"/>
-        <FILE id="m7e8NN" name="MainAudioComponent.cpp" compile="1" resource="0"
-              file="Source/Audio/MainAudioComponent.cpp"/>
-        <FILE id="zdmTwe" name="MainAudioComponent.h" compile="0" resource="0"
-              file="Source/Audio/MainAudioComponent.h"/>
+      <GROUP id="{26B4CF74-C35E-FDEC-508B-13712967BC59}" name="Processes">
+        <FILE id="tB0lDM" name="AudioMasterProcess.cpp" compile="1" resource="0"
+              file="Source/Processes/AudioMasterProcess.cpp"/>
+        <FILE id="eCfNub" name="AudioMasterProcess.h" compile="0" resource="0"
+              file="Source/Processes/AudioMasterProcess.h"/>
+        <FILE id="xbeWHI" name="AudioProcessMessageTypes.h" compile="0" resource="0"
+              file="Source/Processes/AudioProcessMessageTypes.h"/>
+        <FILE id="L0aNyC" name="AudioProcessMessageUtils.cpp" compile="1" resource="0"
+              file="Source/Processes/AudioProcessMessageUtils.cpp"/>
+        <FILE id="QbKQow" name="AudioProcessMessageUtils.h" compile="0" resource="0"
+              file="Source/Processes/AudioProcessMessageUtils.h"/>
+        <FILE id="bgZ5pJ" name="AudioSlaveProcess.cpp" compile="1" resource="0"
+              file="Source/Processes/AudioSlaveProcess.cpp"/>
+        <FILE id="bPXPUF" name="AudioSlaveProcess.h" compile="0" resource="0"
+              file="Source/Processes/AudioSlaveProcess.h"/>
+        <FILE id="Pxb5oz" name="ChildAudioComponent.cpp" compile="1" resource="0"
+              file="Source/Processes/ChildAudioComponent.cpp"/>
+        <FILE id="Mzy2Rv" name="ChildAudioComponent.h" compile="0" resource="0"
+              file="Source/Processes/ChildAudioComponent.h"/>
+        <FILE id="IlnGOF" name="ChildAudioState.h" compile="0" resource="0"
+              file="Source/Processes/ChildAudioState.h"/>
+        <FILE id="DjVUoQ" name="HeelpProcessesChildApplication.cpp" compile="1"
+              resource="0" file="Source/Processes/HeelpProcessesChildApplication.cpp"/>
+        <FILE id="hxcpEO" name="HeelpProcessesChildApplication.h" compile="0"
+              resource="0" file="Source/Processes/HeelpProcessesChildApplication.h"/>
+        <FILE id="TGTO4m" name="HeelpProcessesMainApplication.cpp" compile="1"
+              resource="0" file="Source/Processes/HeelpProcessesMainApplication.cpp"/>
+        <FILE id="ln9pDI" name="HeelpProcessesMainApplication.h" compile="0"
+              resource="0" file="Source/Processes/HeelpProcessesMainApplication.h"/>
+        <FILE id="BaeIKh" name="MainAudioComponent.cpp" compile="1" resource="0"
+              file="Source/Processes/MainAudioComponent.cpp"/>
+        <FILE id="GRzgu3" name="MainAudioComponent.h" compile="0" resource="0"
+              file="Source/Processes/MainAudioComponent.h"/>
+        <FILE id="RHQHAE" name="SharedLock.cpp" compile="1" resource="0" file="Source/Processes/SharedLock.cpp"/>
+        <FILE id="flw9Mm" name="SharedLock.h" compile="0" resource="0" file="Source/Processes/SharedLock.h"/>
+        <FILE id="QiWrJD" name="SharedMemory.cpp" compile="1" resource="0"
+              file="Source/Processes/SharedMemory.cpp"/>
+        <FILE id="W4teny" name="SharedMemory.h" compile="0" resource="0" file="Source/Processes/SharedMemory.h"/>
       </GROUP>
-      <GROUP id="{26B4CF74-C35E-FDEC-508B-13712967BC59}" name="Process">
-        <FILE id="ZwfclI" name="AudioMasterProcess.cpp" compile="1" resource="0"
-              file="Source/Process/AudioMasterProcess.cpp"/>
-        <FILE id="VAETAp" name="AudioMasterProcess.h" compile="0" resource="0"
-              file="Source/Process/AudioMasterProcess.h"/>
-        <FILE id="tMnGlN" name="AudioProcessMessageTypes.h" compile="0" resource="0"
-              file="Source/Process/AudioProcessMessageTypes.h"/>
-        <FILE id="K9Ff2J" name="AudioProcessMessageUtils.cpp" compile="1" resource="0"
-              file="Source/Process/AudioProcessMessageUtils.cpp"/>
-        <FILE id="bebPjO" name="AudioProcessMessageUtils.h" compile="0" resource="0"
-              file="Source/Process/AudioProcessMessageUtils.h"/>
-        <FILE id="Ec2bNp" name="AudioSlaveProcess.cpp" compile="1" resource="0"
-              file="Source/Process/AudioSlaveProcess.cpp"/>
-        <FILE id="rkxh2s" name="AudioSlaveProcess.h" compile="0" resource="0"
-              file="Source/Process/AudioSlaveProcess.h"/>
-        <FILE id="AoAjGU" name="SharedLock.cpp" compile="1" resource="0" file="Source/Process/SharedLock.cpp"/>
-        <FILE id="rZyGXt" name="SharedLock.h" compile="0" resource="0" file="Source/Process/SharedLock.h"/>
-        <FILE id="NjHDr2" name="SharedMemory.cpp" compile="1" resource="0"
-              file="Source/Process/SharedMemory.cpp"/>
-        <FILE id="tUiYSf" name="SharedMemory.h" compile="0" resource="0" file="Source/Process/SharedMemory.h"/>
+      <GROUP id="{431BEC00-3E19-3C63-08B5-88FCA8CAF600}" name="Threads">
+        <FILE id="IlCJip" name="HeelpThreadsApplication.cpp" compile="1" resource="0"
+              file="Source/Threads/HeelpThreadsApplication.cpp"/>
+        <FILE id="kGYXuw" name="HeelpThreadsApplication.h" compile="0" resource="0"
+              file="Source/Threads/HeelpThreadsApplication.h"/>
       </GROUP>
       <GROUP id="{70414DB5-F868-F70F-46B6-C1BEC6ED6A5D}" name="UI">
         <FILE id="f8qHmp" name="MainContentComponent.cpp" compile="1" resource="0"
@@ -51,16 +63,8 @@
             file="Source/HeelpApplication.cpp"/>
       <FILE id="FngIPN" name="HeelpApplication.h" compile="0" resource="0"
             file="Source/HeelpApplication.h"/>
-      <FILE id="jYK4Yx" name="HeelpSharedMemoryAbstractApplication.h" compile="0"
-            resource="0" file="Source/HeelpSharedMemoryAbstractApplication.h"/>
-      <FILE id="PJDihB" name="HeelpSharedMemoryChildApplication.cpp" compile="1"
-            resource="0" file="Source/HeelpSharedMemoryChildApplication.cpp"/>
-      <FILE id="H0WwF0" name="HeelpSharedMemoryChildApplication.h" compile="0"
-            resource="0" file="Source/HeelpSharedMemoryChildApplication.h"/>
-      <FILE id="LukV8d" name="HeelpSharedMemoryMainApplication.cpp" compile="1"
-            resource="0" file="Source/HeelpSharedMemoryMainApplication.cpp"/>
-      <FILE id="ZFb2yU" name="HeelpSharedMemoryMainApplication.h" compile="0"
-            resource="0" file="Source/HeelpSharedMemoryMainApplication.h"/>
+      <FILE id="jYK4Yx" name="AbstractHeelpApplication.h" compile="0" resource="0"
+            file="Source/AbstractHeelpApplication.h"/>
       <FILE id="jeQeBS" name="HeelpLogger.cpp" compile="1" resource="0" file="Source/HeelpLogger.cpp"/>
       <FILE id="gdj2N1" name="HeelpLogger.h" compile="0" resource="0" file="Source/HeelpLogger.h"/>
       <FILE id="l1QNGH" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>

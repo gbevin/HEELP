@@ -8,11 +8,11 @@
     <Filter Include="HEELP\Source">
       <UniqueIdentifier>{B99D4A88-1AC1-8F5D-FCF5-800920CBD8A5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="HEELP\Source\Audio">
-      <UniqueIdentifier>{33714D22-3FF2-F583-0A9D-D1EDA5220B27}</UniqueIdentifier>
+    <Filter Include="HEELP\Source\Processes">
+      <UniqueIdentifier>{BCE416F7-905B-F5F5-8228-E3CDEF1C3601}</UniqueIdentifier>
     </Filter>
-    <Filter Include="HEELP\Source\Process">
-      <UniqueIdentifier>{5980D04E-30D3-3D0A-6BD3-9ABD5486328D}</UniqueIdentifier>
+    <Filter Include="HEELP\Source\Threads">
+      <UniqueIdentifier>{EC803FA9-C2C4-BDDD-4AB9-E142D181D5DA}</UniqueIdentifier>
     </Filter>
     <Filter Include="HEELP\Source\UI">
       <UniqueIdentifier>{F6FEFF46-C484-E414-F2D6-6C9696230D7D}</UniqueIdentifier>
@@ -349,26 +349,35 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\Source\Audio\ChildAudioComponent.cpp">
-      <Filter>HEELP\Source\Audio</Filter>
+    <ClCompile Include="..\..\Source\Processes\AudioMasterProcess.cpp">
+      <Filter>HEELP\Source\Processes</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Audio\MainAudioComponent.cpp">
-      <Filter>HEELP\Source\Audio</Filter>
+    <ClCompile Include="..\..\Source\Processes\AudioProcessMessageUtils.cpp">
+      <Filter>HEELP\Source\Processes</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Process\AudioMasterProcess.cpp">
-      <Filter>HEELP\Source\Process</Filter>
+    <ClCompile Include="..\..\Source\Processes\AudioSlaveProcess.cpp">
+      <Filter>HEELP\Source\Processes</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Process\AudioProcessMessageUtils.cpp">
-      <Filter>HEELP\Source\Process</Filter>
+    <ClCompile Include="..\..\Source\Processes\ChildAudioComponent.cpp">
+      <Filter>HEELP\Source\Processes</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Process\AudioSlaveProcess.cpp">
-      <Filter>HEELP\Source\Process</Filter>
+    <ClCompile Include="..\..\Source\Processes\HeelpProcessesChildApplication.cpp">
+      <Filter>HEELP\Source\Processes</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Process\SharedLock.cpp">
-      <Filter>HEELP\Source\Process</Filter>
+    <ClCompile Include="..\..\Source\Processes\HeelpProcessesMainApplication.cpp">
+      <Filter>HEELP\Source\Processes</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Process\SharedMemory.cpp">
-      <Filter>HEELP\Source\Process</Filter>
+    <ClCompile Include="..\..\Source\Processes\MainAudioComponent.cpp">
+      <Filter>HEELP\Source\Processes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Processes\SharedLock.cpp">
+      <Filter>HEELP\Source\Processes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Processes\SharedMemory.cpp">
+      <Filter>HEELP\Source\Processes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Threads\HeelpThreadsApplication.cpp">
+      <Filter>HEELP\Source\Threads</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\MainContentComponent.cpp">
       <Filter>HEELP\Source\UI</Filter>
@@ -377,12 +386,6 @@
       <Filter>HEELP\Source\UI</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\HeelpApplication.cpp">
-      <Filter>HEELP\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\HeelpSharedMemoryChildApplication.cpp">
-      <Filter>HEELP\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\HeelpSharedMemoryMainApplication.cpp">
       <Filter>HEELP\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\HeelpLogger.cpp">
@@ -2055,32 +2058,41 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\Source\Audio\ChildAudioComponent.h">
-      <Filter>HEELP\Source\Audio</Filter>
+    <ClInclude Include="..\..\Source\Processes\AudioMasterProcess.h">
+      <Filter>HEELP\Source\Processes</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Audio\ChildAudioState.h">
-      <Filter>HEELP\Source\Audio</Filter>
+    <ClInclude Include="..\..\Source\Processes\AudioProcessMessageTypes.h">
+      <Filter>HEELP\Source\Processes</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Audio\MainAudioComponent.h">
-      <Filter>HEELP\Source\Audio</Filter>
+    <ClInclude Include="..\..\Source\Processes\AudioProcessMessageUtils.h">
+      <Filter>HEELP\Source\Processes</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Process\AudioMasterProcess.h">
-      <Filter>HEELP\Source\Process</Filter>
+    <ClInclude Include="..\..\Source\Processes\AudioSlaveProcess.h">
+      <Filter>HEELP\Source\Processes</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Process\AudioProcessMessageTypes.h">
-      <Filter>HEELP\Source\Process</Filter>
+    <ClInclude Include="..\..\Source\Processes\ChildAudioComponent.h">
+      <Filter>HEELP\Source\Processes</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Process\AudioProcessMessageUtils.h">
-      <Filter>HEELP\Source\Process</Filter>
+    <ClInclude Include="..\..\Source\Processes\ChildAudioState.h">
+      <Filter>HEELP\Source\Processes</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Process\AudioSlaveProcess.h">
-      <Filter>HEELP\Source\Process</Filter>
+    <ClInclude Include="..\..\Source\Processes\HeelpProcessesChildApplication.h">
+      <Filter>HEELP\Source\Processes</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Process\SharedLock.h">
-      <Filter>HEELP\Source\Process</Filter>
+    <ClInclude Include="..\..\Source\Processes\HeelpProcessesMainApplication.h">
+      <Filter>HEELP\Source\Processes</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Process\SharedMemory.h">
-      <Filter>HEELP\Source\Process</Filter>
+    <ClInclude Include="..\..\Source\Processes\MainAudioComponent.h">
+      <Filter>HEELP\Source\Processes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Processes\SharedLock.h">
+      <Filter>HEELP\Source\Processes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Processes\SharedMemory.h">
+      <Filter>HEELP\Source\Processes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Threads\HeelpThreadsApplication.h">
+      <Filter>HEELP\Source\Threads</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\MainContentComponent.h">
       <Filter>HEELP\Source\UI</Filter>
@@ -2091,13 +2103,7 @@
     <ClInclude Include="..\..\Source\HeelpApplication.h">
       <Filter>HEELP\Source</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\HeelpSharedMemoryAbstractApplication.h">
-      <Filter>HEELP\Source</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\HeelpSharedMemoryChildApplication.h">
-      <Filter>HEELP\Source</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\HeelpSharedMemoryMainApplication.h">
+    <ClInclude Include="..\..\Source\AbstractHeelpApplication.h">
       <Filter>HEELP\Source</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\HeelpLogger.h">
