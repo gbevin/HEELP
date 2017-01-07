@@ -52,12 +52,26 @@
               file="Source/Threads/HeelpThreadsApplication.h"/>
       </GROUP>
       <GROUP id="{70414DB5-F868-F70F-46B6-C1BEC6ED6A5D}" name="UI">
+        <FILE id="eOmFim" name="ChannelFader.cpp" compile="1" resource="0"
+              file="Source/UI/ChannelFader.cpp"/>
+        <FILE id="e6x8rm" name="ChannelFader.h" compile="0" resource="0" file="Source/UI/ChannelFader.h"/>
+        <FILE id="QnvZdO" name="ChannelStrip.cpp" compile="1" resource="0"
+              file="Source/UI/ChannelStrip.cpp"/>
+        <FILE id="fAlftp" name="ChannelStrip.h" compile="0" resource="0" file="Source/UI/ChannelStrip.h"/>
         <FILE id="f8qHmp" name="MainContentComponent.cpp" compile="1" resource="0"
               file="Source/UI/MainContentComponent.cpp"/>
         <FILE id="IYQ7RN" name="MainContentComponent.h" compile="0" resource="0"
               file="Source/UI/MainContentComponent.h"/>
         <FILE id="uNpVO4" name="MainWindow.cpp" compile="1" resource="0" file="Source/UI/MainWindow.cpp"/>
         <FILE id="Bfp72f" name="MainWindow.h" compile="0" resource="0" file="Source/UI/MainWindow.h"/>
+        <FILE id="QUY2kG" name="MuteButton.cpp" compile="1" resource="0" file="Source/UI/MuteButton.cpp"/>
+        <FILE id="bE6pXm" name="MuteButton.h" compile="0" resource="0" file="Source/UI/MuteButton.h"/>
+        <FILE id="mQdg5W" name="PanFader.cpp" compile="1" resource="0" file="Source/UI/PanFader.cpp"/>
+        <FILE id="P5AzOi" name="PanFader.h" compile="0" resource="0" file="Source/UI/PanFader.h"/>
+        <FILE id="ulh7MR" name="SoloButton.cpp" compile="1" resource="0" file="Source/UI/SoloButton.cpp"/>
+        <FILE id="tPFthB" name="SoloButton.h" compile="0" resource="0" file="Source/UI/SoloButton.h"/>
+        <FILE id="CU7bMV" name="VolumeFader.cpp" compile="1" resource="0" file="Source/UI/VolumeFader.cpp"/>
+        <FILE id="WJWIkE" name="VolumeFader.h" compile="0" resource="0" file="Source/UI/VolumeFader.h"/>
       </GROUP>
       <FILE id="UdB8np" name="HeelpApplication.cpp" compile="1" resource="0"
             file="Source/HeelpApplication.cpp"/>

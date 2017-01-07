@@ -23,12 +23,19 @@ using namespace heelp;
 
 MainContentComponent::MainContentComponent()
 {
+    for (int i = 1; i <= 12; ++i)
+    {
+        ChannelStrip* strip = new ChannelStrip();
+        addAndMakeVisible(strip);
+        channelStrips_.add(strip);
+    }
+    
     audioSetupComponent_ = new AudioDeviceSelectorComponent(*HeelpApplication::getHeelpInstance()->getAudioDeviceManager(), 0, 0, 0, NUM_AUDIO_CHANNELS, false, false, true, false);
-    addAndMakeVisible(audioSetupComponent_);
+    //addAndMakeVisible(audioSetupComponent_);
     
     registeredChildrenCount_ = 0;
 
-    setSize(600, 400);
+    setSize(960, 600);
 }
 
 MainContentComponent::~MainContentComponent()
@@ -37,17 +44,26 @@ MainContentComponent::~MainContentComponent()
 
 void MainContentComponent::paint(Graphics& g)
 {
-    g.fillAll(Colour(0xfff7f7f7));
-
+    g.fillAll(Colour(0xff3f3f3f));
+/*
     g.setFont(Font(16.0f));
     g.setColour(Colours::black);
     Rectangle<int> bounds = getLocalBounds();
     bounds.reduce(10, 10);
     g.drawText("Registered children : " + String(registeredChildrenCount_), bounds, Justification::centredBottom, true);
+ */
 }
 
 void MainContentComponent::resized()
 {
+    const int margin = 5;
+    int xpos = margin;
+    for (auto&& strip : channelStrips_)
+    {
+        strip->setBounds(xpos, 0, strip->getWidth(), getHeight());
+        xpos += strip->getWidth() + margin;
+    }
+
     audioSetupComponent_->setBounds(0, 20, getWidth(), getHeight() - 20);
 }
 

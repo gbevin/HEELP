@@ -379,10 +379,28 @@
     <ClCompile Include="..\..\Source\Threads\HeelpThreadsApplication.cpp">
       <Filter>HEELP\Source\Threads</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\UI\ChannelFader.cpp">
+      <Filter>HEELP\Source\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\ChannelStrip.cpp">
+      <Filter>HEELP\Source\UI</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\UI\MainContentComponent.cpp">
       <Filter>HEELP\Source\UI</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\MainWindow.cpp">
+      <Filter>HEELP\Source\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\MuteButton.cpp">
+      <Filter>HEELP\Source\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\PanFader.cpp">
+      <Filter>HEELP\Source\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\SoloButton.cpp">
+      <Filter>HEELP\Source\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\VolumeFader.cpp">
       <Filter>HEELP\Source\UI</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\HeelpApplication.cpp">
@@ -2094,10 +2112,28 @@
     <ClInclude Include="..\..\Source\Threads\HeelpThreadsApplication.h">
       <Filter>HEELP\Source\Threads</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\UI\ChannelFader.h">
+      <Filter>HEELP\Source\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\ChannelStrip.h">
+      <Filter>HEELP\Source\UI</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\UI\MainContentComponent.h">
       <Filter>HEELP\Source\UI</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\MainWindow.h">
+      <Filter>HEELP\Source\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\MuteButton.h">
+      <Filter>HEELP\Source\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\PanFader.h">
+      <Filter>HEELP\Source\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\SoloButton.h">
+      <Filter>HEELP\Source\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\VolumeFader.h">
       <Filter>HEELP\Source\UI</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\HeelpApplication.h">

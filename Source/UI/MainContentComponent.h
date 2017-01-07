@@ -19,6 +19,7 @@
 #define MAINCONTENTCOMPONENT_H_INCLUDED
 
 #include "JuceHeader.h"
+#include "ChannelStrip.h"
 
 namespace heelp
 {
@@ -34,6 +35,7 @@ namespace heelp
         void setRegisteredChildrenCount(int count);
         
     private:
+        Array<ScopedPointer<ChannelStrip>> channelStrips_;
         ScopedPointer<AudioDeviceSelectorComponent> audioSetupComponent_;
         int registeredChildrenCount_;
         

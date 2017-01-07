@@ -67,8 +67,14 @@ OBJECTS := \
   $(JUCE_OBJDIR)/SharedLock_13956ccb.o \
   $(JUCE_OBJDIR)/SharedMemory_5109ae1.o \
   $(JUCE_OBJDIR)/HeelpThreadsApplication_4d764eee.o \
+  $(JUCE_OBJDIR)/ChannelFader_5934f76f.o \
+  $(JUCE_OBJDIR)/ChannelStrip_81b36011.o \
   $(JUCE_OBJDIR)/MainContentComponent_52535d99.o \
   $(JUCE_OBJDIR)/MainWindow_5f9c9b05.o \
+  $(JUCE_OBJDIR)/MuteButton_c0cbc9a7.o \
+  $(JUCE_OBJDIR)/PanFader_6e614c95.o \
+  $(JUCE_OBJDIR)/SoloButton_84e2ced.o \
+  $(JUCE_OBJDIR)/VolumeFader_4f6a0a4a.o \
   $(JUCE_OBJDIR)/HeelpApplication_d02c53ad.o \
   $(JUCE_OBJDIR)/HeelpLogger_ce25639d.o \
   $(JUCE_OBJDIR)/Main_90ebc5c2.o \
@@ -156,6 +162,16 @@ $(JUCE_OBJDIR)/HeelpThreadsApplication_4d764eee.o: ../../Source/Threads/HeelpThr
 	@echo "Compiling HeelpThreadsApplication.cpp"
 	@$(CXX) $(JUCE_CXXFLAGS) -o "$@" -c "$<"
 
+$(JUCE_OBJDIR)/ChannelFader_5934f76f.o: ../../Source/UI/ChannelFader.cpp
+	-@mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling ChannelFader.cpp"
+	@$(CXX) $(JUCE_CXXFLAGS) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/ChannelStrip_81b36011.o: ../../Source/UI/ChannelStrip.cpp
+	-@mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling ChannelStrip.cpp"
+	@$(CXX) $(JUCE_CXXFLAGS) -o "$@" -c "$<"
+
 $(JUCE_OBJDIR)/MainContentComponent_52535d99.o: ../../Source/UI/MainContentComponent.cpp
 	-@mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling MainContentComponent.cpp"
@@ -164,6 +180,26 @@ $(JUCE_OBJDIR)/MainContentComponent_52535d99.o: ../../Source/UI/MainContentCompo
 $(JUCE_OBJDIR)/MainWindow_5f9c9b05.o: ../../Source/UI/MainWindow.cpp
 	-@mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling MainWindow.cpp"
+	@$(CXX) $(JUCE_CXXFLAGS) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/MuteButton_c0cbc9a7.o: ../../Source/UI/MuteButton.cpp
+	-@mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling MuteButton.cpp"
+	@$(CXX) $(JUCE_CXXFLAGS) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/PanFader_6e614c95.o: ../../Source/UI/PanFader.cpp
+	-@mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling PanFader.cpp"
+	@$(CXX) $(JUCE_CXXFLAGS) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/SoloButton_84e2ced.o: ../../Source/UI/SoloButton.cpp
+	-@mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling SoloButton.cpp"
+	@$(CXX) $(JUCE_CXXFLAGS) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/VolumeFader_4f6a0a4a.o: ../../Source/UI/VolumeFader.cpp
+	-@mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling VolumeFader.cpp"
 	@$(CXX) $(JUCE_CXXFLAGS) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/HeelpApplication_d02c53ad.o: ../../Source/HeelpApplication.cpp
