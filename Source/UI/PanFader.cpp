@@ -74,7 +74,7 @@ void PanFader::paint (Graphics& g)
 
     g.setColour (Colours::black);
     g.fillRect ((getWidth() / 2) - (1 / 2), (getHeight() / 2) - (proportionOfHeight (0.3750f) / 2), 1, proportionOfHeight (0.3750f));
-
+/*
     g.setGradientFill (ColourGradient (Colour (0xffbbbbbb),
                                        23.0f, 8.0f,
                                        Colour (0xff888888),
@@ -84,7 +84,7 @@ void PanFader::paint (Graphics& g)
 
     g.setColour (Colours::black);
     g.drawRect (21, 0, 7, 16, 1);
-
+*/
     //[UserPaint] Add your own custom painting code here..
     float offset = ((pan_ + 1.f) / 2.f) * (getWidth() - 7);
     g.setGradientFill(ColourGradient(Colour(0xffbbbbbb),
