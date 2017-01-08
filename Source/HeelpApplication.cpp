@@ -24,7 +24,7 @@
 #include "UI/AboutComponent.h"
 #include "UI/Dialog.h"
 #include "UI/HEELPLookAndFeel.h"
-#include "CommandIDs.h"
+#include "UI/CommandIDs.h"
 #include "Utils.h"
 
 using namespace heelp;
