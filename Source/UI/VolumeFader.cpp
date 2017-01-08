@@ -150,7 +150,7 @@ void VolumeFader::paint (Graphics& g)
 
     g.setColour (Colours::black);
     g.drawRect (16, 3, 6, 165, 1);
-
+/*
     g.setGradientFill (ColourGradient (Colour (0xffbbbbbb),
                                        19.0f, 38.0f,
                                        Colour (0xff888888),
@@ -160,7 +160,7 @@ void VolumeFader::paint (Graphics& g)
 
     g.setColour (Colours::black);
     g.drawRect (6, 36, 26, 7, 1);
-
+*/
     //[UserPaint] Add your own custom painting code here..
     float height = getEffectiveHeight();
     float offset = height - thumbPosition_ * height;
