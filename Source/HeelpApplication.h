@@ -32,7 +32,8 @@ namespace heelp
         HeelpApplication();
         virtual ~HeelpApplication();
         
-        static HeelpApplication* getHeelpInstance() noexcept { return (HeelpApplication*)JUCEApplication::getInstance(); }
+        static HeelpApplication* getHeelpInstance() noexcept            { return (HeelpApplication*)JUCEApplication::getInstance(); }
+        static ApplicationCommandManager* getCommandManager() noexcept  { return getHeelpInstance()->getApplicationCommandManager(); }
         
         const String getApplicationName() override       { return ProjectInfo::projectName; }
         const String getApplicationVersion() override    { return ProjectInfo::versionString; }
@@ -44,6 +45,8 @@ namespace heelp
         void initialise(const String& commandLine) override;
         void shutdown() override;
         void systemRequestedQuit() override;
+        
+        ApplicationCommandManager* getApplicationCommandManager();
 
         struct Pimpl;
     private:

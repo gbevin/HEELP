@@ -2118,6 +2118,9 @@
     <ClInclude Include="..\..\Source\UI\ChannelStrip.h">
       <Filter>HEELP\Source\UI</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\UI\CommandIDs.h">
+      <Filter>HEELP\Source\UI</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\UI\MainContentComponent.h">
       <Filter>HEELP\Source\UI</Filter>
     </ClInclude>

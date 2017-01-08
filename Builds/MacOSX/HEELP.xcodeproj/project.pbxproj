@@ -660,6 +660,7 @@
 		7EB216EFC6EE9AE279DB3C5B = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "juce_osc.cpp"; path = "../../JuceLibraryCode/juce_osc.cpp"; sourceTree = "SOURCE_ROOT"; };
 		7EE3BEA5E719BFC0465A3357 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = "juce_graphics.mm"; path = "../../JuceLibraryCode/juce_graphics.mm"; sourceTree = "SOURCE_ROOT"; };
 		7EF98923C0057E38F1DA5C15 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = inffixed.h; path = "../../JuceLibraryCode/modules/juce_core/zip/zlib/inffixed.h"; sourceTree = "SOURCE_ROOT"; };
+		7F26237908888B88DEAC9016 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CommandIDs.h; path = ../../Source/UI/CommandIDs.h; sourceTree = "SOURCE_ROOT"; };
 		7FF63DDB1A10D2024A013548 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "juce_TooltipClient.h"; path = "../../JuceLibraryCode/modules/juce_gui_basics/mouse/juce_TooltipClient.h"; sourceTree = "SOURCE_ROOT"; };
 		8035BE1EAD4CDFDAF9D5D3F7 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "juce_ApplicationBase.cpp"; path = "../../JuceLibraryCode/modules/juce_events/messages/juce_ApplicationBase.cpp"; sourceTree = "SOURCE_ROOT"; };
 		80534FDB52CB398F66DDD953 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "juce_FileInputSource.h"; path = "../../JuceLibraryCode/modules/juce_core/streams/juce_FileInputSource.h"; sourceTree = "SOURCE_ROOT"; };
@@ -1285,6 +1286,7 @@
 					9075D60437BE12748E79D570,
 					B9C901AAF7A684C7DF340253,
 					8E1B33FC3BE0E99B936421C1,
+					7F26237908888B88DEAC9016,
 					8D40196CFDA0B1258FC61E8B,
 					D15C4B8CD5EEFD5E22689390,
 					4A41DEC831CB153B9E74C55C,

@@ -58,6 +58,7 @@
         <FILE id="QnvZdO" name="ChannelStrip.cpp" compile="1" resource="0"
               file="Source/UI/ChannelStrip.cpp"/>
         <FILE id="fAlftp" name="ChannelStrip.h" compile="0" resource="0" file="Source/UI/ChannelStrip.h"/>
+        <FILE id="aJseEt" name="CommandIDs.h" compile="0" resource="0" file="Source/UI/CommandIDs.h"/>
         <FILE id="f8qHmp" name="MainContentComponent.cpp" compile="1" resource="0"
               file="Source/UI/MainContentComponent.cpp"/>
         <FILE id="IYQ7RN" name="MainContentComponent.h" compile="0" resource="0"

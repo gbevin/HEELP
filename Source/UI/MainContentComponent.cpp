@@ -44,7 +44,7 @@ MainContentComponent::~MainContentComponent()
 
 void MainContentComponent::paint(Graphics& g)
 {
-    g.fillAll(Colour(0xff3f3f3f));
+    g.fillAll(Colour(0xff303030));
 /*
     g.setFont(Font(16.0f));
     g.setColour(Colours::black);

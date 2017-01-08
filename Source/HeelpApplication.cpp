@@ -21,11 +21,12 @@
 #include "Processes/HeelpProcessesChildApplication.h"
 #include "Processes/HeelpProcessesMainApplication.h"
 #include "Threads/HeelpThreadsApplication.h"
+#include "CommandIDs.h"
 #include "Utils.h"
 
 using namespace heelp;
 
-struct HeelpApplication::Pimpl
+struct HeelpApplication::Pimpl : public ApplicationCommandManagerListener, public ApplicationCommandTarget
 {
     Pimpl()
     {
@@ -33,6 +34,16 @@ struct HeelpApplication::Pimpl
     
     void initialise(const String& commandLine)
     {
+        commandManager_ = new ApplicationCommandManager();
+        commandManager_->setFirstCommandTarget(this);
+        commandManager_->addListener(this);
+        commandManager_->registerAllCommandsForTarget(this);
+        
+        // putting this here ensures that removed or added MIDI devices
+        // are being detected by CoreMIDI on MacOSX
+        juce::MidiInput::getDevices();
+        juce::MidiOutput::getDevices();
+
         if (true) {
             HeelpThreadsApplication* realApp = new HeelpThreadsApplication();
             realApp_ = realApp;
@@ -83,6 +94,8 @@ struct HeelpApplication::Pimpl
     
     void shutdown()
     {
+        commandManager_->removeListener(this);
+        
         realApp_->shutdown();
         realApp_ = nullptr;
     }
@@ -92,7 +105,247 @@ struct HeelpApplication::Pimpl
         quit();
     }
     
+    ApplicationCommandTarget* getNextCommandTarget()
+    {
+        return nullptr;
+    }
+    
+    void getAllCommands(Array<CommandID>& commands)
+    {
+        const CommandID ids[] = {
+            CommandIDs::showAbout,
+            CommandIDs::showPrefs,
+            CommandIDs::create,
+            CommandIDs::open,
+            CommandIDs::save,
+            CommandIDs::saveAs,
+            CommandIDs::showSettings,
+            CommandIDs::quit,
+            CommandIDs::undo,
+            CommandIDs::redo,
+            CommandIDs::visitWebsite,
+            CommandIDs::reportIssue
+        };
+        commands.addArray(ids, numElementsInArray(ids));
+    }
+    
+    void getCommandInfo(const CommandID commandID, ApplicationCommandInfo& result)
+    {
+        const int cmd = ModifierKeys::commandModifier;
+        const int shft = ModifierKeys::shiftModifier;
+        
+        switch (commandID)
+        {
+            case CommandIDs::showAbout:
+                result.setInfo("About HEELP",
+                               "Shows the about window.",
+                               CommandCategories::view, 0);
+                result.setActive(true);
+                break;
+                
+            case CommandIDs::showPrefs:
+                result.setInfo("Preferences...",
+                               "Shows the preferences panel.",
+                               CommandCategories::view, 0);
+                result.setActive(true);
+                break;
+                
+            case CommandIDs::create:
+                result.setInfo("New",
+                               "Create a new HEELP file.",
+                               CommandCategories::file, 0);
+                result.setActive(true);
+                result.defaultKeypresses.add(KeyPress('n', cmd, 0));
+                break;
+                
+            case CommandIDs::open:
+                result.setInfo("Open...",
+                               "Opens a HEELP file.",
+                               CommandCategories::file, 0);
+                result.setActive(true);
+                result.defaultKeypresses.add(KeyPress('o', cmd, 0));
+                break;
+                
+            case CommandIDs::save:
+                result.setInfo("Save",
+                               "Save the current HEELP file.",
+                               CommandCategories::file, ApplicationCommandInfo::isDisabled);
+                result.defaultKeypresses.add(KeyPress('s', cmd, 0));
+                //            result.setActive(document_->hasChangedSinceSaved());
+                break;
+                
+            case CommandIDs::saveAs:
+                result.setInfo("Save As...",
+                               "Save the current HEELP file to another one.",
+                               CommandCategories::file, ApplicationCommandInfo::isDisabled);
+                result.defaultKeypresses.add(KeyPress('s', cmd|shft, 0));
+                break;
+                
+            case CommandIDs::showSettings:
+                result.setInfo("Document Settings...",
+                               "Shows the document settings.",
+                               CommandCategories::view, 0);
+                result.setActive(true);
+                result.defaultKeypresses.add(KeyPress(',', cmd, 0));
+                break;
+                
+            case CommandIDs::quit:
+                result.setInfo("Exit",
+                               "Exit HEELP.",
+                               CommandCategories::file, 0);
+                result.setActive(true);
+                result.defaultKeypresses.add(KeyPress('q', cmd, 0));
+                break;
+                
+            case CommandIDs::undo:
+                result.setInfo("Undo",
+                               "Undo the last operation.",
+                               CommandCategories::view, ApplicationCommandInfo::isDisabled);
+                result.defaultKeypresses.add(KeyPress('z', cmd, 0));
+                //            result.setActive(document_->getUndoManager().canUndo());
+                break;
+                
+            case CommandIDs::redo:
+                result.setInfo("Redo",
+                               "Redo the last operation.",
+                               CommandCategories::view, ApplicationCommandInfo::isDisabled);
+                result.defaultKeypresses.add(KeyPress('z', cmd|shft, 0));
+                //            result.setActive(document_->getUndoManager().canRedo());
+                break;
+                
+            case CommandIDs::visitWebsite:
+                result.setInfo("Visit the HEELP Website",
+                               "Visit the HEELP Website.",
+                               CommandCategories::help, 0);
+                result.setActive(true);
+                break;
+                
+            case CommandIDs::reportIssue:
+                result.setInfo("Report an Issue",
+                               "Contact us for support.",
+                               CommandCategories::help, 0);
+                result.setActive(true);
+                break;
+                
+            default:
+                break;
+        }
+    }
+    
+    bool perform(const ApplicationCommandTarget::InvocationInfo& info)
+    {
+        switch (info.commandID)
+        {
+            case CommandIDs::showAbout:
+            {
+                //            aboutDialog_->show();
+                break;
+            }
+                
+            case CommandIDs::showPrefs:
+            {
+                //            preferencesDialog_->show();
+                break;
+            }
+                
+            case CommandIDs::create:
+            {
+                //            if (FileBasedDocument::savedOk == document_->saveIfNeededAndUserAgrees())
+                //            {
+                //                ScopedPointer<HeelpDocument> d(new HeelpDocument());
+                //                activateDocument(d);
+                //            }
+                break;
+            }
+                
+            case CommandIDs::open:
+            {
+                //            if (FileBasedDocument::savedOk == document_->saveIfNeededAndUserAgrees())
+                //            {
+                //                ScopedPointer<HeelpDocument> d(new HeelpDocument());
+                //                if (d->loadFromUserSpecifiedFile(true))
+                //                {
+                //                    activateDocument(d);
+                //                }
+                //            }
+                break;
+            }
+                
+            case CommandIDs::save:
+            {
+                //            document_->save(true, true);
+                break;
+            }
+                
+            case CommandIDs::saveAs:
+            {
+                //            document_->saveAsInteractive(true);
+                break;
+            }
+                
+            case CommandIDs::showSettings:
+            {
+                //            settingsDialog_->show();
+                break;
+            }
+                
+            case CommandIDs::quit:
+            {
+                //            this->systemRequestedQuit();
+                break;
+            }
+                
+            case CommandIDs::undo:
+            {
+                //            document_->getUndoManager().undo();
+                break;
+            }
+                
+            case CommandIDs::redo:
+            {
+                //            document_->getUndoManager().redo();
+                break;
+            }
+                
+            case CommandIDs::visitWebsite:
+            {
+                URL("https://github.com/gbevin/HEELP").launchInDefaultBrowser();
+                break;
+            }
+                
+            case CommandIDs::reportIssue:
+            {
+                URL("https://github.com/gbevin/HEELP/issues").launchInDefaultBrowser();
+                break;
+            }
+                
+            default:
+                return false;
+        }
+        
+        return true;
+    }
+    
+    bool isCommandActive(const CommandID)
+    {
+        return true;
+    }
+    
+    ApplicationCommandManager* getApplicationCommandManager()
+    {
+        return commandManager_;
+    }
+
+    void applicationCommandInvoked(const ApplicationCommandTarget::InvocationInfo &)
+    {
+    }
+    
+    void applicationCommandListChanged()
+    {
+    }
+    
     ScopedPointer<AbstractHeelpApplication> realApp_;
+    ScopedPointer<ApplicationCommandManager> commandManager_;
 };
 
 HeelpApplication::HeelpApplication() : pimpl_(new Pimpl())  {}
@@ -103,3 +356,4 @@ void HeelpApplication::anotherInstanceStarted(const String& commandLine)    { pi
 void HeelpApplication::initialise(const String& commandLine)                { pimpl_->initialise(commandLine); }
 void HeelpApplication::shutdown()                                           { pimpl_->shutdown(); }
 void HeelpApplication::systemRequestedQuit()                                { pimpl_->systemRequestedQuit(); }
+ApplicationCommandManager* HeelpApplication::getApplicationCommandManager() { return pimpl_->getApplicationCommandManager(); }

@@ -17,20 +17,124 @@
  */
 #include "MainWindow.h"
 
+#include "../HeelpApplication.h"
+#include "CommandIDs.h"
 #include "MainContentComponent.h"
+
+#define RECENT_FILES_START 200
+#define RECENT_FILES_RANGE 100
 
 using namespace heelp;
 
 MainWindow::MainWindow(String name) : DocumentWindow(name, Colours::lightgrey, DocumentWindow::allButtons)
 {
-    setUsingNativeTitleBar (true);
+    ApplicationCommandManager* commandManager = HeelpApplication::getCommandManager();
+#if JUCE_MAC
+    extraMenu_.addCommandItem(commandManager, CommandIDs::showAbout);
+    extraMenu_.addSeparator();
+    extraMenu_.addCommandItem(commandManager, CommandIDs::showPrefs);
+    setMacMainMenu(this, &extraMenu_);
+#else
+    setMenuBar(this);
+#endif
+
+    setApplicationCommandManagerToWatch(commandManager);
+    setUsingNativeTitleBar(true);
     setContentOwned(new MainContentComponent(), true);
     
     centreWithSize(getWidth(), getHeight());
-    setVisible (true);
+    setVisible(true);
+}
+
+MainWindow::~MainWindow()
+{
+#if JUCE_MAC
+    setMacMainMenu(0, 0);
+#else
+    setMenuBar(0);
+#endif
+    
+    clearContentComponent();
 }
 
 void MainWindow::closeButtonPressed()
 {
     JUCEApplication::getInstance()->systemRequestedQuit();
 }
+
+StringArray MainWindow::getMenuBarNames()
+{
+    const char* const names[] = { CommandCategories::file, CommandCategories::edit, CommandCategories::view, CommandCategories::help, 0 };
+    return StringArray(names);
+}
+
+PopupMenu MainWindow::getMenuForIndex(int topLevelMenuIndex, const String& menuName)
+{
+    ApplicationCommandManager* commandManager = HeelpApplication::getCommandManager();
+    PopupMenu menu;
+    
+    if (topLevelMenuIndex == 0)
+    {
+        // "File" menu
+        
+        menu.addCommandItem(commandManager, CommandIDs::create);
+        menu.addSeparator();
+        menu.addCommandItem(commandManager, CommandIDs::open);
+
+        PopupMenu recentFiles;
+//        getAppSettings().recentFiles.createPopupMenuItems(recentFiles, RECENT_FILES_START, true, true);
+        menu.addSubMenu ("Open Recent", recentFiles);
+
+        menu.addSeparator();
+        menu.addCommandItem(commandManager, CommandIDs::save);
+        menu.addCommandItem(commandManager, CommandIDs::saveAs);
+        menu.addSeparator();
+        
+        menu.addCommandItem(commandManager, CommandIDs::showSettings);
+        
+#ifndef JUCE_MAC
+        menu.addSeparator();
+        
+        menu.addCommandItem(commandManager, CommandIDs::showPrefs);
+        
+        menu.addSeparator();
+        
+        menu.addCommandItem(commandManager, CommandIDs::quit);
+#endif
+    }
+    else if (topLevelMenuIndex == 1)
+    {
+        // "Edit" menu
+        
+        menu.addCommandItem(commandManager, CommandIDs::undo);
+        menu.addCommandItem(commandManager, CommandIDs::redo);
+    }
+    else if (topLevelMenuIndex == 2)
+    {
+        // "View" menu
+    }
+    else if (topLevelMenuIndex == 3)
+    {
+        // "Help" menu
+        
+        menu.addCommandItem(commandManager, CommandIDs::visitWebsite);
+        menu.addCommandItem(commandManager, CommandIDs::reportIssue);
+        
+#ifndef JUCE_MAC
+        menu.addSeparator();
+        
+        menu.addCommandItem(commandManager, CommandIDs::showAbout);
+#endif
+    }
+    
+    return menu;
+}
+
+void MainWindow::menuItemSelected(int menuItemID, int topLevelMenuIndex)
+{
+    if (menuItemID >= RECENT_FILES_START && menuItemID < RECENT_FILES_START+RECENT_FILES_RANGE)
+    {
+//        HeelpApplication::getApp().openFile(getAppSettings().recentFiles.getFile(menuItemID - RECENT_FILES_START));
+    }
+}
+

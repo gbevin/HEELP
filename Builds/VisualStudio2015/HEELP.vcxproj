@@ -1697,6 +1697,7 @@
     <ClInclude Include="..\..\Source\Threads\HeelpThreadsApplication.h"/>
     <ClInclude Include="..\..\Source\UI\ChannelFader.h"/>
     <ClInclude Include="..\..\Source\UI\ChannelStrip.h"/>
+    <ClInclude Include="..\..\Source\UI\CommandIDs.h"/>
     <ClInclude Include="..\..\Source\UI\MainContentComponent.h"/>
     <ClInclude Include="..\..\Source\UI\MainWindow.h"/>
     <ClInclude Include="..\..\Source\UI\MuteButton.h"/>

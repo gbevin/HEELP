@@ -74,23 +74,23 @@ void PanFader::paint (Graphics& g)
 
     g.setColour (Colours::black);
     g.fillRect ((getWidth() / 2) - (1 / 2), (getHeight() / 2) - (proportionOfHeight (0.3750f) / 2), 1, proportionOfHeight (0.3750f));
-/*
+
     g.setGradientFill (ColourGradient (Colour (0xffbbbbbb),
-                                       23.0f, 8.0f,
+                                       22.0f, 8.0f,
                                        Colour (0xff888888),
-                                       27.0f, 8.0f,
+                                       26.0f, 8.0f,
                                        false));
     g.fillRect (21, 0, 7, 16);
 
     g.setColour (Colours::black);
     g.drawRect (21, 0, 7, 16, 1);
-*/
+
     //[UserPaint] Add your own custom painting code here..
     float offset = ((pan_ + 1.f) / 2.f) * (getWidth() - 7);
     g.setGradientFill(ColourGradient(Colour(0xffbbbbbb),
-                                     offset + 2.0f, 8.0f,
+                                     offset + 1.0f, 8.0f,
                                      Colour(0xff888888),
-                                     offset + 6.0f, 8.0f,
+                                     offset + 5.0f, 8.0f,
                                      false));
     g.fillRect(offset, 0.f, 7.f, 16.f);
 
@@ -180,7 +180,7 @@ BEGIN_JUCER_METADATA
     <RECT pos="3 5 43 6" fill=" radial: 24 8, 47 8, 0=ff666666, 1=ff444444"
           hasStroke="1" stroke="1, mitered, butt" strokeColour="solid: ff000000"/>
     <RECT pos="0Cc 0Cc 1 37.5%" fill="solid: ff000000" hasStroke="0"/>
-    <RECT pos="21 0 7 16" fill="linear: 23 8, 27 8, 0=ffbbbbbb, 1=ff888888"
+    <RECT pos="21 0 7 16" fill="linear: 22 8, 26 8, 0=ffbbbbbb, 1=ff888888"
           hasStroke="1" stroke="1, mitered, butt" strokeColour="solid: ff000000"/>
   </BACKGROUND>
 </JUCER_COMPONENT>
