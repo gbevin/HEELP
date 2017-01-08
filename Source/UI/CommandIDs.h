@@ -21,7 +21,7 @@
 namespace heelp
 {
     namespace CommandIDs
-{
+    {
         static const int showAbout                = 0x10001;
         static const int showPrefs                = 0x10002;
         

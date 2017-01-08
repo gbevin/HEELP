@@ -142,6 +142,7 @@
     <ClCompile Include="..\..\Source\Threads\HeelpThreadsApplication.cpp"/>
     <ClCompile Include="..\..\Source\UI\ChannelFader.cpp"/>
     <ClCompile Include="..\..\Source\UI\ChannelStrip.cpp"/>
+    <ClCompile Include="..\..\Source\UI\HEELPLookAndFeel.cpp"/>
     <ClCompile Include="..\..\Source\UI\MainContentComponent.cpp"/>
     <ClCompile Include="..\..\Source\UI\MainWindow.cpp"/>
     <ClCompile Include="..\..\Source\UI\MuteButton.cpp"/>
@@ -1669,6 +1670,7 @@
     <ClCompile Include="..\..\JuceLibraryCode\modules\juce_osc\juce_osc.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\JuceLibraryCode\BinaryData.cpp"/>
     <ClCompile Include="..\..\JuceLibraryCode\juce_audio_basics.cpp"/>
     <ClCompile Include="..\..\JuceLibraryCode\juce_audio_devices.cpp"/>
     <ClCompile Include="..\..\JuceLibraryCode\juce_audio_formats.cpp"/>
@@ -1698,6 +1700,7 @@
     <ClInclude Include="..\..\Source\UI\ChannelFader.h"/>
     <ClInclude Include="..\..\Source\UI\ChannelStrip.h"/>
     <ClInclude Include="..\..\Source\UI\CommandIDs.h"/>
+    <ClInclude Include="..\..\Source\UI\HEELPLookAndFeel.h"/>
     <ClInclude Include="..\..\Source\UI\MainContentComponent.h"/>
     <ClInclude Include="..\..\Source\UI\MainWindow.h"/>
     <ClInclude Include="..\..\Source\UI\MuteButton.h"/>
@@ -2292,6 +2295,7 @@
     <ClInclude Include="..\..\JuceLibraryCode\modules\juce_osc\juce_osc.h"/>
     <ClInclude Include="..\..\..\..\JUCE\modules\juce_osc\juce_osc.h"/>
     <ClInclude Include="..\..\JuceLibraryCode\AppConfig.h"/>
+    <ClInclude Include="..\..\JuceLibraryCode\BinaryData.h"/>
     <ClInclude Include="..\..\JuceLibraryCode\JuceHeader.h"/>
   </ItemGroup>
   <ItemGroup>
@@ -2299,6 +2303,10 @@
     <None Include="..\..\CONTRIBUTORS.md"/>
     <None Include="..\..\COPYING.md"/>
     <None Include="..\..\README.md"/>
+    <None Include="..\..\Resources\dejavu-fonts-ttf-2.37\ttf\DejaVuSans-Bold.ttf"/>
+    <None Include="..\..\Resources\dejavu-fonts-ttf-2.37\ttf\DejaVuSans.ttf"/>
+    <None Include="..\..\Resources\dejavu-fonts-ttf-2.37\ttf\DejaVuSansMono-Bold.ttf"/>
+    <None Include="..\..\Resources\dejavu-fonts-ttf-2.37\ttf\DejaVuSansMono.ttf"/>
     <None Include="..\..\JuceLibraryCode\modules\juce_audio_formats\codecs\flac\Flac Licence.txt"/>
     <None Include="..\..\JuceLibraryCode\modules\juce_audio_formats\codecs\oggvorbis\Ogg Vorbis Licence.txt"/>
     <None Include="..\..\JuceLibraryCode\modules\juce_graphics\image_formats\jpglib\changes to libjpeg for JUCE.txt"/>

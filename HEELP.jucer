@@ -59,6 +59,10 @@
               file="Source/UI/ChannelStrip.cpp"/>
         <FILE id="fAlftp" name="ChannelStrip.h" compile="0" resource="0" file="Source/UI/ChannelStrip.h"/>
         <FILE id="aJseEt" name="CommandIDs.h" compile="0" resource="0" file="Source/UI/CommandIDs.h"/>
+        <FILE id="JDwsJf" name="HEELPLookAndFeel.cpp" compile="1" resource="0"
+              file="Source/UI/HEELPLookAndFeel.cpp"/>
+        <FILE id="rJakbc" name="HEELPLookAndFeel.h" compile="0" resource="0"
+              file="Source/UI/HEELPLookAndFeel.h"/>
         <FILE id="f8qHmp" name="MainContentComponent.cpp" compile="1" resource="0"
               file="Source/UI/MainContentComponent.cpp"/>
         <FILE id="IYQ7RN" name="MainContentComponent.h" compile="0" resource="0"
@@ -90,6 +94,17 @@
       <FILE id="PLtU6T" name="CONTRIBUTORS.md" compile="0" resource="0" file="CONTRIBUTORS.md"/>
       <FILE id="kqgL5K" name="COPYING.md" compile="0" resource="0" file="COPYING.md"/>
       <FILE id="nuW5p0" name="README.md" compile="0" resource="0" file="README.md"/>
+    </GROUP>
+    <GROUP id="{FCC3320B-D27B-D10C-0735-306CE150CA78}" name="Resources">
+      <GROUP id="{5C6AD734-09D0-0473-EE03-E42F8ADA1D36}" name="Fonts">
+        <FILE id="kL6fuK" name="DejaVuSans-Bold.ttf" compile="0" resource="1"
+              file="Resources/dejavu-fonts-ttf-2.37/ttf/DejaVuSans-Bold.ttf"/>
+        <FILE id="u7dKT2" name="DejaVuSans.ttf" compile="0" resource="1" file="Resources/dejavu-fonts-ttf-2.37/ttf/DejaVuSans.ttf"/>
+        <FILE id="qqhvu5" name="DejaVuSansMono-Bold.ttf" compile="0" resource="1"
+              file="Resources/dejavu-fonts-ttf-2.37/ttf/DejaVuSansMono-Bold.ttf"/>
+        <FILE id="VJhKxW" name="DejaVuSansMono.ttf" compile="0" resource="1"
+              file="Resources/dejavu-fonts-ttf-2.37/ttf/DejaVuSansMono.ttf"/>
+      </GROUP>
     </GROUP>
   </MAINGROUP>
   <EXPORTFORMATS>

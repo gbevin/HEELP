@@ -21,6 +21,7 @@
 #include "Processes/HeelpProcessesChildApplication.h"
 #include "Processes/HeelpProcessesMainApplication.h"
 #include "Threads/HeelpThreadsApplication.h"
+#include "UI/HEELPLookAndFeel.h"
 #include "CommandIDs.h"
 #include "Utils.h"
 
@@ -38,6 +39,8 @@ struct HeelpApplication::Pimpl : public ApplicationCommandManagerListener, publi
         commandManager_->setFirstCommandTarget(this);
         commandManager_->addListener(this);
         commandManager_->registerAllCommandsForTarget(this);
+
+        LookAndFeel::setDefaultLookAndFeel(&lookAndFeel_);
         
         // putting this here ensures that removed or added MIDI devices
         // are being detected by CoreMIDI on MacOSX
@@ -344,6 +347,7 @@ struct HeelpApplication::Pimpl : public ApplicationCommandManagerListener, publi
     {
     }
     
+    HEELPLookAndFeel lookAndFeel_;
     ScopedPointer<AbstractHeelpApplication> realApp_;
     ScopedPointer<ApplicationCommandManager> commandManager_;
 };

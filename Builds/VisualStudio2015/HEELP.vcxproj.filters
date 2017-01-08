@@ -20,6 +20,12 @@
     <Filter Include="HEELP\Info">
       <UniqueIdentifier>{A9BBBCA0-D276-A6E2-F6C9-9FAC20146EBB}</UniqueIdentifier>
     </Filter>
+    <Filter Include="HEELP\Resources">
+      <UniqueIdentifier>{7EE31A7D-78F3-190B-9A0E-8CB271F939A7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="HEELP\Resources\Fonts">
+      <UniqueIdentifier>{E71D878E-FF4A-7BF8-985E-DCDD550A7A3D}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Juce Modules">
       <UniqueIdentifier>{422C46B7-0467-2DB0-BF3C-16DFCAFD69AC}</UniqueIdentifier>
     </Filter>
@@ -383,6 +389,9 @@
       <Filter>HEELP\Source\UI</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\ChannelStrip.cpp">
+      <Filter>HEELP\Source\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\HEELPLookAndFeel.cpp">
       <Filter>HEELP\Source\UI</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\MainContentComponent.cpp">
@@ -2038,6 +2047,9 @@
     <ClCompile Include="..\..\JuceLibraryCode\modules\juce_osc\juce_osc.cpp">
       <Filter>Juce Modules\juce_osc</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\JuceLibraryCode\BinaryData.cpp">
+      <Filter>Juce Library Code</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\JuceLibraryCode\juce_audio_basics.cpp">
       <Filter>Juce Library Code</Filter>
     </ClCompile>
@@ -2119,6 +2131,9 @@
       <Filter>HEELP\Source\UI</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\CommandIDs.h">
+      <Filter>HEELP\Source\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\HEELPLookAndFeel.h">
       <Filter>HEELP\Source\UI</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\MainContentComponent.h">
@@ -3903,6 +3918,9 @@
     <ClInclude Include="..\..\JuceLibraryCode\AppConfig.h">
       <Filter>Juce Library Code</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\JuceLibraryCode\BinaryData.h">
+      <Filter>Juce Library Code</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\JuceLibraryCode\JuceHeader.h">
       <Filter>Juce Library Code</Filter>
     </ClInclude>
@@ -3919,6 +3937,18 @@
     </None>
     <None Include="..\..\README.md">
       <Filter>HEELP\Info</Filter>
+    </None>
+    <None Include="..\..\Resources\dejavu-fonts-ttf-2.37\ttf\DejaVuSans-Bold.ttf">
+      <Filter>HEELP\Resources\Fonts</Filter>
+    </None>
+    <None Include="..\..\Resources\dejavu-fonts-ttf-2.37\ttf\DejaVuSans.ttf">
+      <Filter>HEELP\Resources\Fonts</Filter>
+    </None>
+    <None Include="..\..\Resources\dejavu-fonts-ttf-2.37\ttf\DejaVuSansMono-Bold.ttf">
+      <Filter>HEELP\Resources\Fonts</Filter>
+    </None>
+    <None Include="..\..\Resources\dejavu-fonts-ttf-2.37\ttf\DejaVuSansMono.ttf">
+      <Filter>HEELP\Resources\Fonts</Filter>
     </None>
     <None Include="..\..\JuceLibraryCode\modules\juce_audio_formats\codecs\flac\Flac Licence.txt">
       <Filter>Juce Modules\juce_audio_formats\codecs\flac</Filter>

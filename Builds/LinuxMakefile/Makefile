@@ -69,6 +69,7 @@ OBJECTS := \
   $(JUCE_OBJDIR)/HeelpThreadsApplication_4d764eee.o \
   $(JUCE_OBJDIR)/ChannelFader_5934f76f.o \
   $(JUCE_OBJDIR)/ChannelStrip_81b36011.o \
+  $(JUCE_OBJDIR)/HEELPLookAndFeel_92eba08e.o \
   $(JUCE_OBJDIR)/MainContentComponent_52535d99.o \
   $(JUCE_OBJDIR)/MainWindow_5f9c9b05.o \
   $(JUCE_OBJDIR)/MuteButton_c0cbc9a7.o \
@@ -78,6 +79,7 @@ OBJECTS := \
   $(JUCE_OBJDIR)/HeelpApplication_d02c53ad.o \
   $(JUCE_OBJDIR)/HeelpLogger_ce25639d.o \
   $(JUCE_OBJDIR)/Main_90ebc5c2.o \
+  $(JUCE_OBJDIR)/BinaryData_ce4232d4.o \
   $(JUCE_OBJDIR)/juce_audio_basics_6b797ca1.o \
   $(JUCE_OBJDIR)/juce_audio_devices_a742c38b.o \
   $(JUCE_OBJDIR)/juce_audio_formats_5a29c68a.o \
@@ -172,6 +174,11 @@ $(JUCE_OBJDIR)/ChannelStrip_81b36011.o: ../../Source/UI/ChannelStrip.cpp
 	@echo "Compiling ChannelStrip.cpp"
 	@$(CXX) $(JUCE_CXXFLAGS) -o "$@" -c "$<"
 
+$(JUCE_OBJDIR)/HEELPLookAndFeel_92eba08e.o: ../../Source/UI/HEELPLookAndFeel.cpp
+	-@mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling HEELPLookAndFeel.cpp"
+	@$(CXX) $(JUCE_CXXFLAGS) -o "$@" -c "$<"
+
 $(JUCE_OBJDIR)/MainContentComponent_52535d99.o: ../../Source/UI/MainContentComponent.cpp
 	-@mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling MainContentComponent.cpp"
@@ -215,6 +222,11 @@ $(JUCE_OBJDIR)/HeelpLogger_ce25639d.o: ../../Source/HeelpLogger.cpp
 $(JUCE_OBJDIR)/Main_90ebc5c2.o: ../../Source/Main.cpp
 	-@mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling Main.cpp"
+	@$(CXX) $(JUCE_CXXFLAGS) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/BinaryData_ce4232d4.o: ../../JuceLibraryCode/BinaryData.cpp
+	-@mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling BinaryData.cpp"
 	@$(CXX) $(JUCE_CXXFLAGS) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/juce_audio_basics_6b797ca1.o: ../../JuceLibraryCode/juce_audio_basics.cpp
