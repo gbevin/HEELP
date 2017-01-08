@@ -1,6 +1,6 @@
 /*
  * This file is part of HEELP.
- * Copyright (c) 2016 Uwyn SPRL.  http://www.uwyn.com
+ * Copyright (c) 2017 Uwyn SPRL.  http://www.uwyn.com
  *
  * HEELP is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,6 +21,8 @@
 #include "Processes/HeelpProcessesChildApplication.h"
 #include "Processes/HeelpProcessesMainApplication.h"
 #include "Threads/HeelpThreadsApplication.h"
+#include "UI/AboutComponent.h"
+#include "UI/Dialog.h"
 #include "UI/HEELPLookAndFeel.h"
 #include "CommandIDs.h"
 #include "Utils.h"
@@ -46,15 +48,31 @@ struct HeelpApplication::Pimpl : public ApplicationCommandManagerListener, publi
         // are being detected by CoreMIDI on MacOSX
         juce::MidiInput::getDevices();
         juce::MidiOutput::getDevices();
-
-        if (true) {
-            HeelpThreadsApplication* realApp = new HeelpThreadsApplication();
-            realApp_ = realApp;
-            realApp->initialise(commandLine);
-            return;
-        }
         
+        // default to the threaded application
+        if (true)
+        {
+            initialiseThreadsEngine(commandLine);
+        }
         // keeping the shared memory version around for now
+        else
+        {
+            initialiseSharedMemoryEngine(commandLine);
+        }
+     
+        aboutDialog_ = new Dialog(new AboutComponent());
+        aboutDialog_->setName("About HEELP");
+    }
+    
+    void initialiseThreadsEngine(const String& commandLine)
+    {
+        HeelpThreadsApplication* realApp = new HeelpThreadsApplication();
+        realApp_ = realApp;
+        realApp->initialise(commandLine);
+    }
+    
+    void initialiseSharedMemoryEngine(const String& commandLine)
+    {
         if (commandLine.contains(HeelpProcessesChildApplication::CMD_ARG_CHILDID) &&
             commandLine.contains(HeelpProcessesChildApplication::CMD_ARG_SHMUUID) &&
             commandLine.contains(HeelpProcessesChildApplication::CMD_ARG_SHMINFO))
@@ -90,6 +108,11 @@ struct HeelpApplication::Pimpl : public ApplicationCommandManagerListener, publi
         return realApp_->getAudioDeviceManager();
     }
 
+    MainWindow* getMainWindow() const
+    {
+        return realApp_->getMainWindow();
+    }
+    
     void anotherInstanceStarted(const String&)
     {
         LOG("Started another instance.");
@@ -241,7 +264,7 @@ struct HeelpApplication::Pimpl : public ApplicationCommandManagerListener, publi
         {
             case CommandIDs::showAbout:
             {
-                //            aboutDialog_->show();
+                aboutDialog_->show();
                 break;
             }
                 
@@ -350,12 +373,15 @@ struct HeelpApplication::Pimpl : public ApplicationCommandManagerListener, publi
     HEELPLookAndFeel lookAndFeel_;
     ScopedPointer<AbstractHeelpApplication> realApp_;
     ScopedPointer<ApplicationCommandManager> commandManager_;
+    ScopedPointer<Dialog> aboutDialog_;
 };
 
 HeelpApplication::HeelpApplication() : pimpl_(new Pimpl())  {}
 HeelpApplication::~HeelpApplication()                       { pimpl_ = nullptr; }
 
 AudioDeviceManager* HeelpApplication::getAudioDeviceManager() const         { return pimpl_->getAudioDeviceManager(); }
+MainWindow* HeelpApplication::getMainWindow() const                         { return pimpl_->getMainWindow(); }
+
 void HeelpApplication::anotherInstanceStarted(const String& commandLine)    { pimpl_->anotherInstanceStarted(commandLine); }
 void HeelpApplication::initialise(const String& commandLine)                { pimpl_->initialise(commandLine); }
 void HeelpApplication::shutdown()                                           { pimpl_->shutdown(); }

@@ -1,6 +1,6 @@
 /*
  * This file is part of HEELP.
- * Copyright (c) 2016 Uwyn SPRL.  http://www.uwyn.com
+ * Copyright (c) 2017 Uwyn SPRL.  http://www.uwyn.com
  *
  * HEELP is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,6 +37,8 @@ namespace heelp
         bool initialise(const String& commandLine) override;
         void shutdown() override;
         AudioDeviceManager* getAudioDeviceManager() const override;
+
+        MainWindow* getMainWindow() const override;
         
         void startAudio(ValueTree valueTree);
         void shutdownAudio();

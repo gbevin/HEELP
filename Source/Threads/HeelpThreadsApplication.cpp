@@ -1,6 +1,6 @@
 /*
  * This file is part of HEELP.
- * Copyright (c) 2016 Uwyn SPRL.  http://www.uwyn.com
+ * Copyright (c) 2017 Uwyn SPRL.  http://www.uwyn.com
  *
  * HEELP is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -100,3 +100,4 @@ HeelpThreadsApplication::~HeelpThreadsApplication()                             
 bool HeelpThreadsApplication::initialise(const String& commandLine)         { return pimpl_->initialise(commandLine); }
 void HeelpThreadsApplication::shutdown()                                    { pimpl_->shutdown(); }
 AudioDeviceManager* HeelpThreadsApplication::getAudioDeviceManager() const  { return pimpl_->getAudioDeviceManager(); }
+MainWindow* HeelpThreadsApplication::getMainWindow() const                  { return pimpl_->mainWindow_; }

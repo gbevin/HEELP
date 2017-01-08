@@ -67,8 +67,10 @@ OBJECTS := \
   $(JUCE_OBJDIR)/SharedLock_13956ccb.o \
   $(JUCE_OBJDIR)/SharedMemory_5109ae1.o \
   $(JUCE_OBJDIR)/HeelpThreadsApplication_4d764eee.o \
+  $(JUCE_OBJDIR)/AboutComponent_b5e77cec.o \
   $(JUCE_OBJDIR)/ChannelFader_5934f76f.o \
   $(JUCE_OBJDIR)/ChannelStrip_81b36011.o \
+  $(JUCE_OBJDIR)/Dialog_37be7d44.o \
   $(JUCE_OBJDIR)/HEELPLookAndFeel_92eba08e.o \
   $(JUCE_OBJDIR)/MainContentComponent_52535d99.o \
   $(JUCE_OBJDIR)/MainWindow_5f9c9b05.o \
@@ -164,6 +166,11 @@ $(JUCE_OBJDIR)/HeelpThreadsApplication_4d764eee.o: ../../Source/Threads/HeelpThr
 	@echo "Compiling HeelpThreadsApplication.cpp"
 	@$(CXX) $(JUCE_CXXFLAGS) -o "$@" -c "$<"
 
+$(JUCE_OBJDIR)/AboutComponent_b5e77cec.o: ../../Source/UI/AboutComponent.cpp
+	-@mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling AboutComponent.cpp"
+	@$(CXX) $(JUCE_CXXFLAGS) -o "$@" -c "$<"
+
 $(JUCE_OBJDIR)/ChannelFader_5934f76f.o: ../../Source/UI/ChannelFader.cpp
 	-@mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling ChannelFader.cpp"
@@ -172,6 +179,11 @@ $(JUCE_OBJDIR)/ChannelFader_5934f76f.o: ../../Source/UI/ChannelFader.cpp
 $(JUCE_OBJDIR)/ChannelStrip_81b36011.o: ../../Source/UI/ChannelStrip.cpp
 	-@mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling ChannelStrip.cpp"
+	@$(CXX) $(JUCE_CXXFLAGS) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/Dialog_37be7d44.o: ../../Source/UI/Dialog.cpp
+	-@mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling Dialog.cpp"
 	@$(CXX) $(JUCE_CXXFLAGS) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/HEELPLookAndFeel_92eba08e.o: ../../Source/UI/HEELPLookAndFeel.cpp

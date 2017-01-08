@@ -1,6 +1,6 @@
 /*
  * This file is part of HEELP.
- * Copyright (c) 2016 Uwyn SPRL.  http://www.uwyn.com
+ * Copyright (c) 2017 Uwyn SPRL.  http://www.uwyn.com
  *
  * HEELP is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -134,8 +134,9 @@ struct HeelpProcessesChildApplication::Pimpl
 HeelpProcessesChildApplication::HeelpProcessesChildApplication() : pimpl_(new Pimpl())    {}
 HeelpProcessesChildApplication::~HeelpProcessesChildApplication()                         { pimpl_ = nullptr; }
 
-bool HeelpProcessesChildApplication::initialise(const String& commandLine)           { return pimpl_->initialise(commandLine); }
-void HeelpProcessesChildApplication::shutdown()                                      { pimpl_->shutdown(); }
-AudioDeviceManager* HeelpProcessesChildApplication::getAudioDeviceManager() const    { return pimpl_->getAudioDeviceManager(); }
-void HeelpProcessesChildApplication::startAudio(ValueTree state)                     { pimpl_->startAudio(state); }
-void HeelpProcessesChildApplication::shutdownAudio()                                 { pimpl_->shutdownAudio(); }
+bool HeelpProcessesChildApplication::initialise(const String& commandLine)          { return pimpl_->initialise(commandLine); }
+void HeelpProcessesChildApplication::shutdown()                                     { pimpl_->shutdown(); }
+AudioDeviceManager* HeelpProcessesChildApplication::getAudioDeviceManager() const   { return pimpl_->getAudioDeviceManager(); }
+MainWindow* HeelpProcessesChildApplication::getMainWindow() const                   { return nullptr; }
+void HeelpProcessesChildApplication::startAudio(ValueTree state)                    { pimpl_->startAudio(state); }
+void HeelpProcessesChildApplication::shutdownAudio()                                { pimpl_->shutdownAudio(); }

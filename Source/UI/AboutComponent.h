@@ -17,8 +17,8 @@
   ==============================================================================
 */
 
-#ifndef __JUCE_HEADER_BE35927CFACEFFA4__
-#define __JUCE_HEADER_BE35927CFACEFFA4__
+#ifndef __JUCE_HEADER_6F5BC92BB0597534__
+#define __JUCE_HEADER_6F5BC92BB0597534__
 
 //[Headers]     -- You can add your own extra header files here --
 /*
@@ -39,7 +39,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "../../JuceLibraryCode/JuceHeader.h"
+#include "JuceHeader.h"
 //[/Headers]
 
 
@@ -47,50 +47,48 @@
 //==============================================================================
 /**
                                                                     //[Comments]
-    An auto-generated component, created by the Projucer.
+    An auto-generated component, created by the Jucer.
 
     Describe your class and how it works here!
                                                                     //[/Comments]
 */
-class VolumeFader  : public Component,
-                     public ChangeBroadcaster
+class AboutComponent  : public Component,
+                        public ButtonListener
 {
 public:
     //==============================================================================
-    VolumeFader ();
-    ~VolumeFader();
+    AboutComponent ();
+    ~AboutComponent();
 
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
-    double getVolume();
-    void setVolume(double value);
     //[/UserMethods]
 
     void paint (Graphics& g) override;
     void resized() override;
-    void mouseDown (const MouseEvent& e) override;
-    void mouseDrag (const MouseEvent& e) override;
-    void mouseDoubleClick (const MouseEvent& e) override;
+    void buttonClicked (Button* buttonThatWasClicked) override;
 
 
 
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
-    float getEffectiveHeight();
-
-    double volume_;
-    double thumbPosition_;
-    int lastScreenY_;
     //[/UserVariables]
 
     //==============================================================================
+    ScopedPointer<HyperlinkButton> hyperlinkButton;
+    ScopedPointer<Label> label;
+    ScopedPointer<TextButton> okButton;
+    ScopedPointer<Label> label2;
+    ScopedPointer<Label> label3;
+    ScopedPointer<HyperlinkButton> hyperlinkButton2;
+    ScopedPointer<HyperlinkButton> hyperlinkButton3;
 
 
     //==============================================================================
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (VolumeFader)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AboutComponent)
 };
 
 //[EndFile] You can add extra defines here...
 //[/EndFile]
 
-#endif   // __JUCE_HEADER_BE35927CFACEFFA4__
+#endif   // __JUCE_HEADER_6F5BC92BB0597534__

@@ -18,6 +18,23 @@
 */
 
 //[Headers] You can add your own extra header files here...
+/*
+ * This file is part of HEELP.
+ * Copyright (c) 2017 Uwyn SPRL.  http://www.uwyn.com
+ *
+ * HEELP is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * HEELP is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 //[/Headers]
 
 #include "ChannelFader.h"
@@ -67,7 +84,7 @@ ChannelFader::ChannelFader ()
     labelVolume_->setColour (Label::outlineColourId, Colour (0x00000000));
     labelVolume_->setColour (TextEditor::textColourId, Colours::white);
     labelVolume_->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
-    labelVolume_->setColour (TextEditor::highlightColourId, Colour (0x80ffffff));
+    labelVolume_->setColour (TextEditor::highlightColourId, Colours::white);
     labelVolume_->addListener (this);
 
     addAndMakeVisible (labelPan_ = new Label ("pan label",
@@ -79,7 +96,7 @@ ChannelFader::ChannelFader ()
     labelPan_->setColour (Label::outlineColourId, Colour (0x00000000));
     labelPan_->setColour (TextEditor::textColourId, Colours::white);
     labelPan_->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
-    labelPan_->setColour (TextEditor::highlightColourId, Colour (0x80ffffff));
+    labelPan_->setColour (TextEditor::highlightColourId, Colours::white);
     labelPan_->addListener (this);
 
     addAndMakeVisible (labelName_ = new Label ("name",
@@ -90,7 +107,7 @@ ChannelFader::ChannelFader ()
     labelName_->setColour (Label::textColourId, Colour (0xffbbbbbb));
     labelName_->setColour (TextEditor::textColourId, Colours::white);
     labelName_->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
-    labelName_->setColour (TextEditor::highlightColourId, Colour (0x80ffffff));
+    labelName_->setColour (TextEditor::highlightColourId, Colours::white);
     labelName_->addListener (this);
 
     addAndMakeVisible (faderVolume_ = new VolumeFader());
@@ -342,19 +359,19 @@ BEGIN_JUCER_METADATA
   </BACKGROUND>
   <LABEL name="volume label" id="8b4af5040f44880c" memberName="labelVolume_"
          virtualName="" explicitFocusOrder="0" pos="10 61 51 18" textCol="ffbbbbbb"
-         outlineCol="0" edTextCol="ffffffff" edBkgCol="0" hiliteCol="80ffffff"
+         outlineCol="0" edTextCol="ffffffff" edBkgCol="0" hiliteCol="ffffffff"
          labelText="0.0" editableSingleClick="1" editableDoubleClick="1"
          focusDiscardsChanges="0" fontname="DejaVu Sans" fontsize="12"
          bold="0" italic="0" justification="36"/>
   <LABEL name="pan label" id="c67abd04d2f0c584" memberName="labelPan_"
          virtualName="" explicitFocusOrder="0" pos="10 0 51 18" textCol="ffbbbbbb"
-         outlineCol="0" edTextCol="ffffffff" edBkgCol="0" hiliteCol="80ffffff"
+         outlineCol="0" edTextCol="ffffffff" edBkgCol="0" hiliteCol="ffffffff"
          labelText="-0-" editableSingleClick="1" editableDoubleClick="1"
          focusDiscardsChanges="0" fontname="DejaVu Sans" fontsize="12"
          bold="0" italic="0" justification="36"/>
   <LABEL name="name" id="d305c22f56821e9c" memberName="labelName_" virtualName=""
          explicitFocusOrder="0" pos="0 250 71 18" textCol="ffbbbbbb" edTextCol="ffffffff"
-         edBkgCol="0" hiliteCol="80ffffff" labelText="Name" editableSingleClick="1"
+         edBkgCol="0" hiliteCol="ffffffff" labelText="Name" editableSingleClick="1"
          editableDoubleClick="1" focusDiscardsChanges="0" fontname="DejaVu Sans"
          fontsize="12" bold="0" italic="0" justification="36"/>
   <JUCERCOMP name="volume fader" id="66f28ea38223654e" memberName="faderVolume_"

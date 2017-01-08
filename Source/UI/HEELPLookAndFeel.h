@@ -1,6 +1,6 @@
 /*
  * This file is part of HEELP.
- * Copyright (c) 2016 Uwyn SPRL.  http://www.uwyn.com
+ * Copyright (c) 2017 Uwyn SPRL.  http://www.uwyn.com
  *
  * HEELP is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,7 +27,11 @@ namespace heelp
         HEELPLookAndFeel();
         ~HEELPLookAndFeel();
         
-        Typeface::Ptr getTypefaceForFont(const Font& font);
+        void drawPopupMenuBackground(Graphics& g, int width, int height) override;
+        void drawButtonBackground(Graphics& g, Button& button, const Colour& backgroundColour, bool isMouseOverButton, bool isButtonDown) override;
+        void drawButtonText(Graphics& g, TextButton& button, bool isMouseOverButton, bool isButtonDown) override;
+        
+        Typeface::Ptr getTypefaceForFont(const Font& font) override;
         
         class Pimpl;
     private:

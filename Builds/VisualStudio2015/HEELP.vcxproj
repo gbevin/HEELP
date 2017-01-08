@@ -140,8 +140,10 @@
     <ClCompile Include="..\..\Source\Processes\SharedLock.cpp"/>
     <ClCompile Include="..\..\Source\Processes\SharedMemory.cpp"/>
     <ClCompile Include="..\..\Source\Threads\HeelpThreadsApplication.cpp"/>
+    <ClCompile Include="..\..\Source\UI\AboutComponent.cpp"/>
     <ClCompile Include="..\..\Source\UI\ChannelFader.cpp"/>
     <ClCompile Include="..\..\Source\UI\ChannelStrip.cpp"/>
+    <ClCompile Include="..\..\Source\UI\Dialog.cpp"/>
     <ClCompile Include="..\..\Source\UI\HEELPLookAndFeel.cpp"/>
     <ClCompile Include="..\..\Source\UI\MainContentComponent.cpp"/>
     <ClCompile Include="..\..\Source\UI\MainWindow.cpp"/>
@@ -1697,9 +1699,11 @@
     <ClInclude Include="..\..\Source\Processes\SharedLock.h"/>
     <ClInclude Include="..\..\Source\Processes\SharedMemory.h"/>
     <ClInclude Include="..\..\Source\Threads\HeelpThreadsApplication.h"/>
+    <ClInclude Include="..\..\Source\UI\AboutComponent.h"/>
     <ClInclude Include="..\..\Source\UI\ChannelFader.h"/>
     <ClInclude Include="..\..\Source\UI\ChannelStrip.h"/>
     <ClInclude Include="..\..\Source\UI\CommandIDs.h"/>
+    <ClInclude Include="..\..\Source\UI\Dialog.h"/>
     <ClInclude Include="..\..\Source\UI\HEELPLookAndFeel.h"/>
     <ClInclude Include="..\..\Source\UI\MainContentComponent.h"/>
     <ClInclude Include="..\..\Source\UI\MainWindow.h"/>

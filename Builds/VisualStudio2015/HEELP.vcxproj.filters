@@ -385,10 +385,16 @@
     <ClCompile Include="..\..\Source\Threads\HeelpThreadsApplication.cpp">
       <Filter>HEELP\Source\Threads</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\UI\AboutComponent.cpp">
+      <Filter>HEELP\Source\UI</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\UI\ChannelFader.cpp">
       <Filter>HEELP\Source\UI</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\ChannelStrip.cpp">
+      <Filter>HEELP\Source\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Dialog.cpp">
       <Filter>HEELP\Source\UI</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\HEELPLookAndFeel.cpp">
@@ -2124,6 +2130,9 @@
     <ClInclude Include="..\..\Source\Threads\HeelpThreadsApplication.h">
       <Filter>HEELP\Source\Threads</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\UI\AboutComponent.h">
+      <Filter>HEELP\Source\UI</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\UI\ChannelFader.h">
       <Filter>HEELP\Source\UI</Filter>
     </ClInclude>
@@ -2131,6 +2140,9 @@
       <Filter>HEELP\Source\UI</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\CommandIDs.h">
+      <Filter>HEELP\Source\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Dialog.h">
       <Filter>HEELP\Source\UI</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\HEELPLookAndFeel.h">

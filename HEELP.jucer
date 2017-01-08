@@ -52,6 +52,10 @@
               file="Source/Threads/HeelpThreadsApplication.h"/>
       </GROUP>
       <GROUP id="{70414DB5-F868-F70F-46B6-C1BEC6ED6A5D}" name="UI">
+        <FILE id="IBQUvZ" name="AboutComponent.cpp" compile="1" resource="0"
+              file="Source/UI/AboutComponent.cpp"/>
+        <FILE id="vLlXvY" name="AboutComponent.h" compile="0" resource="0"
+              file="Source/UI/AboutComponent.h"/>
         <FILE id="eOmFim" name="ChannelFader.cpp" compile="1" resource="0"
               file="Source/UI/ChannelFader.cpp"/>
         <FILE id="e6x8rm" name="ChannelFader.h" compile="0" resource="0" file="Source/UI/ChannelFader.h"/>
@@ -59,6 +63,8 @@
               file="Source/UI/ChannelStrip.cpp"/>
         <FILE id="fAlftp" name="ChannelStrip.h" compile="0" resource="0" file="Source/UI/ChannelStrip.h"/>
         <FILE id="aJseEt" name="CommandIDs.h" compile="0" resource="0" file="Source/UI/CommandIDs.h"/>
+        <FILE id="GVSpUG" name="Dialog.cpp" compile="1" resource="0" file="Source/UI/Dialog.cpp"/>
+        <FILE id="YJY8zk" name="Dialog.h" compile="0" resource="0" file="Source/UI/Dialog.h"/>
         <FILE id="JDwsJf" name="HEELPLookAndFeel.cpp" compile="1" resource="0"
               file="Source/UI/HEELPLookAndFeel.cpp"/>
         <FILE id="rJakbc" name="HEELPLookAndFeel.h" compile="0" resource="0"

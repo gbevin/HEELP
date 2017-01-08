@@ -1,6 +1,6 @@
 /*
  * This file is part of HEELP.
- * Copyright (c) 2016 Uwyn SPRL.  http://www.uwyn.com
+ * Copyright (c) 2017 Uwyn SPRL.  http://www.uwyn.com
  *
  * HEELP is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -103,6 +103,11 @@ struct HeelpProcessesMainApplication::Pimpl : public ChangeListener, public Time
     AudioDeviceManager* getAudioDeviceManager()
     {
         return &audioDeviceManager_;
+    }
+    
+    MainWindow* getMainWindow()
+    {
+        return mainWindow_;
     }
     
     void startChildren()
@@ -329,15 +334,16 @@ struct HeelpProcessesMainApplication::Pimpl : public ChangeListener, public Time
     std::map<int, MasterProcessInfo> masterProcessInfos_;
 };
 
-HeelpProcessesMainApplication::HeelpProcessesMainApplication() : pimpl_(new Pimpl(this))  {}
-HeelpProcessesMainApplication::~HeelpProcessesMainApplication()                           { pimpl_ = nullptr; }
+HeelpProcessesMainApplication::HeelpProcessesMainApplication() : pimpl_(new Pimpl(this))    {}
+HeelpProcessesMainApplication::~HeelpProcessesMainApplication()                             { pimpl_ = nullptr; }
 
-bool HeelpProcessesMainApplication::initialise(const String& commandLine)        { return pimpl_->initialise(commandLine); }
-void HeelpProcessesMainApplication::shutdown()                                   { pimpl_->shutdown(); }
-AudioDeviceManager* HeelpProcessesMainApplication::getAudioDeviceManager() const { return pimpl_->getAudioDeviceManager(); }
+bool HeelpProcessesMainApplication::initialise(const String& commandLine)           { return pimpl_->initialise(commandLine); }
+void HeelpProcessesMainApplication::shutdown()                                      { pimpl_->shutdown(); }
+AudioDeviceManager* HeelpProcessesMainApplication::getAudioDeviceManager() const    { return pimpl_->getAudioDeviceManager(); }
+MainWindow* HeelpProcessesMainApplication::getMainWindow() const                    { return pimpl_->getMainWindow(); }
 
-void HeelpProcessesMainApplication::setRegisteredChildrenCount(int count)        { ((MainContentComponent*)pimpl_->mainWindow_->getContentComponent())->setRegisteredChildrenCount(count); }
-void HeelpProcessesMainApplication::launchChildProcess(int childId)              { pimpl_->launchChildProcess(childId); }
-void HeelpProcessesMainApplication::childProcessIsActive(int childId)            { pimpl_->childProcessIsActive(childId); }
-void HeelpProcessesMainApplication::startChildProcessAudio(int childId)          { pimpl_->startChildProcessAudio(childId); }
-void HeelpProcessesMainApplication::killChildProcess(int childId)                { pimpl_->killChildProcess(childId); }
+void HeelpProcessesMainApplication::setRegisteredChildrenCount(int count)           { ((MainContentComponent*)pimpl_->mainWindow_->getContentComponent())->setRegisteredChildrenCount(count); }
+void HeelpProcessesMainApplication::launchChildProcess(int childId)                 { pimpl_->launchChildProcess(childId); }
+void HeelpProcessesMainApplication::childProcessIsActive(int childId)               { pimpl_->childProcessIsActive(childId); }
+void HeelpProcessesMainApplication::startChildProcessAudio(int childId)             { pimpl_->startChildProcessAudio(childId); }
+void HeelpProcessesMainApplication::killChildProcess(int childId)                   { pimpl_->killChildProcess(childId); }

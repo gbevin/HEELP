@@ -15,33 +15,29 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef HEELPTHREADSAPPLICATION_H_INCLUDED
-#define HEELPTHREADSAPPLICATION_H_INCLUDED
+#ifndef DIALOG_H_INCLUDED
+#define DIALOG_H_INCLUDED
 
-#include "JuceHeader.h"
-
-#include "../AbstractHeelpApplication.h"
+#include <JuceHeader.h>
 
 namespace heelp
 {
-    class HeelpThreadsApplication : public AbstractHeelpApplication
+    class Dialog
     {
     public:
-        HeelpThreadsApplication();
-        virtual ~HeelpThreadsApplication();
+        Dialog(Component* content, Component* position = nullptr, int w = 0, int h = 0, int buttons = DocumentWindow::closeButton|DocumentWindow::minimiseButton);
+        virtual ~Dialog();
         
-        bool initialise(const String& commandLine) override;
-        void shutdown() override;
-        AudioDeviceManager* getAudioDeviceManager() const override;
-
-        MainWindow* getMainWindow() const override;
+        void setName(const String& newName);
+        void show();
+        void hide();
         
         struct Pimpl;
     private:
         ScopedPointer<Pimpl> pimpl_;
         
-        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (HeelpThreadsApplication)
+        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Dialog)
     };
 }
 
-#endif  // HEELPTHREADSAPPLICATION_H_INCLUDED
+#endif  // DIALOG_H_INCLUDED
