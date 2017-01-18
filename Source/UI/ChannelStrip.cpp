@@ -54,7 +54,7 @@ ChannelStrip::ChannelStrip ()
     //[UserPreSize]
     //[/UserPreSize]
 
-    setSize (71, 400);
+    setSize (81, 400);
 
 
     //[Constructor] You can add your own custom stuff here..
@@ -79,6 +79,24 @@ void ChannelStrip::paint (Graphics& g)
     //[UserPrePaint] Add your own custom painting code here..
     //[/UserPrePaint]
 
+    {
+        int x = 0, y = 0, width = 1, height = proportionOfHeight (1.0000f);
+        Colour fillColour = Colour (0xff666666);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.fillRect (x, y, width, height);
+    }
+
+    {
+        int x = getWidth() - 1, y = 0, width = 1, height = proportionOfHeight (1.0000f);
+        Colour fillColour = Colours::black;
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.fillRect (x, y, width, height);
+    }
+
     //[UserPaint] Add your own custom painting code here..
     //[/UserPaint]
 }
@@ -88,7 +106,7 @@ void ChannelStrip::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    fader_->setBounds (0, getHeight() - 270, 71, 270);
+    fader_->setBounds ((getWidth() / 2) - (71 / 2), getHeight() - 280, 71, 280);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -111,10 +129,13 @@ BEGIN_JUCER_METADATA
 <JUCER_COMPONENT documentType="Component" className="ChannelStrip" componentName=""
                  parentClasses="public Component" constructorParams="" variableInitialisers=""
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
-                 fixedSize="1" initialWidth="71" initialHeight="400">
-  <BACKGROUND backgroundColour="ffffff"/>
+                 fixedSize="0" initialWidth="81" initialHeight="400">
+  <BACKGROUND backgroundColour="303030">
+    <RECT pos="0 0 1 100%" fill="solid: ff666666" hasStroke="0"/>
+    <RECT pos="0Rr 0 1 100%" fill="solid: ff000000" hasStroke="0"/>
+  </BACKGROUND>
   <JUCERCOMP name="fader" id="c70b20563062531" memberName="fader_" virtualName=""
-             explicitFocusOrder="0" pos="0 0Rr 71 270" sourceFile="ChannelFader.cpp"
+             explicitFocusOrder="0" pos="-0.5Cc 0Rr 71 280" sourceFile="ChannelFader.cpp"
              constructorParams=""/>
 </JUCER_COMPONENT>
 

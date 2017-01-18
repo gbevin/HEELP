@@ -62,6 +62,7 @@ static inline double slider_position_to_gain(double pos)
 VolumeFader::VolumeFader ()
 {
     //[Constructor_pre] You can add your own custom stuff here..
+    highlighted_ = false;
     //[/Constructor_pre]
 
 
@@ -93,86 +94,154 @@ void VolumeFader::paint (Graphics& g)
     //[UserPrePaint] Add your own custom painting code here..
     //[/UserPrePaint]
 
-    g.setColour (Colour (0xff777777));
-    g.setFont (Font ("DejaVu Sans", 10.00f, Font::plain));
-    g.drawText (TRANS("-54"),
-                -10, 151, 24, 16,
-                Justification::centredRight, true);
+    {
+        int x = -10, y = 151, width = 24, height = 16;
+        Colour fillColour = Colour (0xff777777);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.setFont (Font ("DejaVu Sans", 10.00f, Font::plain));
+        g.drawText (TRANS("-54"),
+                    x, y, width, height,
+                    Justification::centredRight, true);
+    }
 
-    g.setColour (Colour (0xff777777));
-    g.setFont (Font ("DejaVu Sans", 10.00f, Font::plain));
-    g.drawText (TRANS("-36"),
-                -10, 135, 24, 16,
-                Justification::centredRight, true);
+    {
+        int x = -10, y = 135, width = 24, height = 16;
+        Colour fillColour = Colour (0xff777777);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.setFont (Font ("DejaVu Sans", 10.00f, Font::plain));
+        g.drawText (TRANS("-36"),
+                    x, y, width, height,
+                    Justification::centredRight, true);
+    }
 
-    g.setColour (Colour (0xff777777));
-    g.setFont (Font ("DejaVu Sans", 10.00f, Font::plain));
-    g.drawText (TRANS("-24"),
-                -10, 116, 24, 16,
-                Justification::centredRight, true);
+    {
+        int x = -10, y = 116, width = 24, height = 16;
+        Colour fillColour = Colour (0xff777777);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.setFont (Font ("DejaVu Sans", 10.00f, Font::plain));
+        g.drawText (TRANS("-24"),
+                    x, y, width, height,
+                    Justification::centredRight, true);
+    }
 
-    g.setColour (Colour (0xff777777));
-    g.setFont (Font ("DejaVu Sans", 10.00f, Font::plain));
-    g.drawText (TRANS("-18"),
-                -10, 101, 24, 16,
-                Justification::centredRight, true);
+    {
+        int x = -10, y = 101, width = 24, height = 16;
+        Colour fillColour = Colour (0xff777777);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.setFont (Font ("DejaVu Sans", 10.00f, Font::plain));
+        g.drawText (TRANS("-18"),
+                    x, y, width, height,
+                    Justification::centredRight, true);
+    }
 
-    g.setColour (Colour (0xff777777));
-    g.setFont (Font ("DejaVu Sans", 10.00f, Font::plain));
-    g.drawText (TRANS("-12"),
-                -10, 83, 24, 16,
-                Justification::centredRight, true);
+    {
+        int x = -10, y = 83, width = 24, height = 16;
+        Colour fillColour = Colour (0xff777777);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.setFont (Font ("DejaVu Sans", 10.00f, Font::plain));
+        g.drawText (TRANS("-12"),
+                    x, y, width, height,
+                    Justification::centredRight, true);
+    }
 
-    g.setColour (Colour (0xff777777));
-    g.setFont (Font ("DejaVu Sans", 10.00f, Font::plain));
-    g.drawText (TRANS("-6"),
-                -10, 60, 24, 16,
-                Justification::centredRight, true);
+    {
+        int x = -10, y = 60, width = 24, height = 16;
+        Colour fillColour = Colour (0xff777777);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.setFont (Font ("DejaVu Sans", 10.00f, Font::plain));
+        g.drawText (TRANS("-6"),
+                    x, y, width, height,
+                    Justification::centredRight, true);
+    }
 
-    g.setColour (Colour (0xff777777));
-    g.setFont (Font ("DejaVu Sans", 10.00f, Font::plain));
-    g.drawText (TRANS("0"),
-                -10, 32, 24, 16,
-                Justification::centredRight, true);
+    {
+        int x = -10, y = 32, width = 24, height = 16;
+        Colour fillColour = Colour (0xff777777);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.setFont (Font ("DejaVu Sans", 10.00f, Font::plain));
+        g.drawText (TRANS("0"),
+                    x, y, width, height,
+                    Justification::centredRight, true);
+    }
 
-    g.setColour (Colour (0xff777777));
-    g.setFont (Font ("DejaVu Sans", 10.00f, Font::plain));
-    g.drawText (TRANS("+6"),
-                -10, 0, 24, 16,
-                Justification::centredRight, true);
+    {
+        int x = -10, y = 0, width = 24, height = 16;
+        Colour fillColour = Colour (0xff777777);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.setFont (Font ("DejaVu Sans", 10.00f, Font::plain));
+        g.drawText (TRANS("+6"),
+                    x, y, width, height,
+                    Justification::centredRight, true);
+    }
 
-    g.setGradientFill (ColourGradient (Colour (0xff666666),
-                                       static_cast<float> ((getWidth() / 2)), static_cast<float> ((getHeight() / 2) + -46),
-                                       Colour (0xff444444),
-                                       13.0f, 139.0f,
+    {
+        int x = 16, y = 3, width = 6, height = 165;
+        Colour fillColour1 = Colour (0xff666666), fillColour2 = Colour (0xff444444);
+        Colour strokeColour = Colours::black;
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        if (highlighted_)
+        {
+            fillColour1 = highlightHalf(fillColour1);
+            fillColour2 = highlightHalf(fillColour2);
+            strokeColour = highlightHalf(strokeColour);
+        }
+        //[/UserPaintCustomArguments]
+        g.setGradientFill (ColourGradient (fillColour1,
+                                       static_cast<float> ((getWidth() / 2)) - 16.0f + x,
+                                       static_cast<float> ((getHeight() / 2) + -46) - 3.0f + y,
+                                       fillColour2,
+                                       13.0f - 16.0f + x,
+                                       139.0f - 3.0f + y,
                                        true));
-    g.fillRect (16, 3, 6, 165);
+        g.fillRect (x, y, width, height);
+        g.setColour (strokeColour);
+        g.drawRect (x, y, width, height, 1);
 
-    g.setColour (Colours::black);
-    g.drawRect (16, 3, 6, 165, 1);
-/*
-    g.setGradientFill (ColourGradient (Colour (0xffbbbbbb),
-                                       19.0f, 38.0f,
-                                       Colour (0xff888888),
-                                       19.0f, 41.0f,
+    }
+
+    {
+        int x = 6, y = 36, width = 26, height = 7;
+        Colour fillColour1 = Colour (0xffdddddd), fillColour2 = Colour (0xff888888);
+        Colour strokeColour = Colours::black;
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        y = getEffectiveHeight() - thumbPosition_ * getEffectiveHeight();
+        if (highlighted_)
+        {
+            fillColour1 = highlightFull(fillColour1);
+            fillColour2 = highlightFull(fillColour2);
+            strokeColour = highlightFull(strokeColour);
+        }
+        //[/UserPaintCustomArguments]
+        g.setGradientFill (ColourGradient (fillColour1,
+                                       19.0f - 6.0f + x,
+                                       38.0f - 36.0f + y,
+                                       fillColour2,
+                                       19.0f - 6.0f + x,
+                                       41.0f - 36.0f + y,
                                        false));
-    g.fillRect (6, 36, 26, 7);
+        g.fillRect (x, y, width, height);
+        g.setColour (strokeColour);
+        g.drawRect (x, y, width, height, 1);
 
-    g.setColour (Colours::black);
-    g.drawRect (6, 36, 26, 7, 1);
-*/
+    }
+
     //[UserPaint] Add your own custom painting code here..
-    float height = getEffectiveHeight();
-    float offset = height - thumbPosition_ * height;
-    g.setGradientFill(ColourGradient(Colour(0xffbbbbbb),
-                                     13.0f, offset + 2.0f,
-                                     Colour(0xff888888),
-                                     13.0f, offset + 5.0f,
-                                     false));
-    g.fillRect(6.f, offset, 26.f, 7.f);
-
-    g.setColour(Colours::black);
-    g.drawRect(6.f, offset, 26.f, 7.f, 1.f);
     //[/UserPaint]
 }
 
@@ -185,6 +254,22 @@ void VolumeFader::resized()
     //[/UserResized]
 }
 
+void VolumeFader::mouseEnter (const MouseEvent& e)
+{
+    //[UserCode_mouseEnter] -- Add your code here...
+    highlighted_ = true;
+    repaint();
+    //[/UserCode_mouseEnter]
+}
+
+void VolumeFader::mouseExit (const MouseEvent& e)
+{
+    //[UserCode_mouseExit] -- Add your code here...
+    highlighted_ = false;
+    repaint();
+    //[/UserCode_mouseExit]
+}
+
 void VolumeFader::mouseDown (const MouseEvent& e)
 {
     //[UserCode_mouseDown] -- Add your code here...
@@ -195,15 +280,8 @@ void VolumeFader::mouseDown (const MouseEvent& e)
 void VolumeFader::mouseDrag (const MouseEvent& e)
 {
     //[UserCode_mouseDrag] -- Add your code here...
-    float delta = float(e.getScreenY() - lastScreenY_) / getEffectiveHeight();
+    applyMouseEventDelta(e, float(e.getScreenY() - lastScreenY_) / getEffectiveHeight());
     lastScreenY_ = e.getScreenY();
-    if (e.mods.isShiftDown())
-    {
-        delta /= 10.f;
-    }
-    double position = thumbPosition_ - delta;
-    double volume = slider_position_to_gain(position);
-    setVolume(volume);
     //[/UserCode_mouseDrag]
 }
 
@@ -214,12 +292,30 @@ void VolumeFader::mouseDoubleClick (const MouseEvent& e)
     //[/UserCode_mouseDoubleClick]
 }
 
+void VolumeFader::mouseWheelMove (const MouseEvent& e, const MouseWheelDetails& wheel)
+{
+    //[UserCode_mouseWheelMove] -- Add your code here...
+    applyMouseEventDelta(e, wheel.deltaY);
+    //[/UserCode_mouseWheelMove]
+}
+
 
 
 //[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
 float VolumeFader::getEffectiveHeight()
 {
     return getHeight() - 7;
+}
+
+void VolumeFader::applyMouseEventDelta(const MouseEvent& e, float delta)
+{
+    if (e.mods.isShiftDown())
+    {
+        delta /= 10.f;
+    }
+    double position = thumbPosition_ - delta;
+    double volume = slider_position_to_gain(position);
+    setVolume(volume);
 }
 
 double VolumeFader::getVolume()
@@ -255,27 +351,38 @@ BEGIN_JUCER_METADATA
     <METHOD name="mouseDrag (const MouseEvent&amp; e)"/>
     <METHOD name="mouseDown (const MouseEvent&amp; e)"/>
     <METHOD name="mouseDoubleClick (const MouseEvent&amp; e)"/>
+    <METHOD name="mouseEnter (const MouseEvent&amp; e)"/>
+    <METHOD name="mouseExit (const MouseEvent&amp; e)"/>
+    <METHOD name="mouseWheelMove (const MouseEvent&amp; e, const MouseWheelDetails&amp; wheel)"/>
   </METHODS>
   <BACKGROUND backgroundColour="ffffff">
     <TEXT pos="-10 151 24 16" fill="solid: ff777777" hasStroke="0" text="-54"
-          fontname="DejaVu Sans" fontsize="10" bold="0" italic="0" justification="34"/>
+          fontname="DejaVu Sans" fontsize="10" kerning="0" bold="0" italic="0"
+          justification="34"/>
     <TEXT pos="-10 135 24 16" fill="solid: ff777777" hasStroke="0" text="-36"
-          fontname="DejaVu Sans" fontsize="10" bold="0" italic="0" justification="34"/>
+          fontname="DejaVu Sans" fontsize="10" kerning="0" bold="0" italic="0"
+          justification="34"/>
     <TEXT pos="-10 116 24 16" fill="solid: ff777777" hasStroke="0" text="-24"
-          fontname="DejaVu Sans" fontsize="10" bold="0" italic="0" justification="34"/>
+          fontname="DejaVu Sans" fontsize="10" kerning="0" bold="0" italic="0"
+          justification="34"/>
     <TEXT pos="-10 101 24 16" fill="solid: ff777777" hasStroke="0" text="-18"
-          fontname="DejaVu Sans" fontsize="10" bold="0" italic="0" justification="34"/>
+          fontname="DejaVu Sans" fontsize="10" kerning="0" bold="0" italic="0"
+          justification="34"/>
     <TEXT pos="-10 83 24 16" fill="solid: ff777777" hasStroke="0" text="-12"
-          fontname="DejaVu Sans" fontsize="10" bold="0" italic="0" justification="34"/>
+          fontname="DejaVu Sans" fontsize="10" kerning="0" bold="0" italic="0"
+          justification="34"/>
     <TEXT pos="-10 60 24 16" fill="solid: ff777777" hasStroke="0" text="-6"
-          fontname="DejaVu Sans" fontsize="10" bold="0" italic="0" justification="34"/>
+          fontname="DejaVu Sans" fontsize="10" kerning="0" bold="0" italic="0"
+          justification="34"/>
     <TEXT pos="-10 32 24 16" fill="solid: ff777777" hasStroke="0" text="0"
-          fontname="DejaVu Sans" fontsize="10" bold="0" italic="0" justification="34"/>
+          fontname="DejaVu Sans" fontsize="10" kerning="0" bold="0" italic="0"
+          justification="34"/>
     <TEXT pos="-10 0 24 16" fill="solid: ff777777" hasStroke="0" text="+6"
-          fontname="DejaVu Sans" fontsize="10" bold="0" italic="0" justification="34"/>
+          fontname="DejaVu Sans" fontsize="10" kerning="0" bold="0" italic="0"
+          justification="34"/>
     <RECT pos="16 3 6 165" fill=" radial: 0C -46C, 13 139, 0=ff666666, 1=ff444444"
           hasStroke="1" stroke="1, mitered, butt" strokeColour="solid: ff000000"/>
-    <RECT pos="6 36 26 7" fill="linear: 19 38, 19 41, 0=ffbbbbbb, 1=ff888888"
+    <RECT pos="6 36 26 7" fill="linear: 19 38, 19 41, 0=ffdddddd, 1=ff888888"
           hasStroke="1" stroke="1, mitered, butt" strokeColour="solid: ff000000"/>
   </BACKGROUND>
 </JUCER_COMPONENT>

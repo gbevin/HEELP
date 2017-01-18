@@ -67,14 +67,16 @@ public:
 
     void paint (Graphics& g) override;
     void resized() override;
+    void mouseEnter (const MouseEvent& e) override;
+    void mouseExit (const MouseEvent& e) override;
+    void mouseUp (const MouseEvent& e) override;
 
 
 
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
-    void mouseUp(const MouseEvent& event) override;
-
     bool soloed_;
+    bool highlighted_;
     //[/UserVariables]
 
     //==============================================================================

@@ -68,17 +68,22 @@ public:
 
     void paint (Graphics& g) override;
     void resized() override;
+    void mouseEnter (const MouseEvent& e) override;
+    void mouseExit (const MouseEvent& e) override;
     void mouseDown (const MouseEvent& e) override;
     void mouseDrag (const MouseEvent& e) override;
     void mouseDoubleClick (const MouseEvent& e) override;
+    void mouseWheelMove (const MouseEvent& e, const MouseWheelDetails& wheel) override;
 
 
 
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
     float getEffectiveHeight();
+    void applyMouseEventDelta(const MouseEvent& e, float delta);
 
     double volume_;
+    bool highlighted_;
     double thumbPosition_;
     int lastScreenY_;
     //[/UserVariables]

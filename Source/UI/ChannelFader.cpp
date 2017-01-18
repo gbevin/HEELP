@@ -118,7 +118,7 @@ ChannelFader::ChannelFader ()
     //[UserPreSize]
     //[/UserPreSize]
 
-    setSize (71, 270);
+    setSize (71, 280);
 
 
     //[Constructor] You can add your own custom stuff here..
@@ -153,37 +153,69 @@ void ChannelFader::paint (Graphics& g)
     //[UserPrePaint] Add your own custom painting code here..
     //[/UserPrePaint]
 
-    g.setGradientFill (ColourGradient (Colour (0xff1a1a1a),
-                                       43.0f, 89.0f,
-                                       Colour (0xff222222),
-                                       43.0f, 245.0f,
+    {
+        int x = 40, y = 91, width = 7, height = 158;
+        Colour fillColour1 = Colour (0xff1a1a1a), fillColour2 = Colour (0xff222222);
+        Colour strokeColour = Colours::black;
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setGradientFill (ColourGradient (fillColour1,
+                                       43.0f - 40.0f + x,
+                                       89.0f - 91.0f + y,
+                                       fillColour2,
+                                       43.0f - 40.0f + x,
+                                       245.0f - 91.0f + y,
                                        false));
-    g.fillRect (40, 91, 7, 158);
+        g.fillRect (x, y, width, height);
+        g.setColour (strokeColour);
+        g.drawRect (x, y, width, height, 1);
 
-    g.setColour (Colours::black);
-    g.drawRect (40, 91, 7, 158, 1);
+    }
 
-    g.setGradientFill (ColourGradient (Colour (0xff1a1a1a),
-                                       51.0f, 89.0f,
-                                       Colour (0xff222222),
-                                       51.0f, 245.0f,
+    {
+        int x = 48, y = 91, width = 7, height = 158;
+        Colour fillColour1 = Colour (0xff1a1a1a), fillColour2 = Colour (0xff222222);
+        Colour strokeColour = Colours::black;
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setGradientFill (ColourGradient (fillColour1,
+                                       51.0f - 48.0f + x,
+                                       89.0f - 91.0f + y,
+                                       fillColour2,
+                                       51.0f - 48.0f + x,
+                                       245.0f - 91.0f + y,
                                        false));
-    g.fillRect (48, 91, 7, 158);
+        g.fillRect (x, y, width, height);
+        g.setColour (strokeColour);
+        g.drawRect (x, y, width, height, 1);
 
-    g.setColour (Colours::black);
-    g.drawRect (48, 91, 7, 158, 1);
+    }
 
-    g.setColour (Colour (0xff1a1a1a));
-    g.fillRect (40, 83, 7, 7);
+    {
+        int x = 40, y = 83, width = 7, height = 7;
+        Colour fillColour = Colour (0xff1a1a1a);
+        Colour strokeColour = Colours::black;
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.fillRect (x, y, width, height);
+        g.setColour (strokeColour);
+        g.drawRect (x, y, width, height, 1);
 
-    g.setColour (Colours::black);
-    g.drawRect (40, 83, 7, 7, 1);
+    }
 
-    g.setColour (Colour (0xff1a1a1a));
-    g.fillRect (48, 83, 7, 7);
+    {
+        int x = 48, y = 83, width = 7, height = 7;
+        Colour fillColour = Colour (0xff1a1a1a);
+        Colour strokeColour = Colours::black;
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.fillRect (x, y, width, height);
+        g.setColour (strokeColour);
+        g.drawRect (x, y, width, height, 1);
 
-    g.setColour (Colours::black);
-    g.drawRect (48, 83, 7, 7, 1);
+    }
 
     //[UserPaint] Add your own custom painting code here..
     //[/UserPaint]
@@ -196,7 +228,7 @@ void ChannelFader::resized()
 
     labelVolume_->setBounds (10, 61, 51, 18);
     labelPan_->setBounds (10, 0, 51, 18);
-    labelName_->setBounds (0, 250, 71, 18);
+    labelName_->setBounds (0, 255, 71, 18);
     faderVolume_->setBounds (5, 80, 32, 171);
     faderPan_->setBounds (11, 17, 49, 16);
     buttonMute_->setBounds (14, 41, 20, 16);
@@ -346,7 +378,7 @@ BEGIN_JUCER_METADATA
 <JUCER_COMPONENT documentType="Component" className="ChannelFader" componentName=""
                  parentClasses="public Component, public ChangeListener" constructorParams=""
                  variableInitialisers="" snapPixels="8" snapActive="0" snapShown="1"
-                 overlayOpacity="0.330" fixedSize="1" initialWidth="71" initialHeight="270">
+                 overlayOpacity="0.330" fixedSize="1" initialWidth="71" initialHeight="280">
   <BACKGROUND backgroundColour="ffffff">
     <RECT pos="40 91 7 158" fill="linear: 43 89, 43 245, 0=ff1a1a1a, 1=ff222222"
           hasStroke="1" stroke="1, mitered, butt" strokeColour="solid: ff000000"/>
@@ -362,18 +394,18 @@ BEGIN_JUCER_METADATA
          outlineCol="0" edTextCol="ffffffff" edBkgCol="0" hiliteCol="ffffffff"
          labelText="0.0" editableSingleClick="1" editableDoubleClick="1"
          focusDiscardsChanges="0" fontname="DejaVu Sans" fontsize="12"
-         bold="0" italic="0" justification="36"/>
+         kerning="0" bold="0" italic="0" justification="36"/>
   <LABEL name="pan label" id="c67abd04d2f0c584" memberName="labelPan_"
          virtualName="" explicitFocusOrder="0" pos="10 0 51 18" textCol="ffbbbbbb"
          outlineCol="0" edTextCol="ffffffff" edBkgCol="0" hiliteCol="ffffffff"
          labelText="-0-" editableSingleClick="1" editableDoubleClick="1"
          focusDiscardsChanges="0" fontname="DejaVu Sans" fontsize="12"
-         bold="0" italic="0" justification="36"/>
+         kerning="0" bold="0" italic="0" justification="36"/>
   <LABEL name="name" id="d305c22f56821e9c" memberName="labelName_" virtualName=""
-         explicitFocusOrder="0" pos="0 250 71 18" textCol="ffbbbbbb" edTextCol="ffffffff"
+         explicitFocusOrder="0" pos="0 255 71 18" textCol="ffbbbbbb" edTextCol="ffffffff"
          edBkgCol="0" hiliteCol="ffffffff" labelText="Name" editableSingleClick="1"
          editableDoubleClick="1" focusDiscardsChanges="0" fontname="DejaVu Sans"
-         fontsize="12" bold="0" italic="0" justification="36"/>
+         fontsize="12" kerning="0" bold="0" italic="0" justification="36"/>
   <JUCERCOMP name="volume fader" id="66f28ea38223654e" memberName="faderVolume_"
              virtualName="" explicitFocusOrder="0" pos="5 80 32 171" sourceFile="VolumeFader.cpp"
              constructorParams=""/>

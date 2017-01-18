@@ -18,6 +18,22 @@
 #ifndef UTILS_H_INCLUDED
 #define UTILS_H_INCLUDED
 
+#include "JuceHeader.h"
+
 #define LOG(textToWrite)    JUCE_BLOCK_WITH_FORCED_SEMICOLON (juce::String tempDbgBuf; tempDbgBuf << textToWrite; juce::Logger::writeToLog(tempDbgBuf);)
+inline Colour highlightFull(Colour colour)
+{
+    return Colour(uint8(std::min(colour.getRed()+0x20, 0xff)),
+                  uint8(std::min(colour.getGreen()+0x20, 0xff)),
+                  uint8(std::min(colour.getBlue()+0x20, 0xff)),
+                  colour.getAlpha());
+}
+inline Colour highlightHalf(Colour colour)
+{
+    return Colour(uint8(std::min(colour.getRed()+0x10, 0xff)),
+                  uint8(std::min(colour.getGreen()+0x10, 0xff)),
+                  uint8(std::min(colour.getBlue()+0x10, 0xff)),
+                  colour.getAlpha());
+}
 
 #endif  // UTILS_H_INCLUDED

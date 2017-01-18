@@ -57,7 +57,7 @@ AboutComponent::AboutComponent ()
 
     addAndMakeVisible (label = new Label ("new label",
                                           TRANS("1.0.0")));
-    label->setFont (Font ("DejaVu Sans", 18.00f, Font::bold));
+    label->setFont (Font ("DejaVu Sans", 18.00f, Font::plain));
     label->setJustificationType (Justification::centredLeft);
     label->setEditable (false, false, false);
     label->setColour (Label::textColourId, Colours::white);
@@ -70,7 +70,7 @@ AboutComponent::AboutComponent ()
 
     addAndMakeVisible (label2 = new Label ("new label",
                                            TRANS("HEELP")));
-    label2->setFont (Font ("DejaVu Sans", 18.00f, Font::bold));
+    label2->setFont (Font ("DejaVu Sans", 18.00f, Font::plain));
     label2->setJustificationType (Justification::centredRight);
     label2->setEditable (false, false, false);
     label2->setColour (Label::textColourId, Colours::white);
@@ -136,23 +136,41 @@ void AboutComponent::paint (Graphics& g)
 
     g.fillAll (Colour (0xff202020));
 
-    g.setColour (Colours::white);
-    g.setFont (Font ("DejaVu Sans", 15.00f, Font::plain));
-    g.drawText (CharPointer_UTF8 ("Copyright \xc2\xa9""2017, Uwyn SPRL"),
-                (getWidth() / 2) - (proportionOfWidth (1.0000f) / 2), 183, proportionOfWidth (1.0000f), 30,
-                Justification::centred, true);
+    {
+        int x = (getWidth() / 2) - (proportionOfWidth (1.0000f) / 2), y = 183, width = proportionOfWidth (1.0000f), height = 30;
+        Colour fillColour = Colours::white;
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.setFont (Font ("DejaVu Sans", 15.00f, Font::plain));
+        g.drawText (CharPointer_UTF8 ("Copyright \xc2\xa9""2017, Uwyn SPRL"),
+                    x, y, width, height,
+                    Justification::centred, true);
+    }
 
-    g.setColour (Colours::white);
-    g.setFont (Font ("DejaVu Sans", 15.00f, Font::plain));
-    g.drawText (TRANS("Powered by"),
-                (getWidth() / 2) - (proportionOfWidth (1.0000f) / 2), 239, proportionOfWidth (1.0000f), 30,
-                Justification::centred, true);
+    {
+        int x = (getWidth() / 2) - (proportionOfWidth (1.0000f) / 2), y = 239, width = proportionOfWidth (1.0000f), height = 30;
+        Colour fillColour = Colours::white;
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.setFont (Font ("DejaVu Sans", 15.00f, Font::plain));
+        g.drawText (TRANS("Powered by"),
+                    x, y, width, height,
+                    Justification::centred, true);
+    }
 
-    g.setColour (Colours::white);
-    g.setFont (Font ("DejaVu Sans", 15.00f, Font::plain));
-    g.drawText (TRANS("Distributed under the terms of GPLv3"),
-                (getWidth() / 2) - (proportionOfWidth (1.0000f) / 2), 295, proportionOfWidth (1.0000f), 30,
-                Justification::centred, true);
+    {
+        int x = (getWidth() / 2) - (proportionOfWidth (1.0000f) / 2), y = 295, width = proportionOfWidth (1.0000f), height = 30;
+        Colour fillColour = Colours::white;
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.setFont (Font ("DejaVu Sans", 15.00f, Font::plain));
+        g.drawText (TRANS("Distributed under the terms of GPLv3"),
+                    x, y, width, height,
+                    Justification::centred, true);
+    }
 
     //[UserPaint] Add your own custom painting code here..
     //[/UserPaint]
@@ -211,11 +229,14 @@ BEGIN_JUCER_METADATA
                  fixedSize="1" initialWidth="296" initialHeight="420">
   <BACKGROUND backgroundColour="ff202020">
     <TEXT pos="0Cc 183 100% 30" fill="solid: ffffffff" hasStroke="0" text="Copyright &#169;2017, Uwyn SPRL"
-          fontname="DejaVu Sans" fontsize="15" bold="0" italic="0" justification="36"/>
+          fontname="DejaVu Sans" fontsize="15" kerning="0" bold="0" italic="0"
+          justification="36"/>
     <TEXT pos="0Cc 239 100% 30" fill="solid: ffffffff" hasStroke="0" text="Powered by"
-          fontname="DejaVu Sans" fontsize="15" bold="0" italic="0" justification="36"/>
+          fontname="DejaVu Sans" fontsize="15" kerning="0" bold="0" italic="0"
+          justification="36"/>
     <TEXT pos="0Cc 295 100% 30" fill="solid: ffffffff" hasStroke="0" text="Distributed under the terms of GPLv3"
-          fontname="DejaVu Sans" fontsize="15" bold="0" italic="0" justification="36"/>
+          fontname="DejaVu Sans" fontsize="15" kerning="0" bold="0" italic="0"
+          justification="36"/>
   </BACKGROUND>
   <HYPERLINKBUTTON name="hyperlink" id="d03fe84575f779e" memberName="hyperlinkButton"
                    virtualName="" explicitFocusOrder="0" pos="0Cc 208 100% 20" tooltip="http://www.uwyn.com"
@@ -225,7 +246,7 @@ BEGIN_JUCER_METADATA
          explicitFocusOrder="0" pos="42Cc 8 76 30" textCol="ffffffff"
          edTextCol="ff000000" edBkgCol="0" labelText="1.0.0" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="DejaVu Sans"
-         fontsize="18" bold="1" italic="0" justification="33"/>
+         fontsize="18" kerning="0" bold="0" italic="0" justification="33"/>
   <TEXTBUTTON name="ok button" id="e198e95387bff8fe" memberName="okButton"
               virtualName="" explicitFocusOrder="0" pos="0Cc 368 72 24" buttonText="ok"
               connectedEdges="0" needsCallback="1" radioGroupId="0"/>
@@ -233,12 +254,13 @@ BEGIN_JUCER_METADATA
          explicitFocusOrder="0" pos="-37Cc 8 78 30" textCol="ffffffff"
          edTextCol="ff000000" edBkgCol="0" labelText="HEELP" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="DejaVu Sans"
-         fontsize="18" bold="1" italic="0" justification="34"/>
+         fontsize="18" kerning="0" bold="0" italic="0" justification="34"/>
   <LABEL name="new label" id="a00577b3dbf9ab04" memberName="label3" virtualName=""
          explicitFocusOrder="0" pos="0Cc 24 208 64" textCol="cccccccc"
          edTextCol="ff000000" edBkgCol="0" labelText="HUB for Expressive Electronic Live Performance"
          editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
-         fontname="DejaVu Sans" fontsize="15" bold="0" italic="0" justification="36"/>
+         fontname="DejaVu Sans" fontsize="15" kerning="0" bold="0" italic="0"
+         justification="36"/>
   <HYPERLINKBUTTON name="hyperlink" id="649d0d2885d7cd03" memberName="hyperlinkButton2"
                    virtualName="" explicitFocusOrder="0" pos="0Cc 320 100% 20" tooltip="https://github.com/gbevin/HEELP"
                    textCol="ffcccccc" buttonText="github.com/gbevin/HEELP" connectedEdges="0"

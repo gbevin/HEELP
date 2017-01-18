@@ -56,12 +56,11 @@ void MainContentComponent::paint(Graphics& g)
 
 void MainContentComponent::resized()
 {
-    const int margin = 5;
-    int xpos = margin;
+    int xpos = 0;
     for (auto&& strip : channelStrips_)
     {
         strip->setBounds(xpos, 0, strip->getWidth(), getHeight());
-        xpos += strip->getWidth() + margin;
+        xpos += strip->getWidth();
     }
 
     audioSetupComponent_->setBounds(0, 20, getWidth(), getHeight() - 20);
