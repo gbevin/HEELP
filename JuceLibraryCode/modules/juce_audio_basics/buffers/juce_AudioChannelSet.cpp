@@ -2,22 +2,20 @@
   ==============================================================================
 
    This file is part of the JUCE library.
-   Copyright (c) 2015 - ROLI Ltd.
+   Copyright (c) 2017 - ROLI Ltd.
 
-   Permission is granted to use this software under the terms of either:
-   a) the GPL v2 (or any later version)
-   b) the Affero GPL v3
+   JUCE is an open source library subject to commercial or open-source
+   licensing.
 
-   Details of these licenses can be found at: www.gnu.org/licenses
+   The code included in this file is provided under the terms of the ISC license
+   http://www.isc.org/downloads/software-support-policy/isc-license. Permission
+   To use, copy, modify, and/or distribute this software for any purpose with or
+   without fee is hereby granted provided that the above copyright notice and
+   this permission notice appear in all copies.
 
-   JUCE is distributed in the hope that it will be useful, but WITHOUT ANY
-   WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
-   A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
-
-   ------------------------------------------------------------------------------
-
-   To release a closed-source product which uses JUCE, commercial licenses are
-   available: visit www.juce.com for more information.
+   JUCE IS PROVIDED "AS IS" WITHOUT ANY WARRANTY, AND ALL WARRANTIES, WHETHER
+   EXPRESSED OR IMPLIED, INCLUDING MERCHANTABILITY AND FITNESS FOR PURPOSE, ARE
+   DISCLAIMED.
 
   ==============================================================================
 */
@@ -108,6 +106,43 @@ String AudioChannelSet::getAbbreviatedChannelTypeName (AudioChannelSet::ChannelT
     return "";
 }
 
+AudioChannelSet::ChannelType AudioChannelSet::getChannelTypeFromAbbreviation (const String& abbr)
+{
+    if (abbr.length() > 0 && (abbr[0] >= '0' && abbr[0] <= '9'))
+        return static_cast<AudioChannelSet::ChannelType> (static_cast<int> (discreteChannel0)
+                                                               + abbr.getIntValue() + 1);
+
+    if      (abbr == "L")    return left;
+    else if (abbr == "R")    return right;
+    else if (abbr == "C")    return centre;
+    else if (abbr == "Lfe")  return LFE;
+    else if (abbr == "Ls")   return leftSurround;
+    else if (abbr == "Rs")   return rightSurround;
+    else if (abbr == "Lc")   return leftCentre;
+    else if (abbr == "Rc")   return rightCentre;
+    else if (abbr == "Cs")   return centreSurround;
+    else if (abbr == "Lrs")  return leftSurroundRear;
+    else if (abbr == "Rrs")  return rightSurroundRear;
+    else if (abbr == "Tm")   return topMiddle;
+    else if (abbr == "Tfl")  return topFrontLeft;
+    else if (abbr == "Tfc")  return topFrontCentre;
+    else if (abbr == "Tfr")  return topFrontRight;
+    else if (abbr == "Trl")  return topRearLeft;
+    else if (abbr == "Trc")  return topRearCentre;
+    else if (abbr == "Trr")  return topRearRight;
+    else if (abbr == "Wl")   return wideLeft;
+    else if (abbr == "Wr")   return wideRight;
+    else if (abbr == "Lfe2") return LFE2;
+    else if (abbr == "Lss")  return leftSurroundSide;
+    else if (abbr == "Rss")  return rightSurroundSide;
+    else if (abbr == "W")    return ambisonicW;
+    else if (abbr == "X")    return ambisonicX;
+    else if (abbr == "Y")    return ambisonicY;
+    else if (abbr == "Z")    return ambisonicZ;
+
+    return unknown;
+}
+
 String AudioChannelSet::getSpeakerArrangementAsString() const
 {
     StringArray speakerTypes;
@@ -124,6 +159,22 @@ String AudioChannelSet::getSpeakerArrangementAsString() const
     return speakerTypes.joinIntoString (" ");
 }
 
+AudioChannelSet AudioChannelSet::fromAbbreviatedString (const String& str)
+{
+    StringArray abbr = StringArray::fromTokens(str, true);
+    AudioChannelSet set;
+
+    for (int i = 0; i < abbr.size(); ++i)
+    {
+        AudioChannelSet::ChannelType type = getChannelTypeFromAbbreviation (abbr[i]);
+
+        if (type != unknown)
+            set.addChannel (type);
+    }
+
+    return set;
+}
+
 String AudioChannelSet::getDescription() const
 {
     if (isDiscreteLayout())            return String ("Discrete #") + String (size());
@@ -135,16 +186,16 @@ String AudioChannelSet::getDescription() const
     if (*this == createLRS())          return "LRS";
     if (*this == createLCRS())         return "LCRS";
 
-    if (*this == create5point0())      return "5.1 Surround";
-    if (*this == create5point1())      return "5.1 Surround (+Lfe)";
-    if (*this == create6point0())      return "6.1 Surround";
-    if (*this == create6point1())      return "6.1 Surround (+Lfe)";
-    if (*this == create6point0Music()) return "6.1 (Music) Surround";
-    if (*this == create6point1Music()) return "6.1 (Music) Surround (+Lfe)";
-    if (*this == create7point0())      return "7.1 Surround";
-    if (*this == create7point1())      return "7.1 Surround (Lfe)";
-    if (*this == create7point0SDDS())  return "7.1 Surround SDDS";
-    if (*this == create7point1SDDS())  return "7.1 Surround SDDS (+Lfe)";
+    if (*this == create5point0())      return "5.0 Surround";
+    if (*this == create5point1())      return "5.1 Surround";
+    if (*this == create6point0())      return "6.0 Surround";
+    if (*this == create6point1())      return "6.1 Surround";
+    if (*this == create6point0Music()) return "6.0 (Music) Surround";
+    if (*this == create6point1Music()) return "6.1 (Music) Surround";
+    if (*this == create7point0())      return "7.0 Surround";
+    if (*this == create7point1())      return "7.1 Surround";
+    if (*this == create7point0SDDS())  return "7.0 Surround SDDS";
+    if (*this == create7point1SDDS())  return "7.1 Surround SDDS";
 
     if (*this == quadraphonic())       return "Quadraphonic";
     if (*this == pentagonal())         return "Pentagonal";

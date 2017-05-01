@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 4.3.0
+  Created with Projucer version: 5.0.0
 
   ------------------------------------------------------------------------------
 
@@ -17,8 +17,7 @@
   ==============================================================================
 */
 
-#ifndef __JUCE_HEADER_2F967341705D846A__
-#define __JUCE_HEADER_2F967341705D846A__
+#pragma once
 
 //[Headers]     -- You can add your own extra header files here --
 /*
@@ -95,5 +94,3 @@ private:
 
 //[EndFile] You can add extra defines here...
 //[/EndFile]
-
-#endif   // __JUCE_HEADER_2F967341705D846A__

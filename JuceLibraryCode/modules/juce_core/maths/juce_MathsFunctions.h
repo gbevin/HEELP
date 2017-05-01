@@ -1,33 +1,26 @@
 /*
   ==============================================================================
 
-   This file is part of the juce_core module of the JUCE library.
-   Copyright (c) 2015 - ROLI Ltd.
+   This file is part of the JUCE library.
+   Copyright (c) 2017 - ROLI Ltd.
 
-   Permission to use, copy, modify, and/or distribute this software for any purpose with
-   or without fee is hereby granted, provided that the above copyright notice and this
-   permission notice appear in all copies.
+   JUCE is an open source library subject to commercial or open-source
+   licensing.
 
-   THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH REGARD
-   TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS. IN
-   NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
-   DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER
-   IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN
-   CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+   The code included in this file is provided under the terms of the ISC license
+   http://www.isc.org/downloads/software-support-policy/isc-license. Permission
+   To use, copy, modify, and/or distribute this software for any purpose with or
+   without fee is hereby granted provided that the above copyright notice and
+   this permission notice appear in all copies.
 
-   ------------------------------------------------------------------------------
-
-   NOTE! This permissive ISC license applies ONLY to files within the juce_core module!
-   All other JUCE modules are covered by a dual GPL/commercial license, so if you are
-   using any other modules, be sure to check that you also comply with their license.
-
-   For more details, visit www.juce.com
+   JUCE IS PROVIDED "AS IS" WITHOUT ANY WARRANTY, AND ALL WARRANTIES, WHETHER
+   EXPRESSED OR IMPLIED, INCLUDING MERCHANTABILITY AND FITNESS FOR PURPOSE, ARE
+   DISCLAIMED.
 
   ==============================================================================
 */
 
-#ifndef JUCE_MATHSFUNCTIONS_H_INCLUDED
-#define JUCE_MATHSFUNCTIONS_H_INCLUDED
+#pragma once
 
 //==============================================================================
 /*
@@ -450,7 +443,7 @@ inline int roundToInt (int value) noexcept
     This is a slightly slower and slightly more accurate version of roundDoubleToInt(). It works
     fine for values above zero, but negative numbers are rounded the wrong way.
 */
-inline int roundToIntAccurate (const double value) noexcept
+inline int roundToIntAccurate (double value) noexcept
 {
    #ifdef __INTEL_COMPILER
     #pragma float_control (pop)
@@ -470,7 +463,7 @@ inline int roundToIntAccurate (const double value) noexcept
     even numbers will be rounded up or down differently. For a more accurate conversion,
     see roundDoubleToIntAccurate().
 */
-inline int roundDoubleToInt (const double value) noexcept
+inline int roundDoubleToInt (double value) noexcept
 {
     return roundToInt (value);
 }
@@ -485,7 +478,7 @@ inline int roundDoubleToInt (const double value) noexcept
     rounding values whose floating point component is exactly 0.5, odd numbers and
     even numbers will be rounded up or down differently.
 */
-inline int roundFloatToInt (const float value) noexcept
+inline int roundFloatToInt (float value) noexcept
 {
     return roundToInt (value);
 }
@@ -509,6 +502,12 @@ inline int nextPowerOfTwo (int n) noexcept
     n |= (n >> 16);
     return n + 1;
 }
+
+/** Returns the index of the highest set bit in a (non-zero) number.
+    So for n=3 this would return 1, for n=7 it returns 2, etc.
+    An input value of 0 is illegal!
+*/
+int findHighestSetBit (uint32 n) noexcept;
 
 /** Returns the number of bits in a 32-bit integer. */
 inline int countNumberOfBits (uint32 n) noexcept
@@ -581,9 +580,6 @@ uint32 readLittleEndianBitsInBuffer (const void* sourceBuffer, uint32 startBit, 
 */
 namespace TypeHelpers
 {
-   #if JUCE_VC8_OR_EARLIER
-    #define PARAMETER_TYPE(type) const type&
-   #else
     /** The ParameterType struct is used to find the best type to use when passing some kind
         of object as a parameter.
 
@@ -620,8 +616,6 @@ namespace TypeHelpers
         @see ParameterType
     */
     #define PARAMETER_TYPE(a)    typename TypeHelpers::ParameterType<a>::type
-   #endif
-
 
     /** These templates are designed to take a type, and if it's a double, they return a double
         type; for anything else, they return a float type.
@@ -632,5 +626,3 @@ namespace TypeHelpers
 
 
 //==============================================================================
-
-#endif   // JUCE_MATHSFUNCTIONS_H_INCLUDED

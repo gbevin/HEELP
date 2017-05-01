@@ -24,6 +24,7 @@ namespace heelp
     {
         static const int showAbout                = 0x10001;
         static const int showPrefs                = 0x10002;
+        static const int showPlugins              = 0x10003;
         
         static const int create                   = 0x20001;
         static const int open                     = 0x20002;

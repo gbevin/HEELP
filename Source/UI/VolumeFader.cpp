@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 4.3.0
+  Created with Projucer version: 5.0.0
 
   ------------------------------------------------------------------------------
 
@@ -96,97 +96,97 @@ void VolumeFader::paint (Graphics& g)
 
     {
         int x = -10, y = 151, width = 24, height = 16;
+        String text (TRANS("-54"));
         Colour fillColour = Colour (0xff777777);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
         g.setFont (Font ("DejaVu Sans", 10.00f, Font::plain));
-        g.drawText (TRANS("-54"),
-                    x, y, width, height,
+        g.drawText (text, x, y, width, height,
                     Justification::centredRight, true);
     }
 
     {
         int x = -10, y = 135, width = 24, height = 16;
+        String text (TRANS("-36"));
         Colour fillColour = Colour (0xff777777);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
         g.setFont (Font ("DejaVu Sans", 10.00f, Font::plain));
-        g.drawText (TRANS("-36"),
-                    x, y, width, height,
+        g.drawText (text, x, y, width, height,
                     Justification::centredRight, true);
     }
 
     {
         int x = -10, y = 116, width = 24, height = 16;
+        String text (TRANS("-24"));
         Colour fillColour = Colour (0xff777777);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
         g.setFont (Font ("DejaVu Sans", 10.00f, Font::plain));
-        g.drawText (TRANS("-24"),
-                    x, y, width, height,
+        g.drawText (text, x, y, width, height,
                     Justification::centredRight, true);
     }
 
     {
         int x = -10, y = 101, width = 24, height = 16;
+        String text (TRANS("-18"));
         Colour fillColour = Colour (0xff777777);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
         g.setFont (Font ("DejaVu Sans", 10.00f, Font::plain));
-        g.drawText (TRANS("-18"),
-                    x, y, width, height,
+        g.drawText (text, x, y, width, height,
                     Justification::centredRight, true);
     }
 
     {
         int x = -10, y = 83, width = 24, height = 16;
+        String text (TRANS("-12"));
         Colour fillColour = Colour (0xff777777);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
         g.setFont (Font ("DejaVu Sans", 10.00f, Font::plain));
-        g.drawText (TRANS("-12"),
-                    x, y, width, height,
+        g.drawText (text, x, y, width, height,
                     Justification::centredRight, true);
     }
 
     {
         int x = -10, y = 60, width = 24, height = 16;
+        String text (TRANS("-6"));
         Colour fillColour = Colour (0xff777777);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
         g.setFont (Font ("DejaVu Sans", 10.00f, Font::plain));
-        g.drawText (TRANS("-6"),
-                    x, y, width, height,
+        g.drawText (text, x, y, width, height,
                     Justification::centredRight, true);
     }
 
     {
         int x = -10, y = 32, width = 24, height = 16;
+        String text (TRANS("0"));
         Colour fillColour = Colour (0xff777777);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
         g.setFont (Font ("DejaVu Sans", 10.00f, Font::plain));
-        g.drawText (TRANS("0"),
-                    x, y, width, height,
+        g.drawText (text, x, y, width, height,
                     Justification::centredRight, true);
     }
 
     {
         int x = -10, y = 0, width = 24, height = 16;
+        String text (TRANS("+6"));
         Colour fillColour = Colour (0xff777777);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
         g.setFont (Font ("DejaVu Sans", 10.00f, Font::plain));
-        g.drawText (TRANS("+6"),
-                    x, y, width, height,
+        g.drawText (text, x, y, width, height,
                     Justification::centredRight, true);
     }
 

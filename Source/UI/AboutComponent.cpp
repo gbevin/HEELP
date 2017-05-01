@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 4.3.0
+  Created with Projucer version: 5.0.0
 
   ------------------------------------------------------------------------------
 
@@ -138,37 +138,37 @@ void AboutComponent::paint (Graphics& g)
 
     {
         int x = (getWidth() / 2) - (proportionOfWidth (1.0000f) / 2), y = 183, width = proportionOfWidth (1.0000f), height = 30;
+        String text (CharPointer_UTF8 ("Copyright \xc2\xa9""2017, Uwyn SPRL"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
         g.setFont (Font ("DejaVu Sans", 15.00f, Font::plain));
-        g.drawText (CharPointer_UTF8 ("Copyright \xc2\xa9""2017, Uwyn SPRL"),
-                    x, y, width, height,
+        g.drawText (text, x, y, width, height,
                     Justification::centred, true);
     }
 
     {
         int x = (getWidth() / 2) - (proportionOfWidth (1.0000f) / 2), y = 239, width = proportionOfWidth (1.0000f), height = 30;
+        String text (TRANS("Powered by"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
         g.setFont (Font ("DejaVu Sans", 15.00f, Font::plain));
-        g.drawText (TRANS("Powered by"),
-                    x, y, width, height,
+        g.drawText (text, x, y, width, height,
                     Justification::centred, true);
     }
 
     {
         int x = (getWidth() / 2) - (proportionOfWidth (1.0000f) / 2), y = 295, width = proportionOfWidth (1.0000f), height = 30;
+        String text (TRANS("Distributed under the terms of GPLv3"));
         Colour fillColour = Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
         g.setFont (Font ("DejaVu Sans", 15.00f, Font::plain));
-        g.drawText (TRANS("Distributed under the terms of GPLv3"),
-                    x, y, width, height,
+        g.drawText (text, x, y, width, height,
                     Justification::centred, true);
     }
 

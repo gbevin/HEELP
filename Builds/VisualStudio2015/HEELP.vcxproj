@@ -41,8 +41,10 @@
   <PropertyGroup>
     <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">HEELP</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.exe</TargetExt>
     <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</GenerateManifest>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">HEELP</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.exe</TargetExt>
     <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</GenerateManifest>
     <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
@@ -149,6 +151,7 @@
     <ClCompile Include="..\..\Source\UI\MainWindow.cpp"/>
     <ClCompile Include="..\..\Source\UI\MuteButton.cpp"/>
     <ClCompile Include="..\..\Source\UI\PanFader.cpp"/>
+    <ClCompile Include="..\..\Source\UI\PluginsComponent.cpp"/>
     <ClCompile Include="..\..\Source\UI\SoloButton.cpp"/>
     <ClCompile Include="..\..\Source\UI\VolumeFader.cpp"/>
     <ClCompile Include="..\..\Source\HeelpApplication.cpp"/>
@@ -1709,6 +1712,7 @@
     <ClInclude Include="..\..\Source\UI\MainWindow.h"/>
     <ClInclude Include="..\..\Source\UI\MuteButton.h"/>
     <ClInclude Include="..\..\Source\UI\PanFader.h"/>
+    <ClInclude Include="..\..\Source\UI\PluginsComponent.h"/>
     <ClInclude Include="..\..\Source\UI\SoloButton.h"/>
     <ClInclude Include="..\..\Source\UI\VolumeFader.h"/>
     <ClInclude Include="..\..\Source\HeelpApplication.h"/>

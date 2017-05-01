@@ -2,8 +2,9 @@
 
 <JUCERPROJECT id="EFjiFX" name="HEELP" projectType="guiapp" version="0.1.0"
               bundleIdentifier="com.uwyn.HEELP" includeBinaryInAppConfig="1"
-              jucerVersion="4.3.0" companyName="Uwyn" companyWebsite="http://uwyn.com"
-              companyEmail="info@uwyn.com">
+              jucerVersion="5.0.0" companyName="Uwyn" companyWebsite="http://uwyn.com"
+              companyEmail="info@uwyn.com" displaySplashScreen="1" reportAppUsage="1"
+              splashScreenColour="Dark">
   <MAINGROUP id="RzRwWG" name="HEELP">
     <GROUP id="{52C0A5B3-2A64-7A61-0620-C68CE8419BC5}" name="Source">
       <GROUP id="{26B4CF74-C35E-FDEC-508B-13712967BC59}" name="Processes">
@@ -79,6 +80,10 @@
         <FILE id="bE6pXm" name="MuteButton.h" compile="0" resource="0" file="Source/UI/MuteButton.h"/>
         <FILE id="mQdg5W" name="PanFader.cpp" compile="1" resource="0" file="Source/UI/PanFader.cpp"/>
         <FILE id="P5AzOi" name="PanFader.h" compile="0" resource="0" file="Source/UI/PanFader.h"/>
+        <FILE id="tTZCwU" name="PluginsComponent.cpp" compile="1" resource="0"
+              file="Source/UI/PluginsComponent.cpp"/>
+        <FILE id="IbhJ1q" name="PluginsComponent.h" compile="0" resource="0"
+              file="Source/UI/PluginsComponent.h"/>
         <FILE id="ulh7MR" name="SoloButton.cpp" compile="1" resource="0" file="Source/UI/SoloButton.cpp"/>
         <FILE id="tPFthB" name="SoloButton.h" compile="0" resource="0" file="Source/UI/SoloButton.h"/>
         <FILE id="CU7bMV" name="VolumeFader.cpp" compile="1" resource="0" file="Source/UI/VolumeFader.cpp"/>

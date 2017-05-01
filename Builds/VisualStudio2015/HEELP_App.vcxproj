@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Project DefaultTargets="Build"
+         ToolsVersion="14.0"
+         xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{A2AEE2F7-CD12-AF8A-DC3D-1E5C6C0B3BF2}</ProjectGuid>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props"/>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'"
+                 Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'"
+                 Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props"/>
+  <ImportGroup Label="ExtensionSettings"/>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props"
+            Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')"
+            Label="LocalAppDataPlatform"/>
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros">
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <TargetExt>.exe</TargetExt>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)\$(Platform)\$(Configuration)\App\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Platform)\$(Configuration)\App\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">HEELP</TargetName>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</GenerateManifest>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)\$(Platform)\$(Configuration)\App\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Platform)\$(Configuration)\App\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">HEELP</TargetName>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</GenerateManifest>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Midl>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MkTypLibCompatible>true</MkTypLibCompatible>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <TargetEnvironment>Win32</TargetEnvironment>
+      <HeaderFileName/>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <AdditionalIncludeDirectories>..\..\JuceLibraryCode;..\..\JuceLibraryCode\modules;..\..\Add_Steinberg_SDKs_here\ASIOSDK2.3\common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_WINDOWS;DEBUG;_DEBUG;JUCE_ASIO=1;JUCER_VS2015_78A5022=1;JUCE_APP_VERSION=0.1.0;JUCE_APP_VERSION_HEX=0x100;JucePlugin_Build_VST=0;JucePlugin_Build_VST3=0;JucePlugin_Build_AU=0;JucePlugin_Build_AUv3=0;JucePlugin_Build_RTAS=0;JucePlugin_Build_AAX=0;JucePlugin_Build_Standalone=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader/>
+      <AssemblerListingLocation>$(IntDir)\</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)\</ObjectFileName>
+      <ProgramDataBaseFileName>$(IntDir)\</ProgramDataBaseFileName>
+      <WarningLevel>Level4</WarningLevel>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <FloatingPointModel>Fast</FloatingPointModel>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <Link>
+      <OutputFile>$(OutDir)\HEELP.exe</OutputFile>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <IgnoreSpecificDefaultLibraries>libcmt.lib; msvcrt.lib;;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(IntDir)\HEELP.pdb</ProgramDatabaseFile>
+      <SubSystem>Windows</SubSystem>
+      <LargeAddressAware>true</LargeAddressAware>
+    </Link>
+    <Bscmake>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <OutputFile>$(IntDir)\HEELP.bsc</OutputFile>
+    </Bscmake>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Midl>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MkTypLibCompatible>true</MkTypLibCompatible>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <TargetEnvironment>Win32</TargetEnvironment>
+      <HeaderFileName/>
+    </Midl>
+    <ClCompile>
+      <Optimization>Full</Optimization>
+      <AdditionalIncludeDirectories>..\..\JuceLibraryCode;..\..\JuceLibraryCode\modules;..\..\Add_Steinberg_SDKs_here\ASIOSDK2.3\common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_WINDOWS;NDEBUG;JUCE_ASIO=1;JUCER_VS2015_78A5022=1;JUCE_APP_VERSION=0.1.0;JUCE_APP_VERSION_HEX=0x100;JucePlugin_Build_VST=0;JucePlugin_Build_VST3=0;JucePlugin_Build_AU=0;JucePlugin_Build_AUv3=0;JucePlugin_Build_RTAS=0;JucePlugin_Build_AAX=0;JucePlugin_Build_Standalone=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader/>
+      <AssemblerListingLocation>$(IntDir)\</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)\</ObjectFileName>
+      <ProgramDataBaseFileName>$(IntDir)\</ProgramDataBaseFileName>
+      <WarningLevel>Level4</WarningLevel>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <FloatingPointModel>Fast</FloatingPointModel>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <Link>
+      <OutputFile>$(OutDir)\HEELP.exe</OutputFile>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(IntDir)\HEELP.pdb</ProgramDatabaseFile>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <LargeAddressAware>true</LargeAddressAware>
+    </Link>
+    <Bscmake>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <OutputFile>$(IntDir)\HEELP.bsc</OutputFile>
+    </Bscmake>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\Source\Processes\AudioMasterProcess.cpp"/>
+    <ClCompile Include="..\..\Source\Processes\AudioProcessMessageUtils.cpp"/>
+    <ClCompile Include="..\..\Source\Processes\AudioSlaveProcess.cpp"/>
+    <ClCompile Include="..\..\Source\Processes\ChildAudioComponent.cpp"/>
+    <ClCompile Include="..\..\Source\Processes\HeelpProcessesChildApplication.cpp"/>
+    <ClCompile Include="..\..\Source\Processes\HeelpProcessesMainApplication.cpp"/>
+    <ClCompile Include="..\..\Source\Processes\MainAudioComponent.cpp"/>
+    <ClCompile Include="..\..\Source\Processes\SharedLock.cpp"/>
+    <ClCompile Include="..\..\Source\Processes\SharedMemory.cpp"/>
+    <ClCompile Include="..\..\Source\Threads\HeelpThreadsApplication.cpp"/>
+    <ClCompile Include="..\..\Source\UI\AboutComponent.cpp"/>
+    <ClCompile Include="..\..\Source\UI\ChannelFader.cpp"/>
+    <ClCompile Include="..\..\Source\UI\ChannelStrip.cpp"/>
+    <ClCompile Include="..\..\Source\UI\Dialog.cpp"/>
+    <ClCompile Include="..\..\Source\UI\HEELPLookAndFeel.cpp"/>
+    <ClCompile Include="..\..\Source\UI\MainContentComponent.cpp"/>
+    <ClCompile Include="..\..\Source\UI\MainWindow.cpp"/>
+    <ClCompile Include="..\..\Source\UI\MuteButton.cpp"/>
+    <ClCompile Include="..\..\Source\UI\PanFader.cpp"/>
+    <ClCompile Include="..\..\Source\UI\PluginsComponent.cpp"/>
+    <ClCompile Include="..\..\Source\UI\SoloButton.cpp"/>
+    <ClCompile Include="..\..\Source\UI\VolumeFader.cpp"/>
+    <ClCompile Include="..\..\Source\HeelpApplication.cpp"/>
+    <ClCompile Include="..\..\Source\HeelpLogger.cpp"/>
+    <ClCompile Include="..\..\Source\Main.cpp"/>
+    <ClCompile Include="..\..\JuceLibraryCode\BinaryData.cpp"/>
+    <ClCompile Include="..\..\JuceLibraryCode\include_juce_audio_basics.cpp"/>
+    <ClCompile Include="..\..\JuceLibraryCode\include_juce_audio_devices.cpp"/>
+    <ClCompile Include="..\..\JuceLibraryCode\include_juce_audio_formats.cpp"/>
+    <ClCompile Include="..\..\JuceLibraryCode\include_juce_audio_processors.cpp"/>
+    <ClCompile Include="..\..\JuceLibraryCode\include_juce_audio_utils.cpp"/>
+    <ClCompile Include="..\..\JuceLibraryCode\include_juce_core.cpp"/>
+    <ClCompile Include="..\..\JuceLibraryCode\include_juce_data_structures.cpp"/>
+    <ClCompile Include="..\..\JuceLibraryCode\include_juce_events.cpp"/>
+    <ClCompile Include="..\..\JuceLibraryCode\include_juce_graphics.cpp"/>
+    <ClCompile Include="..\..\JuceLibraryCode\include_juce_gui_basics.cpp"/>
+    <ClCompile Include="..\..\JuceLibraryCode\include_juce_gui_extra.cpp"/>
+    <ClCompile Include="..\..\JuceLibraryCode\include_juce_osc.cpp"/>
+  </ItemGroup>
+  <ItemGroup/>
+  <ItemGroup>
+    <ResourceCompile Include=".\resources.rc"/>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets"/>
+  <ImportGroup Label="ExtensionTargets"/>
+</Project>

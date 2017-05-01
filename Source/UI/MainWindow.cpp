@@ -33,6 +33,7 @@ MainWindow::MainWindow(String name) : DocumentWindow(name, Colours::lightgrey, D
     extraMenu_.addCommandItem(commandManager, CommandIDs::showAbout);
     extraMenu_.addSeparator();
     extraMenu_.addCommandItem(commandManager, CommandIDs::showPrefs);
+    extraMenu_.addCommandItem(commandManager, CommandIDs::showPlugins);
     setMacMainMenu(this, &extraMenu_);
 #else
     setMenuBar(this);
@@ -96,6 +97,7 @@ PopupMenu MainWindow::getMenuForIndex(int topLevelMenuIndex, const String& menuN
         menu.addSeparator();
         
         menu.addCommandItem(commandManager, CommandIDs::showPrefs);
+        menu.addCommandItem(commandManager, CommandIDs::showPlugins);
         
         menu.addSeparator();
         

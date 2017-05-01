@@ -22,9 +22,10 @@
 #include "Processes/HeelpProcessesMainApplication.h"
 #include "Threads/HeelpThreadsApplication.h"
 #include "UI/AboutComponent.h"
+#include "UI/CommandIDs.h"
 #include "UI/Dialog.h"
 #include "UI/HEELPLookAndFeel.h"
-#include "UI/CommandIDs.h"
+#include "UI/PluginsComponent.h"
 #include "Utils.h"
 
 using namespace heelp;
@@ -62,6 +63,9 @@ struct HeelpApplication::Pimpl : public ApplicationCommandManagerListener, publi
      
         aboutDialog_ = new Dialog(new AboutComponent());
         aboutDialog_->setName("About HEELP");
+        
+        pluginsDialog_ = new Dialog(new PluginsComponent());
+        pluginsDialog_->setName("Manage plugins");
     }
     
     void initialiseThreadsEngine(const String& commandLine)
@@ -141,6 +145,7 @@ struct HeelpApplication::Pimpl : public ApplicationCommandManagerListener, publi
         const CommandID ids[] = {
             CommandIDs::showAbout,
             CommandIDs::showPrefs,
+            CommandIDs::showPlugins,
             CommandIDs::create,
             CommandIDs::open,
             CommandIDs::save,
@@ -172,6 +177,13 @@ struct HeelpApplication::Pimpl : public ApplicationCommandManagerListener, publi
             case CommandIDs::showPrefs:
                 result.setInfo("Preferences...",
                                "Shows the preferences panel.",
+                               CommandCategories::view, 0);
+                result.setActive(true);
+                break;
+                
+            case CommandIDs::showPlugins:
+                result.setInfo("Plugins...",
+                               "Shows the plugins panel.",
                                CommandCategories::view, 0);
                 result.setActive(true);
                 break;
@@ -271,6 +283,12 @@ struct HeelpApplication::Pimpl : public ApplicationCommandManagerListener, publi
             case CommandIDs::showPrefs:
             {
                 //            preferencesDialog_->show();
+                break;
+            }
+                
+            case CommandIDs::showPlugins:
+            {
+                pluginsDialog_->show();
                 break;
             }
                 
@@ -374,6 +392,7 @@ struct HeelpApplication::Pimpl : public ApplicationCommandManagerListener, publi
     ScopedPointer<AbstractHeelpApplication> realApp_;
     ScopedPointer<ApplicationCommandManager> commandManager_;
     ScopedPointer<Dialog> aboutDialog_;
+    ScopedPointer<Dialog> pluginsDialog_;
 };
 
 HeelpApplication::HeelpApplication() : pimpl_(new Pimpl())  {}

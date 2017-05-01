@@ -2,22 +2,24 @@
   ==============================================================================
 
    This file is part of the JUCE library.
-   Copyright (c) 2015 - ROLI Ltd.
+   Copyright (c) 2017 - ROLI Ltd.
 
-   Permission is granted to use this software under the terms of either:
-   a) the GPL v2 (or any later version)
-   b) the Affero GPL v3
+   JUCE is an open source library subject to commercial or open-source
+   licensing.
 
-   Details of these licenses can be found at: www.gnu.org/licenses
+   By using JUCE, you agree to the terms of both the JUCE 5 End-User License
+   Agreement and JUCE 5 Privacy Policy (both updated and effective as of the
+   27th April 2017).
 
-   JUCE is distributed in the hope that it will be useful, but WITHOUT ANY
-   WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
-   A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+   End User License Agreement: www.juce.com/juce-5-licence
+   Privacy Policy: www.juce.com/juce-5-privacy-policy
 
-   ------------------------------------------------------------------------------
+   Or: You may also use this code under the terms of the GPL v3 (see
+   www.gnu.org/licenses).
 
-   To release a closed-source product which uses JUCE, commercial licenses are
-   available: visit www.juce.com for more information.
+   JUCE IS PROVIDED "AS IS" WITHOUT ANY WARRANTY, AND ALL WARRANTIES, WHETHER
+   EXPRESSED OR IMPLIED, INCLUDING MERCHANTABILITY AND FITNESS FOR PURPOSE, ARE
+   DISCLAIMED.
 
   ==============================================================================
 */
@@ -210,8 +212,12 @@ namespace
         }
 
         //==============================================================================
-        OSCBundle readBundle()
+        OSCBundle readBundle (size_t maxBytesToRead = std::numeric_limits<size_t>::max())
         {
+            // maxBytesToRead is only passed in here in case this bundle is a nested
+            // bundle, so we know when to consider the next element *not* part of this
+            // bundle anymore (but part of the outer bundle) and return.
+
             if (input.getNumBytesRemaining() < 16)
                 throw OSCFormatError ("OSC input stream exhausted while reading bundle");
 
@@ -220,8 +226,17 @@ namespace
 
             OSCBundle bundle (readTimeTag());
 
-            while (! isExhausted())
+            size_t bytesRead = 16; // already read "#bundle" and timeTag
+            size_t pos = getPosition();
+
+            while (! isExhausted() && bytesRead < maxBytesToRead)
+            {
                 bundle.addElement (readElement());
+
+                const size_t newPos = getPosition();
+                bytesRead += newPos - pos;
+                pos = newPos;
+            }
 
             return bundle;
         }
@@ -274,7 +289,9 @@ namespace
         OSCBundle readBundleWithCheckedSize (size_t size)
         {
             const size_t begin = (size_t) getPosition();
-            OSCBundle bundle (readBundle());
+            const size_t maxBytesToRead = size - 4; // we've already read 4 bytes (the bundle size)
+
+            OSCBundle bundle (readBundle (maxBytesToRead));
 
             if (getPosition() - begin != size)
                 throw OSCFormatError ("OSC input stream format error: wrong element content size encountered while reading");

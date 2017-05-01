@@ -412,6 +412,9 @@
     <ClCompile Include="..\..\Source\UI\PanFader.cpp">
       <Filter>HEELP\Source\UI</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\UI\PluginsComponent.cpp">
+      <Filter>HEELP\Source\UI</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\UI\SoloButton.cpp">
       <Filter>HEELP\Source\UI</Filter>
     </ClCompile>
@@ -2158,6 +2161,9 @@
       <Filter>HEELP\Source\UI</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\PanFader.h">
+      <Filter>HEELP\Source\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\PluginsComponent.h">
       <Filter>HEELP\Source\UI</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\SoloButton.h">

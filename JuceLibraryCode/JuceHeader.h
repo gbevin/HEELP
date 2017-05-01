@@ -10,8 +10,7 @@
 
 */
 
-#ifndef __APPHEADERFILE_EFJIFX__
-#define __APPHEADERFILE_EFJIFX__
+#pragma once
 
 #include "AppConfig.h"
 
@@ -44,5 +43,3 @@ namespace ProjectInfo
     const int          versionNumber  = 0x100;
 }
 #endif
-
-#endif   // __APPHEADERFILE_EFJIFX__

@@ -2,22 +2,24 @@
   ==============================================================================
 
    This file is part of the JUCE library.
-   Copyright (c) 2015 - ROLI Ltd.
+   Copyright (c) 2017 - ROLI Ltd.
 
-   Permission is granted to use this software under the terms of either:
-   a) the GPL v2 (or any later version)
-   b) the Affero GPL v3
+   JUCE is an open source library subject to commercial or open-source
+   licensing.
 
-   Details of these licenses can be found at: www.gnu.org/licenses
+   By using JUCE, you agree to the terms of both the JUCE 5 End-User License
+   Agreement and JUCE 5 Privacy Policy (both updated and effective as of the
+   27th April 2017).
 
-   JUCE is distributed in the hope that it will be useful, but WITHOUT ANY
-   WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
-   A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+   End User License Agreement: www.juce.com/juce-5-licence
+   Privacy Policy: www.juce.com/juce-5-privacy-policy
 
-   ------------------------------------------------------------------------------
+   Or: You may also use this code under the terms of the GPL v3 (see
+   www.gnu.org/licenses).
 
-   To release a closed-source product which uses JUCE, commercial licenses are
-   available: visit www.juce.com for more information.
+   JUCE IS PROVIDED "AS IS" WITHOUT ANY WARRANTY, AND ALL WARRANTIES, WHETHER
+   EXPRESSED OR IMPLIED, INCLUDING MERCHANTABILITY AND FITNESS FOR PURPOSE, ARE
+   DISCLAIMED.
 
   ==============================================================================
 */
@@ -633,4 +635,210 @@ public:
 
 static OSCBinaryWriterTests OSCBinaryWriterUnitTests;
 
+//==============================================================================
+class OSCRoundTripTests  : public UnitTest
+{
+public:
+    OSCRoundTripTests() : UnitTest ("OSCRoundTripTests class") {}
+
+    void runTest()
+    {
+        beginTest ("Empty OSC message");
+        {
+            OSCMessage outMessage ("/test/empty");
+
+            OSCOutputStream output;
+            output.writeMessage (outMessage);
+
+            OSCInputStream input (output.getData(), output.getDataSize());
+            OSCMessage inMessage = input.readMessage();
+
+            expectEquals (inMessage.size(), 0);
+        }
+
+        beginTest ("OSC message with single argument");
+        {
+            OSCMessage outMessage ("/test/one_arg", 42);
+
+            OSCOutputStream output;
+            output.writeMessage (outMessage);
+
+            OSCInputStream input (output.getData(), output.getDataSize());
+            OSCMessage inMessage = input.readMessage();
+
+            expectEquals (inMessage.size(), 1);
+            expectEquals (inMessage[0].getInt32(), 42);
+        }
+
+        beginTest ("OSC message with multiple arguments");
+        {
+            OSCMessage outMessage ("/test/four_args", 42, 0.5f, String ("foo"), String ("bar"));
+
+            OSCOutputStream output;
+            output.writeMessage (outMessage);
+
+            OSCInputStream input (output.getData(), output.getDataSize());
+            OSCMessage inMessage = input.readMessage();
+
+            expectEquals (inMessage.size(), 4);
+            expectEquals (inMessage[0].getInt32(), 42);
+            expectEquals (inMessage[1].getFloat32(), 0.5f);
+            expectEquals (inMessage[2].getString(), String ("foo"));
+            expectEquals (inMessage[3].getString(), String ("bar"));
+        }
+
+        beginTest ("Empty OSC bundle");
+        {
+            OSCBundle outBundle;
+
+            OSCOutputStream output;
+            output.writeBundle (outBundle);
+
+            OSCInputStream input (output.getData(), output.getDataSize());
+            OSCBundle inBundle = input.readBundle();
+
+            expectEquals (inBundle.size(), 0);
+        }
+
+        beginTest ("OSC bundle with single message");
+        {
+            OSCMessage outMessage ("/test/one_arg", 42);
+            OSCBundle outBundle;
+            outBundle.addElement (outMessage);
+
+            OSCOutputStream output;
+            output.writeBundle (outBundle);
+
+            OSCInputStream input (output.getData(), output.getDataSize());
+            OSCBundle inBundle = input.readBundle();
+
+            expectEquals (inBundle.size(), 1);
+
+            OSCMessage inMessage = inBundle[0].getMessage();
+
+            expectEquals (inMessage.getAddressPattern().toString(), String ("/test/one_arg"));
+            expectEquals (inMessage.size(), 1);
+            expectEquals (inMessage[0].getInt32(), 42);
+        }
+
+        beginTest ("OSC bundle with multiple messages");
+        {
+            OSCMessage outMessage1 ("/test/empty");
+            OSCMessage outMessage2 ("/test/one_arg", 42);
+            OSCMessage outMessage3 ("/test/four_args", 42, 0.5f, String ("foo"), String ("bar"));
+
+            OSCBundle outBundle;
+            outBundle.addElement (outMessage1);
+            outBundle.addElement (outMessage2);
+            outBundle.addElement (outMessage3);
+
+            OSCOutputStream output;
+            output.writeBundle (outBundle);
+
+            OSCInputStream input (output.getData(), output.getDataSize());
+            OSCBundle inBundle = input.readBundle();
+
+            expectEquals (inBundle.size(), 3);
+
+            {
+                OSCMessage inMessage = inBundle[0].getMessage();
+
+                expectEquals (inMessage.getAddressPattern().toString(), String ("/test/empty"));
+                expectEquals (inMessage.size(), 0);
+            }
+            {
+                OSCMessage inMessage = inBundle[1].getMessage();
+
+                expectEquals (inMessage.getAddressPattern().toString(), String ("/test/one_arg"));
+                expectEquals (inMessage.size(), 1);
+                expectEquals (inMessage[0].getInt32(), 42);
+            }
+            {
+                OSCMessage inMessage = inBundle[2].getMessage();
+
+                expectEquals (inMessage.getAddressPattern().toString(), String ("/test/four_args"));
+                expectEquals (inMessage.size(), 4);
+                expectEquals (inMessage[0].getInt32(), 42);
+                expectEquals (inMessage[1].getFloat32(), 0.5f);
+                expectEquals (inMessage[2].getString(), String ("foo"));
+                expectEquals (inMessage[3].getString(), String ("bar"));
+            }
+        }
+
+        beginTest ("OSC bundle containing another bundle");
+        {
+            OSCBundle outBundleNested;
+            outBundleNested.addElement (OSCMessage ("/test/one_arg", 42));
+
+            OSCBundle outBundle;
+            outBundle.addElement (outBundleNested);
+
+            OSCOutputStream output;
+            output.writeBundle (outBundle);
+
+            OSCInputStream input (output.getData(), output.getDataSize());
+            OSCBundle inBundle = input.readBundle();
+
+            expectEquals (inBundle.size(), 1);
+            expect (inBundle[0].isBundle());
+            OSCBundle inBundleNested = inBundle[0].getBundle();
+            expectEquals (inBundleNested.size(), 1);
+            expect (inBundleNested[0].isMessage());
+
+            OSCMessage msg = inBundleNested[0].getMessage();
+
+            expectEquals (msg.getAddressPattern().toString(), String ("/test/one_arg"));
+            expectEquals (msg.size(), 1);
+            expectEquals (msg[0].getInt32(), 42);
+        }
+
+        beginTest ("OSC bundle containing multiple other bundles");
+        {
+            OSCBundle outBundleNested1;
+            outBundleNested1.addElement (OSCMessage ("/test/empty"));
+            OSCBundle outBundleNested2;
+            outBundleNested2.addElement (OSCMessage ("/test/one_arg", 42));
+
+            OSCBundle outBundle;
+            outBundle.addElement (outBundleNested1);
+            outBundle.addElement (outBundleNested2);
+
+            OSCOutputStream output;
+            output.writeBundle (outBundle);
+
+            OSCInputStream input (output.getData(), output.getDataSize());
+            OSCBundle inBundle = input.readBundle();
+
+            expectEquals (inBundle.size(), 2);
+
+            {
+                expect (inBundle[0].isBundle());
+                OSCBundle inBundleNested = inBundle[0].getBundle();
+                expectEquals (inBundleNested.size(), 1);
+                expect (inBundleNested[0].isMessage());
+
+                OSCMessage msg = inBundleNested[0].getMessage();
+
+                expectEquals (msg.getAddressPattern().toString(), String ("/test/empty"));
+                expectEquals (msg.size(), 0);
+            }
+            {
+                expect (inBundle[1].isBundle());
+                OSCBundle inBundleNested = inBundle[1].getBundle();
+                expectEquals (inBundleNested.size(), 1);
+                expect (inBundleNested[0].isMessage());
+
+                OSCMessage msg = inBundleNested[0].getMessage();
+
+                expectEquals (msg.getAddressPattern().toString(), String ("/test/one_arg"));
+                expectEquals (msg.size(), 1);
+                expectEquals (msg[0].getInt32(), 42);
+            }
+        }
+    }
+};
+
+static OSCRoundTripTests OSCRoundTripUnitTests;
+
+//==============================================================================
 #endif // JUCE_UNIT_TESTS
